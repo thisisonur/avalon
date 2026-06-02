@@ -1,0 +1,34 @@
+---
+interface Props {
+  slug: string;
+  theme: 'treasury' | 'haste' | 'relate' | 'trier';
+  icon: number;
+  cardName: string;
+  year: string;
+  short: string;
+  readTime: string;
+  slotIndex: number;
+}
+
+const { slug, theme, icon, cardName, year, short, readTime, slotIndex } = Astro.props;
+---
+
+<a
+  href={`/work/${slug}`}
+  data-theme={theme}
+  class:list={['cs-card', `cs-card--${theme}`, `cs-card--slot${slotIndex}`]}
+>
+  <div class="cs-card__icon-wrap">
+    <span class="cs-card__icon" style={`--cs-icon: url(/assets/icons/cs-icon-${icon}.svg)`}></span>
+  </div>
+
+  <div class="cs-card__content">
+    <div class="cs-card__title-group">
+      <h3 class="cs-card__title">{cardName}</h3>
+      <span class="cs-card__year">{year}</span>
+      <div class="cs-card__rule"></div>
+      <p class="cs-card__desc">{short}</p>
+    </div>
+    <span class="cs-card__readtime">{readTime}</span>
+  </div>
+</a>

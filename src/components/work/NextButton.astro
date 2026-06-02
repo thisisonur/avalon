@@ -1,0 +1,20 @@
+---
+interface Props {
+  label: string;
+  name: string;
+  href: string;
+}
+const { label, name, href } = Astro.props;
+---
+
+<a class="next-btn" href={href}>
+  <span class="next-line">
+    <span class="lbl">{label}</span>
+    <span>{name}</span>
+  </span>
+  <span class="next-arrow">
+    <svg viewBox="0 0 16 16" fill="none">
+      <path d="M5 11L11 5M11 5H6M11 5V10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+  </span>
+</a>

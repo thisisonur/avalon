@@ -1,0 +1,261 @@
+/* ============================================================
+   ABOUT PAGE — 12-column grid layout
+   Tokens live in tokens.css; this file only composes them.
+   ============================================================ */
+
+.about-main {
+  max-width: var(--ab-max);
+  margin: 0 auto;
+  padding: var(--ab-pad-top) var(--page-gutter) 40px;
+}
+
+/* Shared 12-column grid container */
+.ab-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  column-gap: 24px;
+  row-gap: 0;
+}
+
+/* Section label */
+.ab-section__label-wrap {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: center;
+  margin: 0 0 56px;
+}
+.ab-label {
+  font-family: var(--font-mono);
+  font-size: var(--fs-section-label);
+  letter-spacing: var(--ls-ab-label);
+  text-transform: uppercase;
+  color: var(--fg-1);
+  text-align: center;
+}
+
+/* Section rule */
+.ab-rule {
+  border: 0;
+  height: 1px;
+  background: var(--fg-5);
+  margin: var(--ab-rule-margin-y) 0;
+  width: 100%;
+}
+.ab-hero + .ab-rule { margin-top: 48px; margin-bottom: 56px; }
+
+/* ── Hero ─────────────────────────────────────── */
+.ab-hero { align-items: start; }
+.ab-hero__photo {
+  grid-column: 2 / span 5;
+  grid-row: 1;
+  padding-top: 56px;
+}
+.ab-hero__photo-img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: var(--radius-2xl);
+  background: url('/assets/profile-photo.png') center / cover no-repeat, var(--img-fallback);
+}
+@media (min-width: 1025px) {
+  .ab-hero__photo-img { aspect-ratio: 4 / 5; }
+}
+.ab-hero__text {
+  grid-column: 7 / span 6;
+  grid-row: 1;
+  padding-top: 96px;
+  padding-bottom: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.ab-hero__hi {
+  font-family: var(--font-display-serif);
+  font-weight: 400;
+  font-size: var(--fs-ab-hi);
+  line-height: 1;
+  letter-spacing: var(--ls-tight);
+  color: var(--fg-1);
+  margin: 0;
+}
+.ab-hero__body {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  max-width: 479px;
+}
+.ab-hero__body p {
+  font-family: var(--font-ui);
+  font-size: var(--fs-body);
+  line-height: 28px;
+  color: var(--fg-1);
+  margin: 0;
+}
+
+/* ── How I work ───────────────────────────────── */
+.ab-principles {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  column-gap: 32px;
+  row-gap: 64px;
+}
+.ab-principle {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+}
+.ab-principle__icon {
+  width: var(--cs-icon-size);
+  height: var(--cs-icon-size);
+  margin-bottom: 24px;
+  flex-shrink: 0;
+}
+.ab-principle__icon img {
+  width: var(--cs-icon-size);
+  height: var(--cs-icon-size);
+  display: block;
+}
+.ab-principle h3 {
+  font-family: var(--font-display-serif);
+  font-weight: 500;
+  font-size: var(--fs-h3);
+  line-height: 1;
+  letter-spacing: var(--ls-tight);
+  color: var(--fg-1);
+  margin: 0 0 16px;
+}
+.ab-principle p {
+  font-family: var(--font-ui);
+  font-size: var(--fs-body);
+  line-height: 28px;
+  color: var(--fg-1);
+  margin: 0;
+}
+
+/* ── Toolkit ──────────────────────────────────── */
+.ab-toolkit .ab-section__label-wrap { justify-content: flex-start; }
+.ab-toolkit .ab-label { text-align: left; }
+.ab-toolkit__intro {
+  grid-column: 1 / span 7;
+  text-align: left;
+  font-family: var(--font-ui);
+  font-size: var(--fs-ab-intro);
+  line-height: var(--lh-ab-intro);
+  color: var(--fg-1);
+  margin: 0 0 40px;
+}
+.ab-tools {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+.ab-tool {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.ab-tool__logo {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  border-radius: var(--radius-lg);
+  display: block;
+  flex-shrink: 0;
+}
+.ab-tool__name {
+  font-family: var(--font-ui);
+  font-size: var(--fs-ab-toolname);
+  color: var(--fg-3);
+  opacity: 0;
+  transition: opacity 200ms var(--ease);
+}
+.ab-tool:hover .ab-tool__name { opacity: 1; }
+
+/* ── Off the clock ────────────────────────────── */
+.ab-offclock .ab-section__label-wrap { justify-content: flex-start; }
+.ab-offclock .ab-label { text-align: left; }
+.ab-offclock__copy {
+  grid-column: 1 / span 8;
+  text-align: left;
+  margin-bottom: 56px;
+}
+.ab-offclock__copy p {
+  font-family: var(--font-ui);
+  font-size: var(--fs-body);
+  line-height: 1.75;
+  color: var(--fg-1);
+  margin: 0 0 16px;
+  max-width: 66ch;
+}
+.ab-offclock__copy p:last-child { margin-bottom: 0; }
+.ab-offclock__photos {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  column-gap: 24px;
+}
+.ab-offclock__photo { width: 100%; }
+.ab-offclock__figure {
+  margin: 0;
+  padding: 0;
+  display: block;
+}
+
+/* Image placeholder shimmer (shows under photos while loading) */
+.ph {
+  background: linear-gradient(90deg, var(--img-fallback) 25%, var(--img-shimmer-mid) 50%, var(--img-fallback) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+  display: grid;
+  place-items: center;
+}
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+.ph--photo {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  border-radius: var(--radius-2xl);
+  display: block;
+  object-fit: cover;
+}
+.img-caption {
+  font-family: var(--font-ui);
+  font-size: var(--fs-caption);
+  color: var(--fg-caption);
+  line-height: 1.4;
+  margin: 0 0 48px;
+}
+.ab-offclock__caption {
+  margin: 20px 0 0;
+  padding: 0;
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 1024px) {
+  .about-main { padding: 160px 32px 40px; }
+  .ab-hero__photo { grid-column: 1 / span 5; padding-top: 0; }
+  .ab-hero__text { grid-column: 6 / span 7; padding-top: 80px; }
+  .ab-principles { grid-template-columns: 1fr 1fr; }
+  .ab-toolkit__intro { grid-column: 1 / -1; }
+}
+@media (max-width: 768px) {
+  .about-main { padding-top: 88px; padding-left: 16px; padding-right: 16px; }
+  .ab-hero__photo { grid-column: 1 / -1; grid-row: 1; padding-top: 0; }
+  .ab-hero__photo-img { aspect-ratio: 4 / 5; }
+  .ab-hero__text { grid-column: 1 / -1; grid-row: 2; margin-top: 24px; padding-top: 0; }
+  .ab-principles { grid-template-columns: 1fr; }
+  .ab-tools { flex-wrap: wrap; }
+  .ab-offclock__photos { grid-template-columns: 1fr; row-gap: 16px; }
+  .ab-rule { margin: 64px 0; }
+}

@@ -1,0 +1,12 @@
+---
+interface Props {
+  label?: string;
+  body: string;
+}
+const { label, body } = Astro.props;
+---
+
+<aside class="quick-context" aria-label={label}>
+  {label ? <div class="quick-context__label">{label}</div> : null}
+  <p class="quick-context__body" set:html={body}></p>
+</aside>

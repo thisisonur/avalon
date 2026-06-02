@@ -1,0 +1,24 @@
+---
+interface Row {
+  label: string;
+  value?: string;
+  valueHtml?: string;
+}
+interface Props {
+  rows: Row[];
+}
+const { rows } = Astro.props;
+---
+
+<div class="facts-panel">
+  {rows.map((row) => (
+    <div class="facts-panel__row">
+      <div class="facts-panel__label">{row.label}</div>
+      {row.valueHtml ? (
+        <div class="facts-panel__value" set:html={row.valueHtml} />
+      ) : (
+        <div class="facts-panel__value">{row.value}</div>
+      )}
+    </div>
+  ))}
+</div>

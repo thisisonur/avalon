@@ -1,0 +1,428 @@
+/* ============================================================
+   Avalon Design System — Colors & Type
+   Onur Erdem portfolio (2025/26)
+   ============================================================ */
+
+/* Google Fonts: Crimson Pro (display serif), Inter (UI),
+   IBM Plex Mono (mono/tag), IBM Plex Sans (alt body),
+   Domine (bold alt body), Miniver (decorative script — Dark variant) */
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;500;600;700&family=Domine:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Miniver&display=swap');
+
+:root {
+  /* ------------------------------------------------------------
+     FOREGROUND / NEUTRAL TEXT
+     fg-1 is the workhorse body text; fg-2 is for labels, meta,
+     footer copy; fg-3 is for muted placeholder / helper copy.
+     These are warm off-greys (not pure black), reading like ink.
+     ------------------------------------------------------------ */
+  --fg-1: rgb(62, 64, 64);          /* primary text — 93 uses */
+  --fg-2: rgb(135, 138, 138);       /* secondary / meta — 50 uses */
+  --fg-3: rgb(169, 173, 173);       /* tertiary / divider stroke */
+  --fg-4: rgb(199, 202, 202);       /* disabled / soft card bg */
+  --fg-5: rgb(225, 231, 231);       /* subtle surface / "next" label */
+  --fg-6: rgb(238, 243, 243);       /* sticky-gradient top / page divider */
+
+  --ink: rgb(21, 21, 21);           /* pure-ink icons (stroke) */
+  --near-black: rgb(33, 35, 34);
+  --black: rgb(0, 0, 0);
+
+  /* ------------------------------------------------------------
+     BACKGROUND / PAPER
+     bg-1 is the warm off-white (FBFFFF) used across light variant.
+     bg-2 is the sticky-gradient source (EEF3F3).
+     ------------------------------------------------------------ */
+  --bg-1: #EEF3F3;                  /* page background */
+  --bg-2: rgb(255, 255, 255);       /* pure white surface */
+  --bg-3: rgb(238, 243, 243);       /* sticky-gradient / rail */
+
+  /* ------------------------------------------------------------
+     ACCENT — FIGMA-GUIDE PURPLE
+     This dashed 151,71,255 is the annotation colour in the Figma
+     itself (frame guides). In product, Onur uses a softer
+     purple/wine pair for the HASTE case-study hover state.
+     ------------------------------------------------------------ */
+  --guide: rgb(151, 71, 255);       /* Figma annotation only */
+
+  /* ------------------------------------------------------------
+     BRAND TINTS — per-project hover palettes
+     Each case study gets its own hover colour pair. The "hovered"
+     state swaps from neutral-grey to a saturated gradient backdrop
+     + deep tonal text. These were sampled from the Figma.
+     ------------------------------------------------------------ */
+  --tint-purple-mid: rgb(136, 73, 191);      /* hover outline + meta */
+  --tint-purple-deep: rgb(85, 11, 150);      /* hover title text */
+  --tint-purple-grad-a: rgb(165, 231, 202);  /* HASTE gradient top */
+  --tint-purple-grad-b: rgb(198, 224, 242);  /* HASTE gradient bottom / shadow */
+
+  --tint-wine-mid: rgb(193, 80, 107);
+  --tint-wine-deep: rgb(141, 19, 47);
+  --tint-wine-heading: rgb(177, 40, 109);    /* "Treasury Wine Estates" */
+  --tint-wine-soft: rgb(255, 170, 190);
+  --tint-wine-paper: rgb(255, 226, 233);
+
+  --tint-amber-mid: rgb(211, 116, 82);
+  --tint-amber-deep: rgb(156, 46, 7);
+  --tint-amber-soft: rgb(255, 200, 117);
+  --tint-amber-hot: rgb(255, 111, 38);
+
+  --tint-green: rgb(94, 217, 108);
+  --tint-green-ink: rgb(11, 72, 18);
+  --tint-lime: rgb(219, 236, 144);
+
+  --tint-magenta: rgb(205, 34, 255);
+  --tint-lilac: rgb(221, 135, 246);
+
+  /* ------------------------------------------------------------
+     CASE-STUDY CARD THEMES (home)
+     The per-project hover palette as the cards actually render:
+     a gradient backdrop pair, ink (title/desc/icon), and meta
+     (year/readtime/rule). Resting state maps to the neutral fg
+     scale; the hover glow reuses one of the gradient stops.
+     ------------------------------------------------------------ */
+  --cs-card-bg: var(--fg-5);     /* resting surface — rgb(225,231,231) */
+  --cs-card-ink: var(--fg-1);    /* resting title / desc / icon */
+  --cs-card-meta: var(--fg-2);   /* resting year / readtime / rule */
+
+  --cs-treasury-from: rgb(195, 238, 212);
+  --cs-treasury-to:   rgb(198, 207, 242);
+  --cs-treasury-ink:  rgb(85, 11, 150);
+  --cs-treasury-meta: rgb(162, 83, 232);
+
+  --cs-relate-from: rgb(255, 200, 117);
+  --cs-relate-to:   rgb(240, 165, 221);
+  --cs-relate-ink:  rgb(156, 49, 7);
+  --cs-relate-meta: rgb(210, 112, 73);
+
+  --cs-haste-from: rgb(227, 190, 250);
+  --cs-haste-to:   rgb(255, 170, 190);
+  --cs-haste-ink:  rgb(141, 19, 47);
+  --cs-haste-meta: rgb(193, 80, 107);
+
+  --cs-trier-from: rgb(239, 226, 186);
+  --cs-trier-to:   rgb(208, 167, 255);
+  --cs-trier-ink:  rgb(28, 28, 159);
+  --cs-trier-meta: rgb(86, 106, 184);
+
+  /* Case-study card motion */
+  --cs-dur-color: 320ms;
+  --cs-dur-spring: 500ms;
+  --cs-ease-color: cubic-bezier(0.25, 0, 0, 1);
+  --cs-ease-spring: cubic-bezier(0.23, 1, 0.32, 1);
+
+  /* ------------------------------------------------------------
+     HOME PAGE — hero / section label type
+     ------------------------------------------------------------ */
+  --fs-hero: 42px;
+  --lh-hero: 1.06;
+  --ls-hero: -0.015em;
+  --fs-hero-sub: 15px;
+  --lh-hero-sub: 26px;
+  --fs-section-label: 11px;
+  --ls-section-label: 6px;
+
+  /* HOME PAGE — case-study card layout */
+  --cs-card-w: 272px;
+  --cs-card-h: 476px;
+  --cs-card-pad: 24px;
+  --cs-card-gap: 24px;
+  --cs-icon-size: 56px;
+
+  /* HOME PAGE — vertical rhythm */
+  --home-pad-top: 140px;
+  --home-section-pad-y: 80px;
+  --home-divider-margin-y: 80px;
+  --home-label-margin-top: 64px;
+  --home-label-margin-bottom: 56px;
+
+  /* ------------------------------------------------------------
+     PAGE MEASURE — shared max-width + side gutter
+     ------------------------------------------------------------ */
+  --page-max: 1400px;
+  --page-gutter: 64px;
+
+  /* ------------------------------------------------------------
+     CAPTIONS / IMAGE PLACEHOLDERS
+     ------------------------------------------------------------ */
+  --fg-caption: rgb(105, 108, 108);     /* image caption ink (#696C6C) */
+  --img-fallback: rgb(227, 234, 234);   /* placeholder tint (#E3EAEA) */
+  --img-shimmer-mid: rgb(237, 242, 242);/* shimmer highlight (#EDF2F2) */
+
+  /* ------------------------------------------------------------
+     ABOUT PAGE — type + layout
+     ------------------------------------------------------------ */
+  --fs-ab-hi: 36px;          /* "Hi!" hero + section H2 */
+  --fs-ab-intro: 13px;       /* toolkit intro line */
+  --lh-ab-intro: 22px;
+  --fs-ab-toolname: 10px;    /* tool label (hover-revealed) */
+  --ls-ab-label: 0.18em;     /* mono section labels */
+  --ab-max: 1280px;          /* about content max-width */
+  --ab-pad-top: 168px;       /* clearance under fixed header */
+  --ab-rule-margin-y: 96px;  /* spacing around section rules */
+
+  /* ------------------------------------------------------------
+     WORK / CASE STUDY PAGE — type, color, measure
+     ------------------------------------------------------------ */
+  --surface-raised: rgb(244, 247, 247);  /* decision-card bg (#F4F7F7) */
+  --fs-work-title: 56px;                 /* case-study H1 */
+  --lh-work-title: 1.05;
+  --fs-work-subtitle: 17px;              /* body-styled subtitle */
+  --fs-work-h3: 19px;                    /* in-section sub-heading */
+  --fs-decision-title: 22px;             /* decision-card title + quick-context lead serif */
+  --fs-pull-quote: 24px;                 /* pull-quote text */
+  --fs-outcome-headline: 36px;           /* outcome-callout headline */
+  --work-max: 900px;                     /* case-study content measure */
+  --work-pad-top: 200px;                 /* clearance under fixed header */
+  --side-nav-left: 48px;                 /* fixed left section nav */
+
+  /* ------------------------------------------------------------
+     RADII / SHADOW / MOTION
+     ------------------------------------------------------------ */
+  --radius-xs: 2px;    /* design-system card (storybook panels) */
+  --radius-sm: 4px;
+  --radius-md: 5px;    /* dashed guide / small widget */
+  --radius-lg: 8px;    /* icon tiles */
+  --radius-ml: 12px;   /* decision cards, inline media corners (mobile) */
+  --radius-xl: 16px;   /* project card, menu-open sheet */
+  --radius-2xl: 24px;  /* large case-study card */
+  --radius-pill: 9999px; /* header capsules, link pill */
+
+  --shadow-hover-purple: 0 48px 218px 0 rgb(198, 224, 242);
+  --shadow-hover-wine: 0 48px 218px 0 rgb(255, 170, 190);
+  --shadow-hover-amber: 0 48px 218px 0 rgb(255, 200, 117);
+
+  --ease: cubic-bezier(.2, .6, .2, 1);
+  --dur-fast: 150ms;
+  --dur: 260ms;
+  --dur-slow: 420ms;
+
+  /* Header capsule expand/shrink morph (driven by the JS width tween). */
+  --header-morph-dur: 560ms;
+
+  /* Text-link hover reveal — current label slides up and out while an
+     identical copy slides up into its place (main menu, side nav, footer). */
+  --link-reveal-dur: var(--dur-slow);
+  --link-reveal-ease: var(--cs-ease-spring);
+
+  /* Reveal-on-enter: per-element travel distance + time, and the stagger step
+     between successive elements (title → subtitle → image → content). */
+  --reveal-travel: 40px;
+  --reveal-dur: 760ms;
+  --reveal-step: 150ms;
+
+  /* Split-text reveal — headings / bio split into words that fade + rise in
+     with a per-word stagger (home title + subtitle, case-study title +
+     subtitle, about title + bio). */
+  --sr-travel: 0.45em;
+  --sr-dur: 520ms;
+  --sr-ease: var(--cs-ease-spring);
+  --sr-step: 14ms;
+
+  /* Blob cursor — ambient gooey trail that follows the pointer behind all
+     page content. One lead circle plus four equal trailing circles that share
+     a follow-speed and stack into a single lobe, merged via the SVG goo
+     filter so the whole thing reads as one fluid blob (per the ReactBits
+     reference: a big lead, equal smaller trail). */
+  --blob-color: #FFFFFF;
+  --blob-opacity: 1;
+  --blob-size-1: 46px;
+  --blob-size-2: 32px;
+  --blob-size-3: 32px;
+  --blob-size-4: 32px;
+  --blob-size-5: 32px;
+  /* Fade timing when the blob leaves / re-enters the home page. */
+  --blob-fade-dur: 480ms;
+  /* Subtle per-card blob tints — a softened hint of each card's palette,
+     applied to the blob on card hover. Mixed heavily toward white so the
+     cursor reads as a gentle wash, never as strong as the card itself. */
+  --blob-tint-treasury: color-mix(in srgb, var(--cs-treasury-from) 55%, #ffffff);
+  --blob-tint-haste:    color-mix(in srgb, var(--cs-haste-from) 55%, #ffffff);
+  --blob-tint-relate:   color-mix(in srgb, var(--cs-relate-from) 38%, #ffffff);
+  --blob-tint-trier:    color-mix(in srgb, var(--cs-trier-to) 40%, #ffffff);
+
+  /* ------------------------------------------------------------
+     TYPE TOKENS — FONT FAMILIES
+     Avalon has TWO type variants:
+       • LIGHT  — Inter everywhere (the shipped portfolio voice)
+       • DARK   — Miniver (display), Domine (subhead bold),
+                  IBM Plex Sans (body), IBM Plex Mono (caption)
+     Crimson Pro is the card / editorial serif in both variants.
+     ------------------------------------------------------------ */
+  --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-display-serif: 'Crimson Pro', 'Georgia', serif;       /* project titles, case study cards */
+  --font-display-large: 'Crimson Pro', 'Georgia', serif;       /* light variant H1 (48px) */
+  --font-display-script: 'Miniver', 'Crimson Pro', cursive;    /* dark variant only */
+  --font-body-alt: 'IBM Plex Sans', sans-serif;                /* dark variant body */
+  --font-body-bold: 'Domine', serif;                           /* dark variant subhead */
+  --font-mono: 'IBM Plex Mono', 'Menlo', monospace;
+
+  /* ------------------------------------------------------------
+     TYPE TOKENS — SEMANTIC
+     Naming matches the Figma "Display" component set:
+     display-large / heading-large / body-large / mono-large (etc).
+     All sizes shipped in the file are here.
+     ------------------------------------------------------------ */
+  --fs-display-xl: 64px;    /* Display Large, hero */
+  --fs-display-lg: 48px;    /* H1 light variant */
+  --fs-h1-dark: 64px;       /* Miniver script H1 */
+  --fs-h2: 32px;            /* project card "Relate" */
+  --fs-h3: 28px;            /* case-study card title */
+  --fs-lead: 22px;          /* Domine bold lead / IBM Plex Sans lead */
+  --fs-body-lg: 20px;       /* long-form body, intro */
+  --fs-body: 16px;          /* standard body */
+  --fs-body-sm: 14px;       /* header links, logo text */
+  --fs-caption: 12px;       /* menu items, meta, footer */
+
+  --lh-tight: 100%;
+  --lh-snug: 1.15;
+  --lh-body: 1.6;           /* 16/25–28, 20/36 */
+  --lh-compact: 1.25;       /* 28/32 card title */
+
+  --ls-tight: -0.01em;      /* applied to display + H1 + H2 */
+  --ls-mono-wide: 8px;      /* "Default" / "Hovered" Storybook caption */
+}
+
+/* ============================================================
+   SEMANTIC ELEMENT DEFAULTS
+   Consume these directly — <h1>, <h2>, <p>, <code> all work.
+   ============================================================ */
+
+html {
+  font-family: var(--font-ui);
+  color: var(--fg-1);
+  background: var(--bg-1);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  margin: 0;
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--fg-1);
+  background: transparent;
+}
+
+h1, .h1 {
+  font-family: var(--font-display-large);
+  font-weight: 500;
+  font-size: var(--fs-display-lg);
+  line-height: 1;
+  letter-spacing: var(--ls-tight);
+  color: var(--tint-wine-heading);     /* case-study hero default */
+  margin: 0;
+}
+
+h2, .h2 {
+  font-family: var(--font-display-serif);
+  font-weight: 500;
+  font-size: var(--fs-h2);
+  line-height: 1.25;
+  letter-spacing: var(--ls-tight);
+  color: var(--fg-1);
+  margin: 0;
+}
+
+h3, .h3 {
+  font-family: var(--font-display-serif);
+  font-weight: 700;
+  font-size: var(--fs-h3);
+  line-height: 1.14;          /* 28/32 */
+  letter-spacing: var(--ls-tight);
+  color: var(--fg-1);
+  margin: 0;
+}
+
+h4, .h4 {
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: var(--fs-body);
+  line-height: 1.375;
+  color: var(--fg-1);
+  margin: 0;
+}
+
+p, .body {
+  font-size: var(--fs-body);
+  line-height: 1.75;          /* 16/28 */
+  color: var(--fg-1);
+  margin: 0;
+}
+
+.lead {
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: var(--fs-body-lg);
+  line-height: 1.4;
+  color: var(--fg-1);
+}
+
+.meta, .caption, small {
+  font-family: var(--font-ui);
+  font-size: var(--fs-caption);
+  line-height: 1.67;
+  color: var(--fg-2);
+}
+
+.fine-print {
+  font-family: var(--font-ui);
+  font-size: var(--fs-caption);
+  line-height: 1.67;
+  color: var(--fg-2);
+}
+
+code, .mono, kbd {
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  line-height: 1.67;
+  color: var(--fg-1);
+}
+
+/* Storybook-style all-caps tracked label, used as section marker */
+.mono-wide {
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  line-height: 20px;
+  letter-spacing: var(--ls-mono-wide);
+  color: #3E4040;
+  text-transform: none;
+}
+
+/* Capsule pill-link used for "Link" component */
+.pill-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  background: var(--fg-2);
+  color: var(--bg-1);
+  font-family: var(--font-ui);
+  font-size: var(--fs-caption);
+  line-height: 20px;
+  text-decoration: none;
+  transition: background var(--dur) var(--ease);
+}
+.pill-link:hover { background: var(--fg-1); }
+
+/* Inline text link — grey-to-ink on hover */
+.text-link {
+  color: var(--fg-2);
+  text-decoration: none;
+  transition: color var(--dur) var(--ease);
+}
+.text-link:hover { color: var(--fg-1); }
+.text-link[aria-current="true"],
+.text-link.is-selected { color: var(--fg-1); }
+
+/* Wordmark — "Onur" bold + "Erdem" regular */
+.logo {
+  font-family: var(--font-ui);
+  font-size: var(--fs-body-sm);
+  line-height: 1;
+  color: var(--fg-1);
+  display: inline-flex;
+  gap: 4px;
+  align-items: baseline;
+}
+.logo b { font-weight: 700; }
+.logo span { font-weight: 400; }

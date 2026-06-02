@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#EEF3F3" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>Onur Erdem — Portfolio</title>
+  <link rel="icon" href="assets/favicon.svg" />
+  <!-- Fix 1 — paint the site background on <html>/<body> IMMEDIATELY,
+       before any linked stylesheet (and therefore before the @import
+       in tokens.css blocks the rest of that file on font loading).
+       Same literal value as --bg-1 so there is no seam when tokens.css
+       finishes resolving. Also eliminates the black overscroll/rubber-
+       band zone since the browser uses html's background outside the
+       page bounds. color-scheme: light keeps mobile browsers from
+       compositing a dark overscroll layer beneath the page. -->
+  <style>
+    :root { color-scheme: light; }
+    html, body {
+      background-color: #EEF3F3;
+      margin: 0;
+    }
+  </style>
+  <link rel="stylesheet" href="styles/tokens.css?v=60" />
+  <link rel="stylesheet" href="styles/app.css?v=80" />
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+  <script src="app/data.js?v=70"></script>
+</head>
+<body>
+  <template id="__bundler_thumbnail">
+    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <rect width="100" height="100" fill="#EEF3F3"/>
+      <text x="50" y="62" font-family="Georgia, serif" font-size="38" fill="#1a2b2b" text-anchor="middle">OE</text>
+    </svg>
+  </template>
+  <div id="root"></div>
+
+  <script type="text/babel" src="app/shared.jsx?v=59"></script>
+  <script type="text/babel" src="app/home.jsx?v=66"></script>
+  <script type="text/babel" src="app/about.jsx?v=59"></script>
+  <script type="text/babel" src="app/work.jsx?v=67"></script>
+
+  <script type="text/babel">
+    const { useState, useEffect, useRef } = React;
+
+    function parseHash() {
+      const h = (window.location.hash || '#/').replace(/^#/, '');
+      // routes: /, /about, /work/<slug>, /showcase/<slug>
+      const parts = h.split('/').filter(Boolean);
+      if (parts.length === 0) return { name: 'home' };
+      if (parts[0] === 'about') return { name: 'about' };
+      if (parts[0] === 'work' && parts[1]) return { name: 'work', slug: parts[1] };
+      if (parts[0] === 'showcase' && parts[1]) return { name: 'showcase', slug: parts[1] };
+      return { name: 'home' };
+    }
+
+    function routeToHash(r) {
+      if (r.name === 'home') return '#/';
+      if (r.name === 'about') return '#/about';
+      if (r.name === 'work') return `#/work/${r.slug}`;
+      if (r.name === 'showcase') return `#/showcase/${r.slug}`;
+      return '#/';
+    }
+
+    function App() {
+      const [route, setRoute] = useState(parseHash());
+      // Fix 8 (final) — The Header tracks navigation intent SEPARATELY from
+      // the page content. While the page-transition wrapper takes 280ms to
+      // fade out before it swaps to the new route, the header swaps its own
+      // route immediately on hashchange. This causes useLayoutEffect inside
+      // Header to fire its reverse width tween THE INSTANT the user clicks
+      // back / hits the browser back button — in parallel with the page
+      // fade-out, not after it. Previously the header sat frozen in wide
+      // form for 280ms then animated while the new home page was already
+      // fading in, which made the shrink invisible to the user.
+      const [headerRoute, setHeaderRoute] = useState(parseHash());
+      const [phase, setPhase] = useState('in'); // 'in' | 'out'
+      const pendingRef = useRef(null);
+
+      useEffect(() => {
+        const onHash = () => {
+          const r = parseHash();
+          // Header animation fires IMMEDIATELY — before the fade-out
+          // covers it, so the shrink is visible during the transition.
+          setHeaderRoute(r);
+
+          // ----- Next case-study / next showcase transition -----
+          // The NextButton (app/work.jsx) sets window.__nextCSTransition
+          // before navigating. When present, replace the default 280ms
+          // wrapper fade with a staggered, no-scroll exit on the current
+          // DOM (content → nav → next-btn), then swap route and reset
+          // scroll silently. The new page's entrance is carried by the
+          // existing Reveal stagger on title / subtitle / hero.
+          const isNextCS = window.__nextCSTransition === true;
+          window.__nextCSTransition = false;
+
+          if (isNextCS) {
+            const contentEl   = document.querySelector('.work-main');
+            const desktopNav  = document.querySelector('nav.header');
+            const mobileNav   = document.querySelector('.mobile-header');
+            const sideNavEl   = document.querySelector('.side-nav');
+            const nextBtnEl   = document.querySelector('.next-btn');
+
+            const fade = (el, delay) => {
+              if (!el) return;
+              setTimeout(() => {
+                el.style.transition = 'opacity 350ms ease';
+                el.style.opacity = '0';
+              }, delay);
+            };
+
+            // Phase 1 — staggered exit. Overlapping start times so the
+            // sequence reads as a wave, not three separate beats.
+            //   content →0ms, navigation →150ms, next-btn →280ms.
+            fade(contentEl, 0);
+            fade(desktopNav, 150);
+            fade(mobileNav, 150);
+            fade(sideNavEl, 150);
+            fade(nextBtnEl, 280);
+
+            // Phase 2 — swap route, silent scroll reset. 700ms gives the
+            // last element (next-btn, finishing at ~630ms) ~70ms of head-
+            // room so nothing is still mid-fade when the DOM changes.
+            pendingRef.current = r;
+            setTimeout(() => {
+              setRoute(r);
+              // Silent scroll reset — old content is at opacity:0 so the
+              // jump is invisible. New content mounts at scrollY = 0.
+              window.scrollTo({ top: 0, behavior: 'auto' });
+              // Persistent chrome (header, mobile-header) had inline
+              // opacity:0 set; the next-btn and side-nav unmount with
+              // the route swap so they reset naturally on remount.
+              requestAnimationFrame(() => {
+                if (desktopNav) {
+                  desktopNav.style.transition = 'opacity 300ms ease';
+                  desktopNav.style.opacity = '1';
+                }
+                if (mobileNav) {
+                  mobileNav.style.transition = 'opacity 300ms ease';
+                  mobileNav.style.opacity = '1';
+                }
+              });
+            }, 700);
+            return;
+          }
+
+          // Default transition — wrapper fade, scroll reset, fade in.
+          setPhase('out');
+          pendingRef.current = r;
+          setTimeout(() => {
+            setRoute(r);
+            window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+            requestAnimationFrame(() => {
+              requestAnimationFrame(() => setPhase('in'));
+            });
+          }, 280);
+        };
+        window.addEventListener('hashchange', onHash);
+        return () => window.removeEventListener('hashchange', onHash);
+      }, []);
+
+      const navigate = (r) => {
+        if (r.name === route.name && r.slug === route.slug) return;
+        const target = routeToHash(r);
+        if (window.location.hash === target) return;
+        window.location.hash = target;
+      };
+
+      let pageEl = null;
+      if (route.name === 'home') pageEl = <HomePage navigate={navigate} />;
+      else if (route.name === 'about') pageEl = <AboutPage navigate={navigate} />;
+      else if (route.name === 'work') pageEl = <CaseStudyPage slug={route.slug} navigate={navigate} />;
+      else if (route.name === 'showcase') pageEl = <ShowcasePage slug={route.slug} navigate={navigate} />;
+
+      return (
+        <>
+          <ScrollChrome />
+          <Header route={headerRoute} navigate={navigate} />
+          <MobileHeader route={headerRoute} navigate={navigate} />
+          <div
+            key={`${route.name}-${route.slug || ''}`}
+            className="page-transition"
+            style={{
+              opacity: phase === 'in' ? 1 : 0,
+              transform: phase === 'in' ? 'translateY(0)' : 'translateY(10px)',
+              transition: 'opacity 360ms cubic-bezier(.2,.6,.2,1), transform 360ms cubic-bezier(.2,.6,.2,1)'
+            }}
+          >
+            {pageEl}
+          </div>
+        </>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>

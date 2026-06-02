@@ -1,0 +1,2517 @@
+/* ============================================================
+   Avalon — Onur Erdem portfolio app styles
+   Layered on top of styles/tokens.css
+   ============================================================ */
+
+* { box-sizing: border-box; }
+
+html, body {
+  background: var(--bg-1);
+  color: var(--fg-1);
+  font-family: var(--font-ui);
+  margin: 0;
+  padding: 0;
+  scroll-behavior: smooth;
+}
+
+body {
+  overflow-x: hidden;
+  cursor: default;
+}
+
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; padding: 0; color: inherit; }
+
+img { max-width: 100%; display: block; }
+
+/* ============================================================
+   Scroll rail (top of viewport, 3px)
+   ============================================================ */
+.scroll-rail {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: 3px; background: var(--bg-2);
+  z-index: 100;
+}
+.scroll-rail__thumb {
+  height: 100%;
+  background: #C7CACA;
+  width: 18%;
+  transition: width 80ms linear;
+  will-change: width;
+}
+
+/* Sticky paper-fade at top — reduced opacity so content shows through */
+.sticky-grad {
+  position: fixed; top: 3px; left: 0; right: 0; height: 168px;
+  background: linear-gradient(180deg, rgba(238,243,243,0.9) 0%, rgba(238,243,243,0.55) 30%, rgba(238,243,243,0) 100%);
+  z-index: 50; pointer-events: none;
+}
+
+/* ============================================================
+   Header (capsule pill, top-centered)
+   ============================================================ */
+/* Header: width is animated by JS tween in shared.jsx — no CSS width transition.
+   Centered via margin: 0 auto so grow/shrink is always symmetric.
+   `justify-content: center` keeps the inner pill centered while the outer
+   nav's width is being JS-tweened (otherwise the pill anchors to the left
+   inside the animating container and looks like it pops in from the right). */
+.header {
+  position: fixed; top: 24px; left: 0; right: 0;
+  margin: 0 auto;
+  z-index: 80; display: flex; gap: 12px;
+  justify-content: center;
+  pointer-events: none;
+  width: fit-content;
+}
+.header > * { pointer-events: auto; }
+
+.pill {
+  display: inline-flex; align-items: center;
+  background: var(--bg-2);
+  border-radius: var(--radius-pill);
+  padding: 8px 24px;
+  gap: 24px;
+  white-space: nowrap;
+}
+
+.pill--back { padding: 8px 16px 8px 14px; gap: 6px; }
+.pill--back .back-link {
+  font-size: 13px;
+  color: var(--fg-2);
+  display: inline-flex; align-items: center; gap: 6px;
+  transition: color var(--dur) var(--ease);
+}
+.pill--back .back-link:hover { color: var(--fg-1); }
+.pill--back svg { width: 12px; height: 12px; }
+
+.logo-mark {
+  font-family: var(--font-ui);
+  font-size: 14px;
+  color: var(--fg-1);
+  letter-spacing: -0.005em;
+  display: inline-flex; gap: 4px;
+  position: relative;
+  margin-right: 56px;
+}
+/* #1 — wordmark: Onur BOLD, Erdem regular (final) */
+.logo-mark { gap: 4px; letter-spacing: normal; }
+.logo-mark .wm-first  { font-weight: 700; color: var(--fg-1); }
+.logo-mark .wm-second { font-weight: 400; color: var(--fg-1); }
+/* Reset legacy b/span so they don't fight */
+.logo-mark b    { font-weight: inherit; }
+.logo-mark span { font-weight: inherit; color: inherit; }
+
+/* Crossfade target for case-study/showcase pages */
+/* #7 — logo-swap vertical alignment: flex center to match adjacent buttons */
+.logo-swap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-width: 240px;
+  height: 20px;
+  overflow: hidden;
+  vertical-align: middle;
+}
+.logo-swap__layer {
+  position: absolute; inset: 0;
+  display: inline-flex; gap: 4px; align-items: center;
+  transition: opacity 360ms var(--ease), transform 360ms var(--ease);
+  white-space: nowrap;
+}
+.logo-swap__layer--out { opacity: 0; transform: translateY(-6px); pointer-events: none; }
+.logo-swap__layer--in  { opacity: 1; transform: translateY(0); }
+
+.menu { display: inline-flex; align-items: center; gap: 22px; }
+.mb {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  line-height: 20px;
+  color: var(--fg-2);
+  transition: color var(--dur) var(--ease);
+  cursor: pointer;
+  position: relative;
+}
+.mb:hover { color: var(--fg-1); }
+.mb.is-selected {
+  color: var(--fg-1);
+  font-weight: 500;
+}
+.pill .sep { width: 1px; align-self: stretch; background: var(--fg-6); margin: 0 2px; }
+
+/* ============================================================
+   Page transition wrapper
+   ============================================================ */
+.page {
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  position: relative;
+}
+.page-fade-enter {
+  opacity: 0;
+  transform: translateY(12px);
+}
+.page-fade-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 480ms var(--ease), transform 480ms var(--ease);
+}
+
+/* ============================================================
+   Reveal-on-scroll
+   ============================================================ */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 700ms var(--ease), transform 700ms var(--ease);
+  /* No will-change — it creates a containing block that breaks position:fixed on children */
+}
+.reveal.is-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Stagger helpers */
+.reveal[data-delay="1"] { transition-delay: 80ms; }
+.reveal[data-delay="2"] { transition-delay: 160ms; }
+.reveal[data-delay="3"] { transition-delay: 240ms; }
+.reveal[data-delay="4"] { transition-delay: 320ms; }
+.reveal[data-delay="5"] { transition-delay: 400ms; }
+.reveal[data-delay="6"] { transition-delay: 480ms; }
+
+/* ============================================================
+   Footer
+   ============================================================ */
+footer.site-footer {
+  width: calc(100% - 128px);
+  max-width: 1400px;
+  margin: 120px auto 0;
+  padding: 32px 0 40px;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 24px;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  line-height: 22px;
+  color: var(--fg-2);
+  border-top: 1px solid #E1E7E7;
+}
+footer.site-footer .copy {
+  grid-column: 1 / span 7;
+  display: flex; flex-direction: column; gap: 18px;
+}
+footer.site-footer .legal { display: flex; gap: 16px; }
+footer.site-footer .links {
+  grid-column: 9 / span 4;
+  display: flex; gap: 16px;
+  justify-content: flex-end;
+  align-items: flex-start;
+}
+footer.site-footer a {
+  color: var(--fg-2);
+  transition: color var(--dur) var(--ease);
+}
+footer.site-footer a:hover { color: var(--fg-1); }
+
+/* ============================================================
+   HOMEPAGE
+   ============================================================ */
+.home-hero {
+  padding: 200px 32px 0;
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center;
+}
+.home-hero > * {
+  width: 100%;
+  max-width: calc((1400px - 128px) * 8 / 12); /* 8 of 12 grid columns, centered */
+}
+.home-hero h1 {
+  font-family: var(--font-display-large);
+  font-weight: 400;
+  font-size: 42px;
+  line-height: 1.06;
+  letter-spacing: -0.015em;
+  color: var(--fg-1);
+  margin: 0 0 28px;
+  text-wrap: balance;
+}
+.home-hero p {
+  font-family: var(--font-ui);
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 26px;
+  color: var(--fg-1);
+  margin: 0;
+}
+
+/* Section labels */
+.section-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  color: #3E4040;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin: 64px 0 56px;
+}
+.section-label .secondary { color: #3E4040; letter-spacing: 5px; }
+
+/* Section divider */
+.section-divider {
+  height: 1px;
+  background: #E1E7E7;
+  width: calc(100% - 128px);
+  max-width: 1400px;
+  margin: 80px auto;
+}
+.section-divider + .section-label { margin-top: 0; }
+
+/* Case study cards — 4-card row, staggered */
+.cs-section {
+  display: flex; flex-direction: column; align-items: center;
+  padding-top: 120px;
+  padding-bottom: 120px;
+}
+.cs-cards {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+  justify-content: center;
+  align-items: flex-start;
+  margin: 0 auto;
+  padding: 0 64px;
+  max-width: 1400px;
+  width: 100%;
+}
+
+/* Card base */
+.cs-card {
+  position: relative;
+  width: 272px;
+  flex-shrink: 0;
+  height: 476px;
+  border-radius: 24px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  background: rgb(225,231,231);
+  color: rgb(62,64,64);
+  cursor: none;
+  text-decoration: none;
+  overflow: hidden;
+  transition:
+    background 320ms cubic-bezier(0.25, 0, 0, 1),
+    background-color 320ms cubic-bezier(0.25, 0, 0, 1),
+    color 320ms cubic-bezier(0.25, 0, 0, 1),
+    border-color 320ms cubic-bezier(0.25, 0, 0, 1),
+    box-shadow 320ms cubic-bezier(0.25, 0, 0, 1),
+    transform 600ms cubic-bezier(0.23, 1, 0.32, 1);
+  /* will-change: transform; — only added while actively magnetic, see below */
+  z-index: 1;
+}
+
+/* Magnetic cursor effect (Cuberto-style).
+   While the cursor is inside a card, JS writes an inline transform that
+   composes the slot-stagger Y baseline with a small magnetic delta. For
+   that live tracking to feel instantaneous, we drop the transform
+   transition entirely while the .is-magnetic-active class is present.
+   On mouseleave the class is removed and the 600ms spring-curve above
+   eases the card back to its resting slot position.
+
+   Note: We override JUST transform's timing by re-declaring the full
+   transition shorthand and setting transform's duration to 0ms. Other
+   property transitions (background, colour, box-shadow) keep their 320ms
+   easing so the colour treatment continues to animate normally. */
+.cs-card.is-magnetic-active {
+  transition:
+    background 320ms cubic-bezier(0.25, 0, 0, 1),
+    background-color 320ms cubic-bezier(0.25, 0, 0, 1),
+    color 320ms cubic-bezier(0.25, 0, 0, 1),
+    border-color 320ms cubic-bezier(0.25, 0, 0, 1),
+    box-shadow 320ms cubic-bezier(0.25, 0, 0, 1),
+    transform 0ms linear;
+  will-change: transform;
+}
+
+/* Inner content parallax — children shift at 40% of the card's magnetic
+   delta to create depth. CSS vars are written by JS on the card; if the
+   card isn't magnetic the vars are absent and the fallback 0px keeps the
+   inner content at rest. The same 600ms spring eases the inner content
+   back when the card releases. */
+.cs-card .cs-card__icon-wrap,
+.cs-card .cs-card__content {
+  transform: translate(calc(var(--mag-x, 0px) * 0.4), calc(var(--mag-y, 0px) * 0.4));
+  transition: transform 600ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.cs-card.is-magnetic-active .cs-card__icon-wrap,
+.cs-card.is-magnetic-active .cs-card__content {
+  transition: transform 0ms linear;
+  will-change: transform;
+}
+
+/* Touch / hover-incapable devices: disable magnetic + spring entirely.
+   The card's hover colour treatment is already handled separately in the
+   mobile @media block where the colored state is the permanent default. */
+@media (hover: none) {
+  .cs-card,
+  .cs-card.is-magnetic-active {
+    transform: none !important;
+  }
+  .cs-card .cs-card__icon-wrap,
+  .cs-card .cs-card__content {
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+/* Touch devices (detected reliably via navigator.maxTouchPoints in home.jsx,
+   which stamps html.is-touch-device) must render the cards STATICALLY — no
+   slot transform, no :hover lift, no magnetic drift, no inner parallax. A
+   trackpad-equipped iPad reports (hover: hover)/(pointer: fine) and its
+   any-pointer reporting is unreliable, so we key off the JS-set class rather
+   than a media query.
+
+   We pin every transform on the card to none so it cannot move, then re-create
+   the exact desktop stagger via margin-top (immune to the transform override).
+   The JS magnetic handler is also disabled on these devices, so no inline
+   `!important` transform is ever written. */
+html.is-touch-device .cs-card,
+html.is-touch-device .cs-card.is-magnetic-active,
+html.is-touch-device .cs-card.cs-card--slot1,
+html.is-touch-device .cs-card.cs-card--slot2,
+html.is-touch-device .cs-card.cs-card--slot3,
+html.is-touch-device .cs-card.cs-card--slot4,
+html.is-touch-device .cs-card.cs-card--slot1:hover,
+html.is-touch-device .cs-card.cs-card--slot2:hover,
+html.is-touch-device .cs-card.cs-card--slot3:hover,
+html.is-touch-device .cs-card.cs-card--slot4:hover {
+  transform: none !important;
+}
+html.is-touch-device .cs-card .cs-card__icon-wrap,
+html.is-touch-device .cs-card .cs-card__content {
+  transform: none !important;
+}
+/* Re-create the desktop stagger via margin-top only where the cards render in
+   the single 4-in-a-row layout (≥1280px). Mirrors the desktop slot offsets:
+   slot1 -40px · slot2 +48px · slot3 -104px · slot4 +16px */
+@media (min-width: 1280px) {
+  html.is-touch-device .cs-card:nth-child(1) { margin-top: -40px; }
+  html.is-touch-device .cs-card:nth-child(2) { margin-top: 48px; }
+  html.is-touch-device .cs-card:nth-child(3) { margin-top: -104px; }
+  html.is-touch-device .cs-card:nth-child(4) { margin-top: 16px; }
+}
+
+/* ============================================================
+   Tablet-landscape band (1280–1440px) — robust, width-based.
+
+   The 4-in-a-row layout renders from 1280px up, but the common tablet-
+   landscape viewports (iPad Pro 12.9" landscape = 1366px) sit in this
+   band, and there the magnetic + :hover-lift MOVEMENT is unwanted. We
+   can't reliably detect "this is a tablet" via pointer/hover/touch media
+   queries on iPadOS (a trackpad-equipped iPad reports hover:hover /
+   pointer:fine, and maxTouchPoints is inconsistent), so we treat the
+   whole 1280–1440 band as static: pin EVERY card transform (resting
+   slot, :hover, magnetic-active, inner parallax) to none and offset via
+   margin-top instead. The JS magnetic effect is gated to ≥1441px, so it
+   never fires in this band either. A genuine desktop (≥1441px, e.g. a
+   1920/2091px display) is untouched and keeps the full magnetic effect.
+   ============================================================ */
+@media (min-width: 1280px) and (max-width: 1440px) {
+  .cs-card,
+  .cs-card.is-magnetic-active,
+  .cs-card.cs-card--slot1,
+  .cs-card.cs-card--slot2,
+  .cs-card.cs-card--slot3,
+  .cs-card.cs-card--slot4,
+  .cs-card.cs-card--slot1:hover,
+  .cs-card.cs-card--slot2:hover,
+  .cs-card.cs-card--slot3:hover,
+  .cs-card.cs-card--slot4:hover {
+    transform: none !important;
+  }
+  .cs-card .cs-card__icon-wrap,
+  .cs-card .cs-card__content {
+    transform: none !important;
+  }
+  .cs-card:nth-child(1) { margin-top: -40px; }
+  .cs-card:nth-child(2) { margin-top: 48px; }
+  .cs-card:nth-child(3) { margin-top: -104px; }
+  .cs-card:nth-child(4) { margin-top: 16px; }
+}
+
+/* Gradient overlay — sits on top of the solid background, fades in on hover.
+   Browsers can't interpolate between a solid color and a linear-gradient on
+   the same property, so we put the gradient on a pseudo-element and animate
+   ITS opacity. Each theme variant (.cs-card--treasury, etc.) sets the
+   background-image of this pseudo to its own gradient — the result is a
+   smooth fade-in / fade-out of the coloured state. */
+.cs-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background-image: none;
+  opacity: 0;
+  pointer-events: none;
+  z-index: -1;
+  transition: opacity 320ms cubic-bezier(0.25, 0, 0, 1);
+}
+.cs-card:hover::before { opacity: 1; }
+
+/* Children must sit above the ::before. Because .cs-card uses
+   `overflow: hidden` + `position: relative`, a z-index: -1 on the pseudo
+   places it under the content of THIS card but still inside its bounds. */
+.cs-card > * { position: relative; z-index: 1; }
+.cs-card:hover { z-index: 5; }
+
+/* Stagger: slot1 high, slot3 lowest, slot2/4 mid */
+.cs-card.cs-card--slot1 { transform: translateY(-40px); }
+.cs-card.cs-card--slot2 { transform: translateY(48px); }
+.cs-card.cs-card--slot3 { transform: translateY(-104px); z-index: 2; }
+.cs-card.cs-card--slot4 { transform: translateY(16px); z-index: 3; }
+.cs-card.cs-card--slot1:hover { transform: translateY(-48px); }
+.cs-card.cs-card--slot2:hover { transform: translateY(40px); }
+.cs-card.cs-card--slot3:hover { transform: translateY(-112px); z-index: 4; }
+.cs-card.cs-card--slot4:hover { transform: translateY(8px); z-index: 4; }
+
+/* Icon */
+.cs-card__icon-wrap {
+  width: 56px;
+  height: 56px;
+  flex-shrink: 0;
+}
+.cs-card__icon {
+  display: block;
+  width: 56px;
+  height: 56px;
+  background: rgb(62,64,64);
+  transition: background 320ms cubic-bezier(0.25, 0, 0, 1);
+}
+
+/* Content */
+.cs-card__content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 0;
+}
+.cs-card__title-group {
+  display: flex;
+  flex-direction: column;
+}
+.cs-card__title {
+  font-family: var(--font-display-serif);
+  font-weight: 500;
+  font-size: 28px;
+  line-height: 28px;
+  letter-spacing: -0.01em;
+  color: rgb(62,64,64);
+  margin: 0;
+  transition: color 320ms cubic-bezier(0.25, 0, 0, 1);
+}
+.cs-card__year {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  line-height: 20px;
+  color: rgb(135,138,138);
+  margin-top: 4px;
+  transition: color 320ms cubic-bezier(0.25, 0, 0, 1);
+}
+.cs-card__rule {
+  width: 100%;
+  height: 1px;
+  background: rgb(135,138,138);
+  margin: 12px 0;
+  transition: background 320ms cubic-bezier(0.25, 0, 0, 1);
+}
+.cs-card__desc {
+  font-family: var(--font-ui);
+  font-size: 16px;
+  line-height: 28px;
+  color: rgb(62,64,64);
+  margin: 0;
+  transition: color 320ms cubic-bezier(0.25, 0, 0, 1);
+}
+.cs-card__readtime {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  line-height: 20px;
+  color: rgb(135,138,138);
+  transition: color 320ms cubic-bezier(0.25, 0, 0, 1);
+}
+
+/* Entrance animations */
+@keyframes cardEnterSlot1 { from { opacity:0; transform:translateY(-16px); } to { opacity:1; transform:translateY(-40px); } }
+@keyframes cardEnterSlot2 { from { opacity:0; transform:translateY(72px);  } to { opacity:1; transform:translateY(48px); } }
+@keyframes cardEnterSlot3 { from { opacity:0; transform:translateY(-80px); } to { opacity:1; transform:translateY(-104px); } }
+@keyframes cardEnterSlot4 { from { opacity:0; transform:translateY(40px);  } to { opacity:1; transform:translateY(16px); } }
+
+.cs-card--entering { opacity: 0; }
+.cs-card--entering.cs-card--slot1 { transform: translateY(-16px); }
+.cs-card--entering.cs-card--slot2 { transform: translateY(72px);  }
+.cs-card--entering.cs-card--slot3 { transform: translateY(-80px);  }
+.cs-card--entering.cs-card--slot4 { transform: translateY(40px);  }
+
+.cs-card--entered.cs-card--slot1 { animation: cardEnterSlot1 500ms ease-out both; }
+.cs-card--entered.cs-card--slot2 { animation: cardEnterSlot2 500ms ease-out both; }
+.cs-card--entered.cs-card--slot3 { animation: cardEnterSlot3 500ms ease-out both; }
+.cs-card--entered.cs-card--slot4 { animation: cardEnterSlot4 500ms ease-out both; }
+
+/* ── Hover themes ─────────────────────────────── */
+
+/* TWE — green */
+/* Figma: gradient rgb(195,238,212)→rgb(198,207,242), shadow 48px/218px blur */
+.cs-card--treasury::before {
+  background-image: linear-gradient(180deg, rgb(195,238,212) 0%, rgb(198,207,242) 100%);
+}
+.cs-card--treasury:hover {
+  box-shadow: 0px 48px 218px 0px rgb(198,207,242);
+}
+.cs-card--treasury:hover .cs-card__title    { color: rgb(85,11,150); }
+.cs-card--treasury:hover .cs-card__year     { color: rgb(162,83,232); }
+.cs-card--treasury:hover .cs-card__desc     { color: rgb(85,11,150); }
+.cs-card--treasury:hover .cs-card__readtime { color: rgb(162,83,232); }
+.cs-card--treasury:hover .cs-card__rule     { background: rgb(162,83,232); }
+.cs-card--treasury:hover .cs-card__icon     { background: rgb(85,11,150); }
+
+/* Relate — orange */
+/* Figma: gradient rgb(240,165,221)→rgb(255,200,117), shadow 48px/218px blur */
+.cs-card--relate::before {
+  background-image: linear-gradient(180deg, rgb(255,200,117) 0%, rgb(240,165,221) 100%);
+}
+.cs-card--relate:hover {
+  box-shadow: 0px 48px 218px 0px rgb(255,200,117);
+}
+.cs-card--relate:hover .cs-card__title    { color: rgb(156,49,7); }
+.cs-card--relate:hover .cs-card__year     { color: rgb(210,112,73); }
+.cs-card--relate:hover .cs-card__desc     { color: rgb(156,49,7); }
+.cs-card--relate:hover .cs-card__readtime { color: rgb(210,112,73); }
+.cs-card--relate:hover .cs-card__rule     { background: rgb(210,112,73); }
+.cs-card--relate:hover .cs-card__icon     { background: rgb(156,49,7); }
+
+/* HASTE — pink */
+/* Figma: gradient rgb(227,190,250)→rgb(255,170,190), shadow 48px/218px blur */
+.cs-card--haste::before {
+  background-image: linear-gradient(180deg, rgb(227,190,250) 0%, rgb(255,170,190) 100%);
+}
+.cs-card--haste:hover {
+  box-shadow: 0px 48px 218px 0px rgb(255,170,190);
+}
+.cs-card--haste:hover .cs-card__title    { color: rgb(141,19,47); }
+.cs-card--haste:hover .cs-card__year     { color: rgb(193,80,107); }
+.cs-card--haste:hover .cs-card__desc     { color: rgb(141,19,47); }
+.cs-card--haste:hover .cs-card__readtime { color: rgb(193,80,107); }
+.cs-card--haste:hover .cs-card__rule     { background: rgb(193,80,107); }
+.cs-card--haste:hover .cs-card__icon     { background: rgb(141,19,47); }
+
+/* Trier — purple */
+/* Figma: gradient rgb(239,226,186)→rgb(208,167,255), shadow 48px/218px blur */
+.cs-card--trier::before {
+  background-image: linear-gradient(180deg, rgb(239,226,186) 0%, rgb(208,167,255) 100%);
+}
+.cs-card--trier:hover {
+  box-shadow: 0px 48px 218px 0px rgb(208,167,255);
+}
+.cs-card--trier:hover .cs-card__title    { color: rgb(28,28,159); }
+.cs-card--trier:hover .cs-card__year     { color: rgb(86,106,184); }
+.cs-card--trier:hover .cs-card__desc     { color: rgb(28,28,159); }
+.cs-card--trier:hover .cs-card__readtime { color: rgb(86,106,184); }
+.cs-card--trier:hover .cs-card__rule     { background: rgb(86,106,184); }
+.cs-card--trier:hover .cs-card__icon     { background: rgb(28,28,159); }
+
+/* Cursor pill (cinematic) */
+.cursor-pill {
+  position: fixed;
+  top: 0; left: 0;
+  pointer-events: none;
+  z-index: 200;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: var(--fg-1);
+  color: var(--bg-1);
+  font-size: 12px;
+  letter-spacing: 0.01em;
+  font-weight: 500;
+  display: inline-flex; align-items: center; gap: 6px;
+  white-space: nowrap;
+  transform: translate(-50%, -50%) scale(0.6);
+  opacity: 0;
+  /* Only animate appearance + tint — NOT position, so the pill tracks the cursor 1:1 */
+  transition: opacity 220ms var(--ease), transform 280ms var(--ease), background 320ms var(--ease), color 320ms var(--ease);
+  will-change: left, top, transform, opacity;
+}
+.cursor-pill.is-visible {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+.cursor-pill svg { width: 11px; height: 11px; }
+
+/* tinted cursor pill variants */
+.cursor-pill--treasury { background: #5ED96C; color: #0B4812; }
+.cursor-pill--relate   { background: #FF782E; color: #FFEFDE; }
+.cursor-pill--haste    { background: #CD22FF; color: #FFE2E9; }
+.cursor-pill--trier    { background: #2820B4; color: #DCDEFF; }
+
+/* ============================================================
+   SHOWCASE GRID (homepage)
+   ============================================================ */
+.showcase-section {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 64px;
+}
+.showcase-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 56px 48px;
+}
+.sc-item {
+  display: flex; flex-direction: column;
+  gap: 8px;
+  cursor: pointer;
+  position: relative;
+  text-decoration: none;
+  padding: 20px;
+  margin: -20px;
+  border-radius: 24px;
+  background: transparent;
+  box-shadow: none;
+  border: none;
+  transition: background 350ms ease-in-out;
+}
+.sc-item--hovered {
+  background: #ffffff;
+  box-shadow: none;
+  border: none;
+}
+/* Icon inline with title — hidden by default, shown on hover */
+/* #4 — title: no gap in default state; icon expands into space without shifting title */
+.sc-item__title {
+  font-family: var(--font-display-serif);
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--fg-1);
+  margin: 0 0 2px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+.sc-item__icon-inline {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  opacity: 0;
+  width: 0;
+  overflow: hidden;
+  margin-right: 0;
+  transition: opacity 350ms ease-in-out, width 350ms ease-in-out, margin-right 350ms ease-in-out;
+}
+.sc-item--hovered .sc-item__icon-inline {
+  opacity: 1;
+  width: 20px;
+  margin-right: 8px;
+}
+.sc-item__meta {
+  font-size: 11px;
+  line-height: 18px;
+  color: var(--fg-2);
+  margin-bottom: 8px;
+  padding: 0;
+}
+.sc-item__copy {
+  font-size: 14px;
+  line-height: 22px;
+  color: var(--fg-1);
+  margin: 0;
+  max-width: 32ch;
+}
+
+/* NextButton clearance — case-study/showcase pages only (they have the fixed next-btn) */
+.work-page {
+  padding-bottom: 96px;
+}
+
+/* ============================================================
+   CASE STUDY / SHOWCASE PAGE
+   ============================================================ */
+.work-page {
+  position: relative;
+}
+.work-main {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 200px 64px 80px;
+}
+.work-title {
+  font-family: var(--font-display-large);
+  font-weight: 400;
+  font-size: 56px;
+  line-height: 1.05;
+  letter-spacing: -0.015em;
+  color: var(--fg-1);
+  margin: 0 0 18px;
+  max-width: 18ch;
+}
+.work-tag {
+  font-family: var(--font-display-serif);
+  font-weight: 500;
+  font-size: 22px;
+  line-height: 30px;
+  color: var(--fg-1);
+  margin: 0 0 36px;
+  max-width: 30ch;
+}
+/* New body-styled subtitle (Fix 5 case study) */
+.work-subtitle {
+  font-family: var(--font-ui);
+  font-weight: 400;
+  font-size: 17px;
+  line-height: 1.65;
+  color: var(--fg-1);
+  margin: 0 0 56px;
+  max-width: 60ch;
+}
+.work-lead {
+  font-family: var(--font-ui);
+  font-size: 16px;
+  line-height: 28px;
+  color: var(--fg-2);
+  margin: 0 0 56px;
+  max-width: 76ch;
+}
+.work-lead em { color: var(--fg-1); font-style: normal; }
+
+/* Fix 3 — case-study meta row: label-over-value stacked items, wrapping values, side-by-side on desktop, single column left-aligned on mobile */
+.meta-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: 48px;
+  margin: 0 0 96px;
+  align-items: flex-start;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.meta-row .col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  min-width: 0;
+  flex: 1 1 0;
+}
+.meta-row .k {
+  font-size: 12px; font-weight: 600;
+  color: var(--fg-1);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+.meta-row .v {
+  font-size: 14px;
+  color: var(--fg-2);
+  line-height: 22px;
+  white-space: normal;
+  word-break: break-word;
+}
+.meta-row .pill-link {
+  margin-left: auto;
+  align-self: flex-start;
+  flex-shrink: 0;
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 18px;
+  background: var(--fg-1);
+  color: var(--bg-1);
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: background 240ms var(--ease), transform 240ms var(--ease);
+}
+.meta-row .pill-link:hover {
+  background: var(--near-black);
+  transform: translateY(-1px);
+}
+.meta-row .pill-link svg { width: 11px; height: 11px; }
+
+/* #4/#5 — side-nav and next-btn must be siblings of .page-transition,
+   NOT inside any element with will-change/transform/position:relative.
+   They are rendered outside .page in the App component.
+   CSS: fixed positioning, no containing-block interference. */
+
+/* Side nav (desktop only) — left side, fixed, vertically centered */
+.side-nav {
+  position: fixed;
+  left: 48px;
+  right: auto;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex; flex-direction: column;
+  gap: 8px;
+  z-index: 60;
+  font-size: 12px;
+  color: var(--fg-3);
+  text-align: left;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 360ms var(--ease);
+  /* NO will-change, NO transform other than the centering one */
+}
+.side-nav.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+.side-nav a {
+  display: inline-flex; align-items: center; gap: 0;
+  cursor: pointer;
+  color: var(--fg-3);
+  transition: color 240ms var(--ease);
+  padding: 2px 0;
+}
+.side-nav a:hover { color: var(--fg-1); }
+.side-nav .dot {
+  display: none;
+}
+.side-nav a.is-active { color: var(--fg-1); }
+@media (max-width: 1280px) {
+  .side-nav { display: none; }
+}
+
+/* Body sections */
+.work-section {
+  margin-bottom: 96px;
+  scroll-margin-top: 120px;
+}
+.work-section h2 {
+  font-family: var(--font-display-serif);
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--fg-1);
+  margin: 0 0 24px;
+}
+.work-section p {
+  font-size: 16px;
+  line-height: 28px;
+  color: var(--fg-1);
+  margin: 0 0 18px;
+  max-width: 76ch;
+}
+.work-section p strong { color: var(--fg-1); font-weight: 600; }
+/* Sub-heading within a case study section */
+.work-section-h3 {
+  font-family: var(--font-display-serif);
+  font-weight: 600;
+  font-size: 19px;
+  line-height: 1.3;
+  letter-spacing: -0.005em;
+  color: var(--fg-1);
+  margin: 32px 0 8px;
+}
+
+.work-section ul {
+  margin: 14px 0 24px;
+  padding-left: 22px;
+  list-style: none;
+  position: relative;
+}
+.work-section ul li {
+  font-size: 16px;
+  line-height: 28px;
+  color: var(--fg-1);
+  margin-bottom: 6px;
+  position: relative;
+  padding-left: 14px;
+  max-width: 72ch;
+}
+.work-section ul li::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 12px;
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: var(--fg-3);
+}
+
+.work-keytakeaway {
+  margin-top: 72px;
+  padding: 32px 0;
+  border-top: 1px solid var(--fg-6);
+  border-bottom: 1px solid var(--fg-6);
+  font-family: var(--font-display-serif);
+  font-weight: 500;
+  font-size: 22px;
+  line-height: 32px;
+  color: var(--fg-1);
+  letter-spacing: -0.005em;
+}
+.work-keytakeaway strong { font-weight: 700; }
+
+/* Shimmer keyframes for image placeholders */
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+
+/* Image placeholders */
+.img-placeholder {
+  width: 100%;
+  background: linear-gradient(90deg, #E3EAEA 25%, #EDF2F2 50%, #E3EAEA 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+  border-radius: 16px;
+  aspect-ratio: 16 / 9;
+  margin: 32px 0 12px;
+}
+
+/* Fix 1 (latest) — hero image: tight, single rhythm across breakpoints.
+   Previously desktop had 80/120 (excessive). Now connected to the
+   metadata above and the body content below, not floating. */
+.work-hero-img {
+  margin: 32px 0 56px;
+}
+@media (max-width: 1024px) {
+  .work-hero-img {
+    margin-top: 24px;
+    margin-bottom: 48px;
+  }
+}
+@media (max-width: 768px) {
+  .work-hero-img {
+    margin-top: 20px;
+    margin-bottom: 36px;
+  }
+}
+.work-hero-img .img-placeholder {
+  margin: 0;
+}
+
+/* Fix 1 — actual hero image; matches placeholder dimensions, fills via cover */
+.work-hero-img__img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  display: block;
+  border-radius: 16px;
+  margin: 0;
+}
+
+/* Responsive hero (e.g. TWE) — desktop keeps 16/9 crop; mobile uses
+   portrait image's natural ratio so the dedicated mobile composition
+   isn't cropped. */
+@media (max-width: 768px) {
+  .work-hero-img--responsive .work-hero-img__img {
+    aspect-ratio: auto;
+    height: auto;
+  }
+}
+
+.img-caption {
+  font-size: 12px !important;
+  color: #696C6C !important;
+  margin: 0 0 48px !important;
+  line-height: 1.4;
+}
+
+/* Fix 4 — uniform spacing between image placeholders */
+.img-placeholder {
+  margin-top: 0;
+  margin-bottom: 12px;
+}
+
+/* Image group label */
+.img-group-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: #3E4040;
+  margin: 56px 0 16px;
+}
+
+/* #5 — next-btn: truly fixed to viewport, high z-index */
+.next-btn {
+  position: fixed !important;
+  right: 32px;
+  bottom: 32px;
+  z-index: 9999;
+  z-index: 60;
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 14px 18px;
+  background: var(--fg-1);
+  color: var(--bg-1);
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+  transition: opacity 360ms var(--ease), transform 360ms var(--ease), background 240ms var(--ease);
+  box-shadow: 0 8px 28px -8px rgba(0,0,0,0.18);
+}
+.next-btn.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+.next-btn:hover {
+  background: var(--bg-1);
+  color: var(--fg-1);
+  box-shadow: 0 8px 28px -8px rgba(0,0,0,0.22), inset 0 0 0 1px var(--fg-5);
+}
+.next-btn .next-arrow {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: var(--bg-1);
+  color: var(--fg-1);
+  display: grid; place-items: center;
+  transition: transform 320ms var(--ease), background 240ms var(--ease), color 240ms var(--ease);
+}
+.next-btn:hover .next-arrow {
+  background: var(--fg-1);
+  color: var(--bg-1);
+  transform: rotate(0deg);
+}
+.next-btn .next-arrow svg { width: 11px; height: 11px; transition: transform 320ms var(--ease); }
+.next-btn:hover .next-arrow svg { transform: rotate(45deg); }
+.next-btn .next-line {
+  display: flex; flex-direction: column; gap: 0;
+  text-align: left;
+  line-height: 1.1;
+}
+.next-btn .next-line .lbl {
+  font-size: 10px;
+  color: var(--fg-3);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.next-btn:hover .next-line .lbl { color: var(--fg-2); }
+
+/* ============================================================
+   ABOUT PAGE — 12-column grid layout
+   Reference: About.png + AboutGrid.png
+   ============================================================ */
+.about-main {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 168px 64px 40px;
+}
+
+/* Shared 12-column grid container */
+.ab-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  column-gap: 24px;
+  row-gap: 0;
+}
+
+/* Section label wrapper — spans full width, label centered */
+.ab-section__label-wrap {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: center;
+  margin: 0 0 56px;
+}
+.ab-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #3E4040;
+  text-align: center;
+}
+
+/* Horizontal separator between sections */
+.ab-rule {
+  border: 0;
+  height: 1px;
+  background: #E1E7E7;
+  margin: 96px 0;
+  width: 100%;
+}
+/* Fix 7 — tighten gap between hero and How I Work so it peeks below fold */
+.ab-hero + .ab-rule { margin-top: 48px; margin-bottom: 56px; }
+
+.ab-section {
+  /* a row of grid */
+}
+
+/* ---------- HERO ---------- */
+.ab-hero {
+  align-items: start;
+}
+
+/* Photo: col 2–6. Fix 7 — nudge down slightly so How I Work peeks under the fold */
+.ab-hero__photo {
+  grid-column: 2 / span 5;
+  grid-row: 1;
+  padding-top: 56px;
+}
+.ab-hero__photo-img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 24px;
+  background: url('../assets/profile-photo.png') center / cover no-repeat, #E3EAEA;
+}
+/* Desktop only — taller portrait crop so the profile photo reads as
+   the dominant element of the About hero. Tablet (≤1024px) stays
+   square via the unmodified base rule above; mobile uses 4/5 from
+   the 720/768 breakpoints below. */
+@media (min-width: 1025px) {
+  .ab-hero__photo-img { aspect-ratio: 4 / 5; }
+}
+
+/* Text block: col 7–12, row 1 — offset below photo top, Fix 7 reduces bottom padding */
+.ab-hero__text {
+  grid-column: 7 / span 6;
+  grid-row: 1;
+  padding-top: 96px;
+  padding-bottom: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.ab-hero__hi {
+  font-family: var(--font-display-serif);
+  font-weight: 400;
+  font-size: 36px;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: var(--fg-1);
+  margin: 0;
+}
+.ab-hero__body {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  max-width: 479px;
+}
+.ab-hero__body p {
+  font-family: var(--font-ui);
+  font-size: 16px;
+  line-height: 28px;
+  color: var(--fg-1);
+  margin: 0;
+}
+
+/* keep .ph for any other placeholders in the page */
+.ph {
+  background: linear-gradient(90deg, #E3EAEA 25%, #EDF2F2 50%, #E3EAEA 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+  display: grid; place-items: center;
+  color: var(--fg-3);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+}
+/* Experience logos: static tint, no shimmer */
+.ph--logo {
+  background: #E3EAEA;
+  animation: none;
+}
+.ph--portrait {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  border-radius: 4px;
+}
+.ph__label { opacity: 0.7; }
+
+/* ---------- HOW I WORK — 3+2 left-aligned grid ---------- */
+.ab-principles {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  column-gap: 32px;
+  row-gap: 64px;
+}
+.ab-principle {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+}
+.ab-principle__icon {
+  width: 56px;
+  height: 56px;
+  margin-bottom: 24px;
+  flex-shrink: 0;
+}
+.ab-principle__icon img {
+  width: 56px;
+  height: 56px;
+  display: block;
+}
+.ab-principle h3 {
+  font-family: var(--font-display-serif);
+  font-weight: 500;
+  font-size: 28px;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: var(--fg-1);
+  margin: 0 0 16px;
+}
+.ab-principle p {
+  font-family: var(--font-ui);
+  font-size: 16px;
+  line-height: 28px;
+  color: var(--fg-1);
+  margin: 0;
+}
+
+/* ---------- EXPERIENCES ---------- */
+.ab-explist {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+}
+.ab-exp {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  column-gap: 24px;
+  padding: 28px 0;
+  align-items: start;
+}
+.ab-exp + .ab-exp {
+  border-top: 1px solid #E1E7E7;
+}
+.ab-exp__logo {
+  grid-column: 1 / span 1;
+  width: 48px;
+  height: 48px;
+  border-radius: 6px;
+  overflow: hidden;
+}
+.ab-exp__logo .ph--logo {
+  width: 100%;
+  height: 100%;
+  border-radius: 6px;
+}
+/* tinted placeholders so the row reads visually */
+.ab-exp__logo--hsd  .ph--logo { background: #E3EAEA; }
+.ab-exp__logo--eqm  .ph--logo { background: #E3EAEA; }
+.ab-exp__logo--nx   .ph--logo { background: #E3EAEA; }
+.ab-exp__logo--igoa .ph--logo { background: #E3EAEA; }
+.ab-exp__logo--rfn  .ph--logo { background: #E3EAEA; }
+
+.ab-exp__main {
+  grid-column: 2 / span 8;
+}
+.ab-exp__name {
+  font-family: var(--font-display-serif);
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 1.2;
+  letter-spacing: -0.005em;
+  color: var(--fg-1);
+  margin: 0 0 4px;
+}
+.ab-exp__role {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  line-height: 20px;
+  color: var(--fg-2);
+  margin: 0 0 14px;
+}
+.ab-exp__body {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  line-height: 22px;
+  color: var(--fg-1);
+  margin: 0;
+  max-width: 70ch;
+}
+.ab-exp__meta {
+  grid-column: 11 / span 2;
+  font-family: var(--font-ui);
+  font-size: 11px;
+  line-height: 18px;
+  color: var(--fg-2);
+  text-align: right;
+}
+
+/* ---------- TOOLKIT ---------- */
+.ab-toolkit .ab-section__label-wrap { justify-content: flex-start; }
+.ab-toolkit .ab-label { text-align: left; }
+.ab-toolkit__intro {
+  grid-column: 1 / span 7;
+  text-align: left;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  line-height: 22px;
+  color: #3E4040;
+  margin: 0 0 40px;
+}
+.ab-tools {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+.ab-tool {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.ph--tool {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+}
+.ab-tool__logo {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  border-radius: 8px;
+  display: block;
+  flex-shrink: 0;
+}
+.ab-tool__name {
+  font-family: var(--font-ui);
+  font-size: 10px;
+  color: var(--fg-3);
+  opacity: 0;            /* names hidden by default — match reference */
+  transition: opacity 200ms var(--ease);
+}
+.ab-tool:hover .ab-tool__name { opacity: 1; }
+
+/* Fix 6 (correction) — toolkit icons sit perfectly upright. No rotation,
+   translation, or scale. Only the *entrance* timing is staggered — the
+   per-icon transition-delay is set inline by the React component via
+   irregular delay values (so they appear one-by-one, not in lockstep).
+   The reveal transition itself handles the opacity/transform fade-up. */
+.ab-tool { transform: none; }
+.ab-tool:hover { transform: none; }
+
+/* ---------- OFF THE CLOCK ---------- */
+.ab-offclock .ab-section__label-wrap { justify-content: flex-start; }
+.ab-offclock .ab-label { text-align: left; }
+.ab-howiwork .ab-label { letter-spacing: 0.18em; }
+.ab-offclock__copy {
+  grid-column: 1 / span 8;
+  text-align: left;
+  margin-bottom: 56px;
+}
+.ab-offclock__copy p {
+  font-family: var(--font-ui);
+  font-size: 16px;
+  line-height: 1.75;
+  color: var(--fg-1);
+  margin: 0 0 16px;
+  max-width: 66ch;
+}
+.ab-offclock__copy p:last-child { margin-bottom: 0; }
+
+.ab-offclock__photos {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  column-gap: 24px;
+}
+.ab-offclock__photo {
+  width: 100%;
+}
+.ab-offclock__figure {
+  margin: 0;
+  padding: 0;
+  display: block;
+}
+.ab-offclock__caption {
+  margin: 20px 0 0 !important;
+  padding: 0;
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+.ph--photo {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  border-radius: 24px;
+  display: block;
+  object-fit: cover;
+}
+
+/* Responsive — collapse to single column */
+@media (max-width: 1024px) {
+  .about-main { padding: 160px 32px 40px; }
+  .ab-hero__photo { grid-column: 1 / span 5; padding-top: 0; }
+  .ab-hero__text { grid-column: 6 / span 7; padding-top: 80px; }
+  .ab-principles { grid-column: 1 / -1; grid-template-columns: 1fr 1fr; }
+  .ab-exp__logo { grid-column: 1 / span 2; }
+  .ab-exp__main { grid-column: 3 / -1; }
+  .ab-exp__meta { grid-column: 3 / -1; text-align: left; margin-top: 12px; }
+  .ab-toolkit__intro { grid-column: 1 / -1; }
+  .ab-tools { grid-column: 1 / -1; }
+  .ab-offclock__copy { grid-column: 1 / -1; }
+}
+@media (max-width: 720px) {
+  .about-main { padding-left: 24px; padding-right: 24px; }
+  /* Hero: photo full-width first, then text */
+  .ab-hero__photo { grid-column: 1 / -1; grid-row: 1; padding-top: 0; }
+  .ab-hero__photo-img { aspect-ratio: 4 / 5; }
+  .ab-hero__text { grid-column: 1 / -1; grid-row: 2; margin-top: 24px; }
+  .ab-principles { grid-template-columns: 1fr; }
+  .ab-tools { grid-template-columns: repeat(4, 1fr); }
+  .ab-offclock__photos { grid-template-columns: 1fr; row-gap: 16px; }
+  .ab-rule { margin: 64px 0; }
+}
+
+/* ============================================================
+   MOBILE HEADER
+   ============================================================ */
+.mobile-header {
+  display: none;
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  right: 16px;
+  z-index: 80;
+}
+
+/* Default mobile pill bar */
+/* Mobile bar — outer container: flex row, gap between Index pill and main pill */
+.mobile-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+/* Main pill (logo + burger) — stretches to fill remaining space */
+.mobile-bar__main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg-2);
+  border-radius: var(--radius-pill);
+  padding: 10px 16px 10px 20px;
+  flex: 1;
+  min-width: 0;
+}
+
+.mobile-bar__logo {
+  font-family: var(--font-ui);
+  font-size: 14px;
+  color: var(--fg-1);
+  display: inline-flex;
+  gap: 4px;
+  align-items: baseline;
+  cursor: pointer;
+}
+.mobile-bar__logo .wm-first  { font-weight: 700; }
+.mobile-bar__logo .wm-second { font-weight: 400; }
+
+.mobile-bar__actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Back link pill (work pages on mobile) */
+.mobile-bar__back {
+  font-size: 13px;
+  color: var(--fg-2);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px 10px 14px;
+  background: var(--bg-2);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-ui);
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  align-self: stretch;
+  transition: color var(--dur) var(--ease);
+}
+.mobile-bar__back:hover { color: var(--fg-1); }
+.mobile-bar__back svg { width: 12px; height: 12px; }
+
+/* Burger / close button */
+.mobile-burger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: var(--fg-2);
+  flex-shrink: 0;
+}
+.mobile-burger svg { display: block; }
+
+/* Expanded menu drawer — sits below the bar */
+.mobile-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  background: var(--bg-2);
+  border-radius: 22px;
+  padding: 20px 24px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  box-shadow: 0 8px 32px -8px rgba(0,0,0,0.12);
+}
+
+.mobile-menu__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+.mobile-menu__logo {
+  font-family: var(--font-ui);
+  font-size: 14px;
+  color: var(--fg-1);
+  display: inline-flex;
+  gap: 4px;
+  align-items: baseline;
+}
+.mobile-menu__logo .wm-first  { font-weight: 700; }
+.mobile-menu__logo .wm-second { font-weight: 400; }
+
+.mobile-menu__close {
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: var(--fg-2);
+  transition: color var(--dur) var(--ease);
+}
+.mobile-menu__close:hover { color: var(--fg-1); }
+
+.mobile-menu__nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 20px;
+}
+/* #2 — mobile menu nav: Crimson Pro serif, matching reference weight/size */
+.mobile-menu__nav a {
+  font-family: var(--font-display-serif);
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--fg-1);
+  text-decoration: none;
+  padding: 3px 0;
+  transition: color var(--dur) var(--ease);
+}
+.mobile-menu__nav a:hover { color: var(--fg-2); }
+
+.mobile-menu__divider {
+  height: 1px;
+  background: var(--fg-6);
+  margin: 8px 0 16px;
+}
+
+.mobile-menu__links {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 28px;
+}
+/* #2 — mobile menu links: Crimson Pro serif */
+.mobile-menu__links a {
+  font-family: var(--font-display-serif);
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--fg-1);
+  text-decoration: none;
+  padding: 3px 0;
+  transition: color var(--dur) var(--ease);
+}
+.mobile-menu__links a:hover { color: var(--fg-2); }
+
+.mobile-menu__footer {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  line-height: 1.67;
+  color: var(--fg-3);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* ============================================================
+   HEADER — WIDE VARIANT (case study / showcase pages)
+   ============================================================ */
+/* Wide variant: case study / showcase pages.
+   Same `top: 24px` as narrow so the vertical position never shifts
+   between states. Override justify-content back to default so the back-pill
+   and main-pill stretch across the full width. */
+.header--wide {
+  top: 24px;
+  left: 0;
+  right: 0;
+  transform: none;
+  width: calc(100% - 128px);
+  max-width: 1400px;
+  gap: 8px;
+  justify-content: flex-start;
+}
+.header--wide .pill--back {
+  flex-shrink: 0;
+}
+.header--wide .pill--main {
+  flex: 1;
+  justify-content: space-between;
+}
+.header--wide .logo-mark {
+  margin-right: 0;
+}
+/* Remove duplicate .header transition rule that was overwriting base */
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 1024px) {
+  .home-hero h1 { font-size: 36px; }
+  .work-title { font-size: 44px; }
+  .showcase-grid { grid-template-columns: 1fr 1fr; }
+  /* Tablet — 2-col grid (matches desktop's intended pairing, scaled down).
+     Mobile (≤768px) gets its own override further down. */
+  .cs-cards { width: 100%; max-width: 720px; margin: 0 auto; display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; align-items: start; justify-content: center; height: auto; padding: 0 32px; }
+  .cs-card { position: relative; width: 100%; max-width: 100%; height: 476px !important; min-height: 0; cursor: pointer; }
+}
+
+/* Mid-tablet (1025–1279px) — keep 2x2 grid layout instead of falling
+   through to the desktop 4-in-a-row flex layout. Common iPad landscape
+   widths (1080, 1180, 1194) land in this range. */
+@media (min-width: 1025px) and (max-width: 1279px) {
+  .cs-cards {
+    width: 100%;
+    max-width: 720px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    align-items: start;
+    justify-content: center;
+    height: auto;
+    padding: 0 32px;
+  }
+  .cs-card {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    height: 476px !important;
+    min-height: 0;
+    cursor: pointer;
+  }
+}
+
+/* Tablet stagger — reproduce the desktop column-pairing offset.
+   On desktop the second card in each visual column sits below the first
+   (slot2 = translateY(+48px) relative to slot1). For the tablet 2-col
+   grid, nth-child(2) and nth-child(4) are the right-column cards — push
+   them down by the same 48px so the grid reads with the same diagonal
+   rhythm. We use margin-top (flow-based) rather than transform because
+   the magnetic JS writes inline transform with !important and would
+   clobber a transform-based stagger. */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .cs-card:nth-child(2),
+  .cs-card:nth-child(4) {
+    margin-top: 48px;
+  }
+}
+
+/* ============================================================
+   Tablet (≤ 1279px) — neutralise slot stagger.
+
+   We extend the upper bound past 1024px because real-world tablet
+   landscape viewports (iPad 11" ≈ 1194px, iPad Air ≈ 1180px,
+   iPad standard landscape ≈ 1080px) sit *above* the 1024 cutoff
+   and would otherwise fall through to the desktop 4-in-a-row flex
+   layout. 1280px is also the natural minimum width for the desktop
+   composition to breathe (4×272px cards + 3×24px gaps + 2×64px
+   padding ≈ 1288px), so anything narrower should be treated as a
+   tablet/cramped viewport.
+
+   On desktop the four cards are offset vertically in a 4-card row
+   (slot1 up, slot2 down, slot3 way up, slot4 mid). On tablet the
+   grid changes to 3 columns + a wrap (or 2×2 portrait), and those
+   per-slot Y offsets stop reading as intentional stagger — they
+   visually compress the cards into each other and read as a broken
+   layout. Combined with the magnetic effect composing on top of
+   those baselines, the interaction feels clunky.
+
+   Solution: at any tablet width, neutralise BOTH the entrance
+   keyframe animation (which has `animation-fill-mode: both` and
+   would otherwise re-assert its translateY end state) and any
+   default slot transform. The card now sits on the grid with no
+   vertical offset and the magnetic delta on tablet is a small,
+   self-contained translation. Desktop (≥1280px) is untouched.
+   ============================================================ */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .cs-card,
+  .cs-card--entering,
+  .cs-card--entered,
+  .cs-card.cs-card--slot1,
+  .cs-card.cs-card--slot2,
+  .cs-card.cs-card--slot3,
+  .cs-card.cs-card--slot4,
+  .cs-card--entered.cs-card--slot1,
+  .cs-card--entered.cs-card--slot2,
+  .cs-card--entered.cs-card--slot3,
+  .cs-card--entered.cs-card--slot4 {
+    animation: none !important;
+    transform: none;
+    opacity: 1 !important;
+  }
+  /* Hover offsets also neutralised — magnetic IS the hover effect here. */
+  .cs-card.cs-card--slot1:hover,
+  .cs-card.cs-card--slot2:hover,
+  .cs-card.cs-card--slot3:hover,
+  .cs-card.cs-card--slot4:hover {
+    transform: none;
+  }
+}
+/* Fix 4 — tablet portrait: 2×2 grid (matches mobile structure) */
+@media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
+  .cs-cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, auto);
+    gap: 24px;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 32px;
+    position: relative;
+  }
+  .cs-card {
+    max-width: 100%;
+    width: 100%;
+    /* Position via the grid only — strip any absolute/transform/negative-margin
+       carryover from desktop entrance animations & slot stagger.
+       Note: margin reset removed so the tablet stagger rule (nth-child(2),
+       (4) { margin-top: 48px }) can apply. */
+    position: static !important;
+  }
+  /* Kill desktop entrance animations & slot stagger at this breakpoint.
+     The @keyframes end-state translateY values were causing the overlap
+     by overriding `transform: none` set elsewhere. */
+  .cs-card,
+  .cs-card--entering,
+  .cs-card--entered,
+  .cs-card.cs-card--slot1,
+  .cs-card.cs-card--slot2,
+  .cs-card.cs-card--slot3,
+  .cs-card.cs-card--slot4,
+  .cs-card--entered.cs-card--slot1,
+  .cs-card--entered.cs-card--slot2,
+  .cs-card--entered.cs-card--slot3,
+  .cs-card--entered.cs-card--slot4 {
+    animation: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+  .cs-card.cs-card--slot1:hover,
+  .cs-card.cs-card--slot2:hover,
+  .cs-card.cs-card--slot3:hover,
+  .cs-card.cs-card--slot4:hover { transform: translateY(-4px) !important; }
+}
+/* Below the new tablet-portrait range — keep legacy single-column rule */
+@media (max-width: 767px) and (orientation: portrait) {
+  .cs-cards { max-width: 600px; margin: 0 auto; gap: 24px; grid-template-columns: 1fr; }
+  .cs-card { max-width: 100%; }
+}
+@media (max-width: 768px) {
+  /* Show mobile header, hide desktop header */
+  .header { display: none !important; }
+  .mobile-header { display: block; }
+
+  /* 150px top clearance below sticky mobile header, all pages.
+     120px bottom padding clears the fixed next-btn (Fix 1). */
+  .home-hero { padding-top: 150px; }
+  .work-main {
+    padding-top: 150px;
+    padding-bottom: 120px;
+    padding-left: 16px;
+    padding-right: 16px;
+    max-width: 100%;
+  }
+  .about-main { padding-top: 88px; }
+
+  /* About page: photo full-width first on mobile */
+  .ab-hero__photo { grid-column: 1 / -1 !important; grid-row: 1 !important; padding-top: 0 !important; }
+  .ab-hero__photo-img { aspect-ratio: 4 / 5; }
+  .ab-hero__text { grid-column: 1 / -1 !important; grid-row: 2 !important; margin-top: 24px; padding-top: 0 !important; }
+  /* Fix 3 — portrait placeholders on mobile */
+  .img-placeholder { aspect-ratio: 3 / 4; }
+  .ph--photo { aspect-ratio: 3 / 4; }
+
+  /* Fix 6 — case study cards: 2-column row-flow grid */
+  .cs-cards {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    grid-auto-flow: row !important;
+    grid-template-rows: auto auto !important;
+    gap: 16px !important;
+    padding: 0 !important;
+    width: 100% !important;
+    align-items: stretch !important;
+  }
+  .cs-card {
+    width: auto !important;
+    max-width: 100% !important;
+    cursor: pointer;
+    height: 100%;
+    min-height: 340px;
+    padding: 16px !important;
+    flex-direction: column !important;
+  }
+  /* TWE (slot 1) — 40px taller than rest for column asymmetry */
+  .cs-card--slot1 {
+    min-height: 380px !important;
+  }
+
+  /* 16px horizontal page padding around card list; remove desktop top padding */
+  .cs-section { padding-top: 24px; padding-left: 16px; padding-right: 16px; padding-bottom: 24px; }
+
+  /* Reset stagger offsets on mobile */
+  .cs-card.cs-card--slot1,
+  .cs-card.cs-card--slot2,
+  .cs-card.cs-card--slot3,
+  .cs-card.cs-card--slot4 { transform: none !important; }
+  .cs-card.cs-card--slot1:hover,
+  .cs-card.cs-card--slot2:hover,
+  .cs-card.cs-card--slot3:hover,
+  .cs-card.cs-card--slot4:hover { transform: none !important; box-shadow: none; }
+
+  /* Apply coloured state as permanent default on touch — gradients match Figma hover spec */
+  .cs-card--treasury {
+    background: linear-gradient(180deg, rgb(195,238,212) 0%, rgb(198,207,242) 100%);
+  }
+  .cs-card--treasury .cs-card__title  { color: rgb(85,11,150); }
+  .cs-card--treasury .cs-card__year   { color: rgb(162,83,232); }
+  .cs-card--treasury .cs-card__desc   { color: rgb(85,11,150); }
+  .cs-card--treasury .cs-card__readtime { color: rgb(162,83,232); }
+  .cs-card--treasury .cs-card__rule   { background: rgb(162,83,232); }
+  .cs-card--treasury .cs-card__icon   { background: rgb(85,11,150); }
+
+  .cs-card--relate {
+    background: linear-gradient(180deg, rgb(255,200,117) 0%, rgb(240,165,221) 100%);
+  }
+  .cs-card--relate .cs-card__title    { color: rgb(156,49,7); }
+  .cs-card--relate .cs-card__year     { color: rgb(210,112,73); }
+  .cs-card--relate .cs-card__desc     { color: rgb(156,49,7); }
+  .cs-card--relate .cs-card__readtime { color: rgb(210,112,73); }
+  .cs-card--relate .cs-card__rule     { background: rgb(210,112,73); }
+  .cs-card--relate .cs-card__icon     { background: rgb(156,49,7); }
+
+  .cs-card--haste {
+    background: linear-gradient(180deg, rgb(227,190,250) 0%, rgb(255,170,190) 100%);
+  }
+  .cs-card--haste .cs-card__title     { color: rgb(141,19,47); }
+  .cs-card--haste .cs-card__year      { color: rgb(193,80,107); }
+  .cs-card--haste .cs-card__desc      { color: rgb(141,19,47); }
+  .cs-card--haste .cs-card__readtime  { color: rgb(193,80,107); }
+  .cs-card--haste .cs-card__rule      { background: rgb(193,80,107); }
+  .cs-card--haste .cs-card__icon      { background: rgb(141,19,47); }
+
+  .cs-card--trier {
+    background: linear-gradient(180deg, rgb(239,226,186) 0%, rgb(208,167,255) 100%);
+  }
+  .cs-card--trier .cs-card__title     { color: rgb(28,28,159); }
+  .cs-card--trier .cs-card__year      { color: rgb(86,106,184); }
+  .cs-card--trier .cs-card__desc      { color: rgb(28,28,159); }
+  .cs-card--trier .cs-card__readtime  { color: rgb(86,106,184); }
+  .cs-card--trier .cs-card__rule      { background: rgb(86,106,184); }
+  .cs-card--trier .cs-card__icon      { background: rgb(28,28,159); }
+
+  /* Fix 3 — mobile: reduce card description text size */
+  .cs-card__desc { font-size: 13px; line-height: 22px; }
+
+  /* Hide cursor pill on touch */
+  .cursor-pill { display: none !important; }
+
+  /* Fix 4 — reduce section-divider vertical margin on home */
+  .section-divider { margin: 40px auto; }
+  /* Fix 4b — tighten gap between section heading and first row of cards */
+  .section-label { margin-bottom: 8px; }
+
+  /* Fix 3 — meta-row mobile: each item left-aligned, single column */
+  .meta-row {
+    gap: 20px;
+    margin-bottom: 48px;
+    flex-direction: column;
+    align-items: flex-start;
+    max-width: 100%;
+  }
+  .meta-row .col {
+    width: 100%;
+    align-items: flex-start;
+    flex: 0 0 auto;
+    text-align: left;
+  }
+  .meta-row .pill-link {
+    margin-left: 0;
+    align-self: flex-start;
+  }
+
+  /* Fix 6 — footer: full width with 16px horizontal padding */
+  footer.site-footer {
+    width: 100%;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 32px 16px 40px;
+    margin-top: 64px;
+  }
+  footer.site-footer .copy { grid-column: 1 / -1; }
+  footer.site-footer .links {
+    grid-column: 1 / -1;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+}
+@media (max-width: 720px) {
+  .work-main, .about-main, .home-hero { padding-left: 16px; padding-right: 16px; }
+  .home-hero h1 { font-size: 36px; }
+  .work-title { font-size: 36px; }
+  .showcase-grid { grid-template-columns: 1fr; gap: 40px; }
+  .menu .mb-extra { display: none; }
+  footer.site-footer { padding: 32px 16px 40px; flex-direction: column; align-items: flex-start; }
+  .next-btn { right: 16px; bottom: 16px; }
+  .side-nav { display: none; }
+}
+
+/* ============================================================
+   Fix 7 — Desktop: align case-study content width to hero
+   ============================================================ */
+@media (min-width: 769px) {
+  .work-section p,
+  .work-section ul li,
+  .work-lead,
+  .work-subtitle {
+    max-width: none;
+  }
+}
+
+
+/* ============================================================
+   TRIER CASE STUDY — NEW COMPONENTS (v52)
+   Five reusable blocks introduced for the Trier restructure.
+   1. Quick Context Callout (.quick-context)
+   2. Project Facts Panel  (.facts-panel)
+   3. Decision Card Grid   (.decision-grid / .decision-card)
+   4. Pull Quote           (.pull-quote)
+   5. Outcome Callout      (.outcome-callout)
+   All sit inside the .work-main content column and follow the
+   Avalon token palette. Trier's purple-accent variant uses the
+   --tint-purple-* tokens already in tokens.css.
+   ============================================================ */
+
+/* ---- 2. Project Facts Panel --------------------------------- */
+.facts-panel-wrap {
+  margin: 0 0 56px;
+}
+.facts-panel__launch {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 28px;
+  padding: 10px 18px;
+  background: var(--fg-1);
+  color: var(--bg-1);
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: background 240ms var(--ease), transform 240ms var(--ease);
+}
+.facts-panel__launch:hover {
+  background: var(--near-black);
+  transform: translateY(-1px);
+}
+.facts-panel__launch svg { width: 11px; height: 11px; }
+.facts-panel {
+  /* Two-column key/value layout. ~30% label column. */
+  display: grid;
+  grid-template-columns: minmax(120px, 28%) 1fr;
+  column-gap: 32px;
+  row-gap: 0;
+  border-top: 1px solid #E1E7E7;
+}
+.facts-panel__row {
+  display: contents;
+}
+.facts-panel__label,
+.facts-panel__value {
+  padding: 14px 0;
+  border-bottom: 1px solid #E1E7E7;
+  font-family: var(--font-ui);
+  font-size: 14px;
+  line-height: 22px;
+}
+.facts-panel__label {
+  color: var(--fg-2);
+  font-weight: 500;
+}
+.facts-panel__value {
+  color: var(--fg-1);
+  font-weight: 400;
+}
+.facts-panel__value a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+  text-decoration-color: var(--fg-3);
+  transition: text-decoration-color 200ms var(--ease);
+}
+.facts-panel__value a:hover {
+  text-decoration-color: var(--fg-1);
+}
+
+@media (max-width: 720px) {
+  .facts-panel {
+    grid-template-columns: 1fr;
+    column-gap: 0;
+  }
+  .facts-panel__label {
+    padding-bottom: 2px;
+    border-bottom: 0;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--fg-2);
+  }
+  .facts-panel__value {
+    padding-top: 0;
+    padding-bottom: 14px;
+  }
+}
+
+/* ---- 1. Quick Context Callout ------------------------------ */
+/* v54: gradient dropped — too dominant for a lead block. Now a
+   subtle paper-tint, slightly darker than the page background so
+   it pops quietly. Body copy uses the default ink color. */
+.quick-context-wrap {
+  margin: 0 0 80px;
+}
+.quick-context {
+  position: relative;
+  padding: 28px 32px;
+  background: #E3EAEA;   /* ~8% darker than --bg-1 (#EEF3F3) */
+  border-radius: 16px;
+  color: var(--fg-1);
+}
+.work-section .quick-context__body,
+.quick-context__body {
+  font-family: var(--font-ui);
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--fg-1);
+  margin: 0;
+  max-width: 64ch;
+}
+.quick-context__body strong {
+  font-weight: 700;
+  color: var(--fg-1);
+}
+
+/* ---- 3. Decision Card Grid --------------------------------- */
+.decision-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  margin: 32px 0 8px;
+  align-items: stretch;
+}
+/* 3-column variant — at the case-study content width (max-width
+   900px) three side-by-side cards don't have enough room to read.
+   Stack them in a single column instead. The variant is kept on
+   the markup in case future templates re-introduce a wider layout. */
+.decision-grid--3col {
+  grid-template-columns: 1fr;
+}
+
+/* Stacked variant — used when each card has its own image placeholder
+   underneath. The grid becomes a vertical flow of card → figure pairs. */
+.decision-grid--stacked {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}
+.decision-stack-item {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.decision-stack-figure {
+  margin: 0;
+}
+.decision-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 28px 28px 30px;
+  background: #F4F7F7;
+  border: 1px solid #E1E7E7;
+  border-radius: 12px;
+  height: 100%;
+}
+.decision-card__icon {
+  /* v56: matches the About page How I Work icons — outlined box,
+     dark-gray glyph, 8px corner radius. No accent colour. */
+  width: 56px;
+  height: 56px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--fg-1);
+  border: 1px solid #C7CACA;   /* same hairline as About page tiles */
+  border-radius: 8px;
+  background: transparent;
+}
+.decision-card__icon svg {
+  width: 28px;
+  height: 28px;
+  display: block;
+}
+.decision-card__title {
+  font-family: var(--font-display-serif);
+  font-weight: 600;
+  font-size: 22px;
+  line-height: 1.25;
+  letter-spacing: -0.005em;
+  color: var(--fg-1);
+  margin: 0;
+}
+.decision-card__body {
+  font-family: var(--font-ui);
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--fg-1);
+  margin: 0;
+  max-width: none;
+}
+
+@media (max-width: 900px) {
+  .decision-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .decision-card {
+    padding: 24px 22px 26px;
+  }
+}
+
+/* ---- 4. Pull Quote ----------------------------------------- */
+.pull-quote {
+  margin: 56px 0 56px;
+  padding: 8px 0 0 0;
+  border: 0;
+  display: block;
+  position: relative;
+}
+.pull-quote__mark {
+  /* v56: accent rule recoloured to neutral grey to match the rest
+     of the case study — no purple accent on case-study pages. */
+  display: block;
+  width: 56px;
+  height: 2px;
+  background: var(--fg-3);
+  margin-bottom: 24px;
+}
+.pull-quote__text {
+  font-family: var(--font-display-serif);
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 1.4;
+  letter-spacing: -0.005em;
+  color: var(--fg-1);
+  margin: 0;
+  padding: 0;
+  max-width: 36ch;
+  text-wrap: balance;
+}
+
+@media (max-width: 720px) {
+  .pull-quote { margin: 40px 0; }
+  .pull-quote__text { font-size: 21px; }
+}
+
+/* ---- Inline figure (placeholder image + caption) ----------- */
+/* Used inline within section body. Desktop/tablet: 16/9 landscape.
+   Mobile: 3/4 portrait (taller, matches existing img-placeholder
+   mobile override pattern). */
+.inline-figure {
+  margin: 24px 0 32px;
+  padding: 0;
+  display: block;
+}
+.inline-figure__img {
+  width: 100%;
+  aspect-ratio: 16 / 9;   /* desktop + tablet */
+  border-radius: 16px;
+  margin: 0 0 12px;
+}
+.inline-figure__caption {
+  margin: 0 !important;
+  padding: 0;
+  line-height: 1.5;
+}
+
+@media (max-width: 720px) {
+  .inline-figure { margin: 20px 0 28px; }
+  .inline-figure__img {
+    aspect-ratio: 3 / 4;  /* mobile portrait, taller */
+    border-radius: 12px;
+  }
+}
+
+/* Image-bearing figures (real artwork dropped in) use the asset's
+   natural aspect ratio rather than the placeholder 16:9 / 3:4 box.
+   The picture/img element is responsive (srcset switches at 720px),
+   so we let each composition decide its own height. */
+.inline-figure--image .inline-figure__img {
+  aspect-ratio: auto;
+  height: auto;
+  display: block;
+  object-fit: contain;
+}
+.inline-figure--image picture {
+  display: block;
+  width: 100%;
+  margin: 0 0 12px;
+}
+.inline-figure--image picture .inline-figure__img {
+  margin: 0;
+}
+@media (max-width: 720px) {
+  .inline-figure--image .inline-figure__img {
+    aspect-ratio: auto;
+    border-radius: 12px;
+  }
+}
+
+/* ---- Inline video (embed or placeholder + caption) --------- */
+/* Reserves a 16:9 slot whether the embed is present or not, so the
+   layout stays stable when Onur swaps `src: null` for a real URL.
+   Mobile keeps 16:9 (videos don't reflow well) rather than the 3:4
+   portrait used for still images. */
+.inline-video {
+  margin: 24px 0 32px;
+  padding: 0;
+  display: block;
+}
+.inline-video__frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #E3EAEA;
+  margin: 0 0 12px;
+}
+.inline-video__frame iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+.inline-video__placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  color: #878A8A;
+}
+.inline-video__placeholder svg {
+  width: 56px;
+  height: 56px;
+  display: block;
+}
+.inline-video__placeholder-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #878A8A;
+}
+
+@media (max-width: 720px) {
+  .inline-video { margin: 20px 0 28px; }
+  .inline-video__frame { border-radius: 12px; }
+}
+
+/* ---- 5. Outcome Callout ------------------------------------ */
+/* v55: gradient dropped to match Quick Context. Same subtle paper
+   tint background; headline + body in default ink with serif/body
+   hierarchy carrying the weight instead of color. */
+.outcome-callout {
+  margin: 24px 0 16px;
+  padding: 32px 40px 36px;
+  background: #E3EAEA;
+  border-radius: 16px;
+  color: var(--fg-1);
+}
+.outcome-callout__label {
+  /* Nano label — matches the About page mono labels (.ab-label):
+     font-mono, 11px, 0.18em letter-spacing, uppercase, #3E4040. */
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #3E4040;
+  margin-bottom: 18px;
+}
+.outcome-callout__headline {
+  font-family: var(--font-display-serif);
+  font-weight: 600;
+  font-size: 36px;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  color: var(--fg-1);
+  margin: 0 0 24px;
+  text-wrap: balance;
+  max-width: 22ch;
+}
+.work-section .outcome-callout__body,
+.outcome-callout__body {
+  font-family: var(--font-ui);
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--fg-1);
+  margin: 0 0 14px;
+  max-width: 64ch;
+}
+.outcome-callout__body:last-child {
+  margin-bottom: 0;
+}
+
+@media (max-width: 720px) {
+  .outcome-callout {
+    padding: 28px 22px 26px;
+  }
+  .outcome-callout__headline {
+    font-size: 28px;
+  }
+}
+
+/* ============================================================
+   Targeted fixes — see Fix list in chat history
+   ============================================================ */
+
+/* Fix 2 — mobile only: collapse the dead space between the last
+   case-study content section and the footer. Desktop and tablet
+   spacing are unchanged. Footer itself is not touched. */
+@media (max-width: 767px) {
+  .work-page .work-main {
+    padding-bottom: 24px;
+  }
+  .work-page .work-main .work-section:last-of-type {
+    margin-bottom: 0;
+  }
+}
+
+/* Fix 3 — mobile only: reduce case-study card height slightly.
+   Uses min-height so the card can still expand if content requires
+   it. No other visual property is changed. */
+@media (max-width: 767px) {
+  .cs-card {
+    min-height: 300px;
+  }
+  .cs-card.cs-card--slot1 {
+    min-height: 336px !important;
+  }
+}
+
+/* Fix 5 — right-align the URL button on the TWE and Relate case
+   study pages only. Targets the facts-panel wrapper so the launch
+   button shifts to the right edge of the content column. Button
+   itself is unchanged. */
+.work-page[data-slug="treasury-wine-estates"] .facts-panel-wrap,
+.work-page[data-slug="relate"] .facts-panel-wrap {
+  display: flex;
+  flex-direction: column;
+}
+.work-page[data-slug="treasury-wine-estates"] .facts-panel-wrap .facts-panel__launch,
+.work-page[data-slug="relate"] .facts-panel-wrap .facts-panel__launch {
+  align-self: flex-end;
+}
+
+/* ============================================================
+   FINAL touch-device override — MUST stay last in this file.
+
+   On a trackpad-equipped iPad, iPadOS fires CSS :hover through the
+   trackpad pointer even though the device reports (hover: none). That
+   re-triggered earlier :hover transform rules (notably the tablet
+   `translateY(-4px) !important` lift) which sit later in the file than
+   our touch overrides and therefore won the source-order tie. It also
+   left the cursor-pill JS following the pointer.
+
+   This block ends the cat-and-mouse for good: keyed on html.is-touch-device
+   (set from navigator.maxTouchPoints, reliable on every iPad), with higher
+   specificity than any :hover rule AND placed last so it wins every tie —
+   at ALL widths. It pins every card transform (resting slot, :hover,
+   magnetic-active, inner parallax) to none and hides the cursor pill. The
+   margin-top stagger is untouched (margin ≠ transform), so the cards keep
+   their staggered baseline while being completely immovable on hover/tap.
+   ============================================================ */
+html.is-touch-device .cs-card,
+html.is-touch-device .cs-card:hover,
+html.is-touch-device .cs-card.is-magnetic-active,
+html.is-touch-device .cs-card.cs-card--slot1,
+html.is-touch-device .cs-card.cs-card--slot2,
+html.is-touch-device .cs-card.cs-card--slot3,
+html.is-touch-device .cs-card.cs-card--slot4,
+html.is-touch-device .cs-card.cs-card--slot1:hover,
+html.is-touch-device .cs-card.cs-card--slot2:hover,
+html.is-touch-device .cs-card.cs-card--slot3:hover,
+html.is-touch-device .cs-card.cs-card--slot4:hover {
+  transform: none !important;
+  transition: box-shadow 320ms cubic-bezier(0.25, 0, 0, 1),
+              background 320ms cubic-bezier(0.25, 0, 0, 1),
+              color 320ms cubic-bezier(0.25, 0, 0, 1) !important;
+}
+html.is-touch-device .cs-card .cs-card__icon-wrap,
+html.is-touch-device .cs-card .cs-card__content {
+  transform: none !important;
+}
+/* Kill the hover shadow-bloom on touch. The cards have no resting shadow; on
+   :hover they bloom a large 48px-offset / 218px-blur coloured shadow. On a
+   trackpad iPad that :hover fires, and the offset shadow reads as the card
+   "lifting up then settling" — the movement you reported even though the box
+   itself never translates. Pin the shadow to none so the card is truly static.
+   (The gradient/colour hover treatment is harmless and stays.) */
+html.is-touch-device .cs-card:hover,
+html.is-touch-device .cs-card.cs-card--treasury:hover,
+html.is-touch-device .cs-card.cs-card--relate:hover,
+html.is-touch-device .cs-card.cs-card--haste:hover,
+html.is-touch-device .cs-card.cs-card--trier:hover {
+  box-shadow: none !important;
+}
+html.is-touch-device .cursor-pill {
+  display: none !important;
+}

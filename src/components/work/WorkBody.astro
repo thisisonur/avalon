@@ -1,0 +1,164 @@
+---
+import DecisionIcon from './DecisionIcon.astro';
+import InlineVideo from './InlineVideo.astro';
+
+interface Props {
+  blocks: any[];
+}
+const { blocks } = Astro.props;
+
+// Rewrite a YouTube/Vimeo share URL to an embeddable iframe URL.
+function toEmbedUrl(src: string | null | undefined): string | null {
+  if (!src || typeof src !== 'string') return null;
+  const url = src.trim();
+  if (!url) return null;
+  let m = url.match(/youtu\.be\/([\w-]{6,})/i);
+  if (m) return `https://www.youtube.com/embed/${m[1]}`;
+  m = url.match(/youtube\.com\/watch\?[^#]*v=([\w-]{6,})/i);
+  if (m) return `https://www.youtube.com/embed/${m[1]}`;
+  m = url.match(/youtube\.com\/embed\/([\w-]{6,})/i);
+  if (m) return `https://www.youtube.com/embed/${m[1]}`;
+  m = url.match(/player\.vimeo\.com\/video\/(\d+)/i);
+  if (m) return `https://player.vimeo.com/video/${m[1]}`;
+  m = url.match(/vimeo\.com\/(\d+)/i);
+  if (m) return `https://player.vimeo.com/video/${m[1]}`;
+  return null;
+}
+---
+
+{blocks.map((b) => {
+  if (b.type === 'p') return <p set:html={b.text} />;
+  if (b.type === 'ul') return <ul>{b.items.map((it: string) => <li set:html={it} />)}</ul>;
+  if (b.type === 'h3') return <h3 class="work-section-h3">{b.text}</h3>;
+
+  if (b.type === 'decisionGrid') {
+    const stacked = !!b.stacked;
+    const colClass = stacked
+      ? ' decision-grid--stacked'
+      : (b.cols === 3 ? ' decision-grid--3col' : '');
+    return (
+      <div class={`decision-grid${colClass}`} role="list">
+        {b.cards.map((c: any) => (
+          stacked ? (
+            <div class="decision-stack-item">
+              <div class="decision-card" role="listitem">
+                <div class="decision-card__icon"><DecisionIcon name={c.icon} /></div>
+                <h4 class="decision-card__title">{c.title}</h4>
+                <p class="decision-card__body">{c.body}</p>
+              </div>
+              {c.imageCaption !== undefined ? (
+                <figure class={`inline-figure decision-stack-figure${c.src ? ' inline-figure--image' : ''}`}>
+                  {c.src ? (
+                    c.srcMobile ? (
+                      <picture>
+                        <source media="(max-width: 720px)" srcset={c.srcMobile} />
+                        <img src={c.src} alt={c.imageAlt || ''} class="inline-figure__img" />
+                      </picture>
+                    ) : (
+                      <img src={c.src} alt={c.imageAlt || ''} class="inline-figure__img" />
+                    )
+                  ) : (
+                    <div class="img-placeholder inline-figure__img" aria-hidden="true"></div>
+                  )}
+                  {c.imageCaption ? (
+                    <figcaption class="img-caption inline-figure__caption">{c.imageCaption}</figcaption>
+                  ) : null}
+                </figure>
+              ) : null}
+            </div>
+          ) : (
+            <>
+              <div class="decision-card" role="listitem">
+                <div class="decision-card__icon"><DecisionIcon name={c.icon} /></div>
+                <h4 class="decision-card__title">{c.title}</h4>
+                <p class="decision-card__body">{c.body}</p>
+              </div>
+              {c.figure ? (
+                <figure class="inline-figure inline-figure--image decision-card__figure" role="listitem" aria-label={c.figure.caption || ''}>
+                  {c.figure.srcMobile ? (
+                    <picture>
+                      <source media="(max-width: 720px)" srcset={c.figure.srcMobile} />
+                      <img src={c.figure.src} alt={c.figure.alt || ''} class="inline-figure__img" />
+                    </picture>
+                  ) : (
+                    <img src={c.figure.src} alt={c.figure.alt || ''} class="inline-figure__img" />
+                  )}
+                  {c.figure.caption ? (
+                    <figcaption class="img-caption inline-figure__caption">{c.figure.caption}</figcaption>
+                  ) : null}
+                </figure>
+              ) : null}
+            </>
+          )
+        ))}
+      </div>
+    );
+  }
+
+  if (b.type === 'figure') {
+    const hasImg = !!b.src;
+    return (
+      <figure class={`inline-figure${hasImg ? ' inline-figure--image' : ''}`}>
+        {hasImg ? (
+          b.srcMobile ? (
+            <picture>
+              <source media="(max-width: 720px)" srcset={b.srcMobile} />
+              <img src={b.src} alt={b.alt || ''} class="inline-figure__img" />
+            </picture>
+          ) : (
+            <img src={b.src} alt={b.alt || ''} class="inline-figure__img" />
+          )
+        ) : (
+          <div class="img-placeholder inline-figure__img" aria-hidden="true"></div>
+        )}
+        {b.caption ? <figcaption class="img-caption inline-figure__caption">{b.caption}</figcaption> : null}
+      </figure>
+    );
+  }
+
+  if (b.type === 'video') {
+    const embedUrl = toEmbedUrl(b.src);
+    if (!embedUrl) {
+      return (
+        <figure class="inline-video">
+          <div class="inline-video__frame">
+            <div class="inline-video__placeholder" aria-hidden="true">
+              <svg viewBox="0 0 32 32" fill="none">
+                <circle cx="16" cy="16" r="15" stroke="currentColor" stroke-width="1.4" />
+                <path d="M13 11.5v9l8-4.5-8-4.5Z" fill="currentColor" />
+              </svg>
+              <span class="inline-video__placeholder-label">Video</span>
+            </div>
+          </div>
+          {b.caption ? <figcaption class="img-caption inline-figure__caption">{b.caption}</figcaption> : null}
+        </figure>
+      );
+    }
+    return <InlineVideo embedUrl={embedUrl} caption={b.caption} />;
+  }
+
+  if (b.type === 'pullQuote') {
+    return (
+      <figure class="pull-quote">
+        <span class="pull-quote__mark" aria-hidden="true"></span>
+        <blockquote class="pull-quote__text">{b.text}</blockquote>
+      </figure>
+    );
+  }
+
+  if (b.type === 'outcomeCallout') {
+    const bodyArr = Array.isArray(b.body) ? b.body : (b.body ? [b.body] : []);
+    const label = b.label === undefined ? 'Outcome' : b.label;
+    return (
+      <div class="outcome-callout">
+        {label ? <div class="outcome-callout__label">{label}</div> : null}
+        <div class="outcome-callout__headline">{b.headline}</div>
+        {bodyArr.map((para: string) => (
+          <p class="outcome-callout__body" set:html={para}></p>
+        ))}
+      </div>
+    );
+  }
+
+  return null;
+})}

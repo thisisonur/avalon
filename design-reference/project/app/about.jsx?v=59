@@ -1,0 +1,183 @@
+// =============================================================
+// Avalon — About page
+// Layout matches About.png reference; copy from (C) MD files.
+// =============================================================
+
+function AboutPage({ navigate }) {
+  const principles = [
+  {
+    icon: 'hiw-icon-figma',
+    t: 'Brand intent, encoded into the system',
+    d: 'Most systems treat brand as a surface layer. I work the other way around. Brand is the decision-making framework, and I translate that intent into token architecture so every choice is brand-aligned by default, not a guess.'
+  },
+  {
+    icon: 'hiw-icon-second',
+    t: 'Designed for the people who build with it',
+    d: 'A design system only works if the team can actually use it. Adoption is part of the design problem, not a thing that comes after. Documentation, naming conventions, training, the operational model itself, all of it gets scoped together. The system gets built in the overlap between designers and engineers, and it lives or dies based on whether the people using it can move with confidence.'
+  },
+  {
+    icon: 'hiw-icon-third',
+    t: 'Documentation is the interface',
+    d: 'Naming conventions, token structure, accessibility, decision rationale, these are what let teams move fast without breaking things. Good documentation isn\'t a wrapper around the system; it\'s part of the system. And it isn\'t just for humans anymore. It\'s the interface between your system and every AI agent that will touch it.'
+  }];
+
+
+  const experiences = [
+  {
+    logo: 'hsd',
+    name: 'Hide and Seek Digital',
+    role: 'Product Designer for Design Systems',
+    date: '2022 — 2025',
+    loc: 'Canberra, Australia',
+    body: 'I led design systems work across multiple client projects. I designed a tokenized system for Treasury Wine Estates supporting twelve global brands. I designed a digital triage platform for Sir Charles Gairdner Hospital, achieving a 50% reduction in ambulance wait times. I created HASTE, an internal design system used to accelerate new client projects, including work for the Australian Federal Police and Relate.'
+  },
+  {
+    logo: 'eqm',
+    name: 'Equilibre Monaco',
+    role: 'Senior Art Director',
+    date: '2018 — 2021',
+    loc: 'Monaco, Remote',
+    body: 'I provided brand and art direction for luxury brands in aviation and architecture across Europe. Alongside this, I worked as a consultant with startups in education and healthcare, designing user-centric experiences and developing early-stage design systems.'
+  },
+  {
+    logo: 'nx',
+    name: 'Nexum Creative',
+    role: 'Creative Director',
+    date: '2015 — 2018',
+    loc: 'Istanbul, Turkey',
+    body: 'I led corporate website and digital projects for Pegasus Airlines, Turkcell, and Barcelona Cruise Port. I managed creative direction, client strategy, and team delivery. I developed a habit of working close to business objectives.'
+  },
+  {
+    logo: 'igoa',
+    name: 'iGOA',
+    role: 'Art Director, then Creative Director',
+    date: '2007 — 2015',
+    loc: 'Goa, India and Istanbul, Turkey',
+    body: 'I led digital work for Turkish Airlines, Volkswagen, Ferrero Rocher, and New Balance. I managed team direction and creative standards, mentored designers, and set the creative vision.'
+  },
+  {
+    logo: 'rfn',
+    name: 'Rafineri',
+    role: 'Art Director',
+    date: '2005 — 2007',
+    loc: 'Istanbul, Turkey',
+    body: 'I started as a self-taught designer working on web and digital for Renault, Burger King, and Bridgestone. This first role set the foundation for how I approach learning.'
+  }];
+
+
+  const tools = [
+  { name: 'Figma', logo: 'assets/icons/tool-figma.svg' },
+  { name: 'Claude', logo: 'assets/icons/tool-claude.svg' },
+  { name: 'Slack', logo: 'assets/icons/tool-slack.svg' },
+  { name: 'Jira', logo: 'assets/icons/tool-jira.svg' },
+  { name: 'Storybook', logo: 'assets/icons/tool-storybook.svg' },
+  { name: 'Chromatic', logo: 'assets/icons/tool-chromatic.svg' },
+  { name: 'Miro', logo: 'assets/icons/tool-miro.svg' },
+  { name: 'Obsidian', logo: 'assets/icons/tool-obsidian.svg' },
+  { name: 'Photoshop', logo: 'assets/icons/tool-photoshop.svg' },
+  { name: 'InDesign', logo: 'assets/icons/tool-indesign.svg' },
+  { name: 'Illustrator', logo: 'assets/icons/tool-illustrator.svg' }];
+
+
+  return (
+    <div className="page" data-screen-label="About">
+      <main className="about-main">
+        {/* ---------- HERO ---------- */}
+        <section className="ab-grid ab-hero">
+          <Reveal className="ab-hero__photo">
+            <div className="ab-hero__photo-img" role="img" aria-label="Profile photo"></div>
+          </Reveal>
+
+          <div className="ab-hero__text">
+            <Reveal as="h1" className="ab-hero__hi">Hi!</Reveal>
+            <Reveal className="ab-hero__body" delay={1}>
+              <p>I've worked for 20+ years across brand, product, and UI design. The common thread has always been translation, turning what a brand means into how a product looks and behaves. That work taught me something: brand isn't a layer you add at the end. It's the framework that every other decision comes from.</p>
+              <p>I've also built brands from scratch, naming, identity, voice. So when I design a system, I know what brand intent looks like before it becomes a token. The tokens aren't just variables. They carry that intent into the product.</p>
+              <p>Today I focus on multi-brand and AI-product systems, where the brand-to-system translation matters most. Architectures that match their operational context, scoped to the team that has to maintain them, designed to let each brand stay itself even as the system holds them together.</p>
+            </Reveal>
+          </div>
+        </section>
+
+        <hr className="ab-rule" />
+
+        {/* ---------- HOW I WORK ---------- */}
+        <section className="ab-grid ab-section ab-howiwork">
+          <div className="ab-section__label-wrap">
+            <Reveal as="div" className="ab-label">H O W &nbsp;&nbsp; I &nbsp;&nbsp; W O R K</Reveal>
+          </div>
+          <div className="ab-principles">
+            {principles.map((p, i) =>
+            <Reveal key={i} className="ab-principle" delay={i % 3 + 1}>
+                <div className="ab-principle__icon">
+                  <img src={`assets/icons/${p.icon}.svg`} alt="" width="56" height="56" />
+                </div>
+                <h3>{p.t}</h3>
+                <p>{p.d}</p>
+              </Reveal>
+            )}
+          </div>
+        </section>
+
+        <hr className="ab-rule" />
+
+        {/* ---------- TOOLKIT ---------- */}
+        <section className="ab-grid ab-section ab-toolkit">
+          <div className="ab-section__label-wrap">
+            <Reveal as="div" className="ab-label">T O O L K I T</Reveal>
+          </div>
+          <Reveal as="h2" className="ab-hero__hi" style={{ gridColumn: '1 / -1', marginTop: '-32px', marginBottom: '40px' }}>
+            Tools change. The thinking doesn't.
+          </Reveal>
+          <Reveal as="p" className="ab-toolkit__intro">The list shifts depending on the project. I pick up new tools quickly and stay close to what's changing in AI.</Reveal>
+          <div className="ab-tools">
+            {/* Fix 6 — irregular per-icon transition-delay so icons stagger
+                 in one-by-one on scroll-in. No rotation/translate/scale on
+                 the icon itself; only the entrance timing is varied. */}
+            {(() => {
+              const TOOL_DELAYS_MS = [0, 60, 140, 80, 220, 40, 300, 110, 180, 30, 260, 90, 200, 50, 320, 130];
+              return tools.map((t, i) =>
+              <Reveal
+                key={i}
+                className="ab-tool"
+                style={{ transitionDelay: `${TOOL_DELAYS_MS[i % TOOL_DELAYS_MS.length]}ms` }}>
+                
+                  <img src={t.logo} alt={t.name} className="ab-tool__logo" />
+                  <div className="ab-tool__name">{t.name}</div>
+                </Reveal>
+              );
+            })()}
+          </div>
+        </section>
+
+        <hr className="ab-rule" />
+
+        {/* ---------- OFF THE CLOCK ---------- */}
+        <section className="ab-grid ab-section ab-offclock">
+          <div className="ab-section__label-wrap">
+            <Reveal as="div" className="ab-label">O F F &nbsp;&nbsp; T H E &nbsp;&nbsp; C L O C K</Reveal>
+          </div>
+          <Reveal as="h2" className="ab-hero__hi" style={{ gridColumn: '1 / -1', marginTop: '-32px', marginBottom: '40px' }}>
+            Still iterating, just on dinner.
+          </Reveal>
+          <Reveal className="ab-offclock__copy">
+            <p>Off the clock, I make ice cream in flavors that confuse people, roll pasta dough by hand, and chase whatever recipe sits between traditional and slightly unhinged. Weekends belong to Billie, our rescue pit bull, the sweetest dog alive and still a work in progress on some things. And I've been playing Diablo since it was pixelated on a slow PC. My Xbox wrap-up tells on me every year.</p>
+          </Reveal>
+          <div className="ab-offclock__photos">
+            {[
+            { src: 'assets/off-the-clock/cooking.png', alt: 'A plated dish — duck with roasted delicata squash and red couscous' },
+            { src: 'assets/off-the-clock/billie.png', alt: 'Billie, our rescue pit bull, wearing a small viking helmet on the couch' },
+            { src: 'assets/off-the-clock/diablo.png', alt: 'A Diablo character — a blindfolded rogue in grey leathers' }].
+            map((p, i) =>
+            <Reveal key={i} className="ab-offclock__photo" delay={i % 3 + 1}>
+                <img src={p.src} alt={p.alt} className="ph ph--photo" loading="lazy" />
+              </Reveal>
+            )}
+          </div>
+        </section>
+      </main>
+      <Footer />
+    </div>);
+
+}
+
+Object.assign(window, { AboutPage });

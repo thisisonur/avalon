@@ -1,0 +1,22 @@
+---
+// Renders a 16:9 video slot with a placeholder. The iframe is injected
+// client-side (see the page script) only once the frame scrolls into
+// view, so the embed never blocks initial render or page transitions.
+interface Props {
+  embedUrl: string;
+  caption?: string;
+}
+const { embedUrl, caption } = Astro.props;
+---
+
+<figure class="inline-video" data-embed-url={embedUrl} data-caption={caption}>
+  <div class="inline-video__frame">
+    <div class="inline-video__placeholder" aria-hidden="true">
+      <svg viewBox="0 0 32 32" fill="none">
+        <circle cx="16" cy="16" r="15" stroke="currentColor" stroke-width="1.4" />
+        <path d="M13 11.5v9l8-4.5-8-4.5Z" fill="currentColor" />
+      </svg>
+    </div>
+  </div>
+  {caption ? <figcaption class="img-caption inline-figure__caption">{caption}</figcaption> : null}
+</figure>

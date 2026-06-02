@@ -1,0 +1,78 @@
+---
+import Base from '../layouts/Base.astro';
+import CaseStudyCard from '../components/CaseStudyCard.astro';
+import '../styles/home.css';
+
+// Display order: TWE → HASTE → Relate → Trier
+const caseStudies = [
+  {
+    slug: 'treasury-wine-estates',
+    theme: 'treasury' as const,
+    icon: 1,
+    cardName: 'Treasury Wine Estates',
+    year: '2023',
+    readTime: '5 min read',
+    short:
+      'A multi-brand design system for ten wine brands and one global parent on a shared architecture.',
+  },
+  {
+    slug: 'haste',
+    theme: 'haste' as const,
+    icon: 3,
+    cardName: 'HASTE',
+    year: '2024',
+    readTime: '4 min read',
+    short:
+      'A tokenized design system and methodology for igniting new client projects from a shared start.',
+  },
+  {
+    slug: 'relate',
+    theme: 'relate' as const,
+    icon: 2,
+    cardName: 'Relate',
+    year: '2025',
+    readTime: '3 min read',
+    short:
+      'Rebrand and redesign of an enterprise AI product across identity, system, product, and site.',
+  },
+  {
+    slug: 'trier',
+    theme: 'trier' as const,
+    icon: 4,
+    cardName: 'Trier',
+    year: '2023',
+    readTime: '4 min read',
+    short:
+      'A digital triage platform that cut ambulance ramping by 50% in the pilot hospital.',
+  },
+];
+---
+
+<Base>
+  <section class="home-hero">
+    <h1 class="split-text">Design systems that think in brand. Built to hold their identity at scale.</h1>
+    <p class="split-text">I'm Onur. Twenty years across brand, product, and interaction design. I design the layer where brand becomes architecture.</p>
+  </section>
+
+  <div class="section-divider reveal" data-delay="3"></div>
+  <div class="section-label reveal" data-delay="4">
+    <span>CASE&nbsp;&nbsp;STUDIES</span>
+  </div>
+
+  <div class="cs-section">
+    <div class="cs-cards">
+      {caseStudies.map((cs, i) => (
+        <CaseStudyCard
+          slug={cs.slug}
+          theme={cs.theme}
+          icon={cs.icon}
+          cardName={cs.cardName}
+          year={cs.year}
+          short={cs.short}
+          readTime={cs.readTime}
+          slotIndex={i + 1}
+        />
+      ))}
+    </div>
+  </div>
+</Base>

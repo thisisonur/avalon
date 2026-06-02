@@ -1,0 +1,179 @@
+---
+import Base from '../../layouts/Base.astro';
+import SideNav from '../../components/work/SideNav.astro';
+import NextButton from '../../components/work/NextButton.astro';
+import FactsPanel from '../../components/work/FactsPanel.astro';
+import QuickContext from '../../components/work/QuickContext.astro';
+import WorkBody from '../../components/work/WorkBody.astro';
+import { CASE_STUDIES } from '../../data/caseStudies.js';
+import '../../styles/work.css';
+
+export function getStaticPaths() {
+  return CASE_STUDIES.map((cs) => ({ params: { slug: cs.slug } }));
+}
+
+const { slug } = Astro.params;
+const cs = CASE_STUDIES.find((c) => c.slug === slug)!;
+const idx = CASE_STUDIES.findIndex((c) => c.slug === slug);
+const next = CASE_STUDIES[(idx + 1) % CASE_STUDIES.length];
+const showLaunchBtn = slug === 'treasury-wine-estates' || slug === 'relate';
+---
+
+<Base title={`${cs.name} — Onur Erdem`} caseName={cs.name}>
+  <SideNav sections={cs.sections} />
+
+  <div class="page work-page" data-slug={cs.slug} data-name={cs.name}>
+    <main class="work-main">
+      <h1 class="work-title split-text">{cs.title}</h1>
+      {cs.subtitle ? <p class="work-subtitle split-text">{cs.subtitle}</p> : null}
+
+      <div class={`work-hero-img reveal${cs.heroImageMobile ? ' work-hero-img--responsive' : ''}`} data-delay="2">
+        {cs.heroImage ? (
+          cs.heroImageMobile ? (
+            <picture>
+              <source media="(max-width: 768px)" srcset={cs.heroImageMobile} />
+              <img src={cs.heroImage} alt="" class="work-hero-img__img" />
+            </picture>
+          ) : (
+            <img src={cs.heroImage} alt="" class="work-hero-img__img" />
+          )
+        ) : (
+          <div class="img-placeholder" aria-hidden="true"></div>
+        )}
+      </div>
+
+      <div class="facts-panel-wrap reveal" data-delay="3">
+        <FactsPanel rows={cs.factsPanel} />
+        {showLaunchBtn && (
+          <a class="facts-panel__launch" href={cs.clientUrl} target="_blank" rel="noopener">
+            {cs.clientLabel}
+            <svg viewBox="0 0 16 16" fill="none"><path d="M5 11L11 5M11 5H6M11 5V10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+          </a>
+        )}
+      </div>
+
+      {cs.quickContext ? (
+        <div class="quick-context-wrap reveal" data-delay="4">
+          <QuickContext label={cs.quickContext.label} body={cs.quickContext.body} />
+        </div>
+      ) : null}
+
+      {cs.sections.map((s) => (
+        <section id={s.id} class="work-section">
+          {s.id === 'outcome' ? null : <h2 class="reveal">{s.title}</h2>}
+          <div class="reveal" data-delay="1">
+            <WorkBody blocks={s.body} />
+          </div>
+        </section>
+      ))}
+    </main>
+  </div>
+
+  <NextButton label="Next case study" name={next.name} href={`/work/${next.slug}`} />
+</Base>
+
+<script>
+  function initWork() {
+    // Tear down any scroll handler left over from a previous page.
+    if ((window as any).__workOnScroll) {
+      window.removeEventListener('scroll', (window as any).__workOnScroll);
+      (window as any).__workOnScroll = null;
+    }
+
+    const sideNav = document.querySelector<HTMLElement>('.side-nav');
+    const nextBtn = document.querySelector<HTMLElement>('.next-btn');
+    if (!sideNav && !nextBtn) return;
+
+    const links = sideNav
+      ? Array.from(sideNav.querySelectorAll<HTMLAnchorElement>('a'))
+      : [];
+    const sections = links
+      .map((a) => document.getElementById(a.dataset.target || ''))
+      .filter((el): el is HTMLElement => !!el);
+
+    links.forEach((a) => {
+      a.addEventListener('click', (e) => {
+        e.preventDefault();
+        const el = document.getElementById(a.dataset.target || '');
+        if (el) {
+          window.scrollTo({
+            top: el.getBoundingClientRect().top + window.scrollY - 100,
+            behavior: 'smooth',
+          });
+        }
+      });
+    });
+
+    function onScroll() {
+      const y = window.scrollY;
+      if (sideNav) sideNav.classList.toggle('is-visible', y > 320);
+      if (nextBtn) nextBtn.classList.toggle('is-visible', y > 600);
+      if (links.length) {
+        let current = 0;
+        sections.forEach((el, i) => {
+          if (el.getBoundingClientRect().top <= 200) current = i;
+        });
+        links.forEach((a, i) => a.classList.toggle('is-active', i === current));
+      }
+    }
+
+    (window as any).__workOnScroll = onScroll;
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+
+    initVideos();
+  }
+
+  function initVideos() {
+    const figs = document.querySelectorAll<HTMLElement>('.inline-video[data-embed-url]');
+    figs.forEach((fig) => {
+      if (fig.dataset.activated) return;
+      const frame = fig.querySelector<HTMLElement>('.inline-video__frame');
+      const url = fig.dataset.embedUrl;
+      if (!frame || !url) return;
+
+      const activate = () => {
+        if (fig.dataset.activated) return;
+        fig.dataset.activated = '1';
+        const sep = url.includes('?') ? '&' : '?';
+        const iframe = document.createElement('iframe');
+        iframe.src = `${url}${sep}autoplay=1&muted=1&badge=0&autopause=0&player_id=0&app_id=58479`;
+        iframe.title = fig.dataset.caption || 'Embedded video';
+        iframe.setAttribute('frameborder', '0');
+        iframe.setAttribute('allow', 'autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share');
+        iframe.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+        iframe.allowFullscreen = true;
+        frame.innerHTML = '';
+        frame.appendChild(iframe);
+      };
+
+      const check = () => {
+        const r = frame.getBoundingClientRect();
+        const vh = window.innerHeight || document.documentElement.clientHeight;
+        if (r.top < vh * 0.85 && r.bottom > 0) {
+          activate();
+          return true;
+        }
+        return false;
+      };
+
+      if (check()) return;
+
+      const io = new IntersectionObserver((entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            activate();
+            io.disconnect();
+            break;
+          }
+        }
+      }, { threshold: 0.2 });
+      io.observe(frame);
+
+      const onScroll = () => { if (check()) { window.removeEventListener('scroll', onScroll); io.disconnect(); } };
+      window.addEventListener('scroll', onScroll, { passive: true });
+    });
+  }
+
+  document.addEventListener('astro:page-load', initWork);
+</script>

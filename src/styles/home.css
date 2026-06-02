@@ -1,0 +1,457 @@
+/* ============================================================
+   HOME PAGE — hero, section label/divider, case-study cards
+   Tokens live in tokens.css; this file only composes them.
+   ============================================================ */
+
+/* ── Hero ─────────────────────────────────────── */
+.home-hero {
+  padding: var(--home-pad-top) 32px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.home-hero > * {
+  width: 100%;
+  max-width: calc((var(--page-max) - var(--page-gutter) * 2) * 8 / 12);
+}
+.home-hero h1 {
+  font-family: var(--font-display-large);
+  font-weight: 400;
+  font-size: var(--fs-hero);
+  line-height: var(--lh-hero);
+  letter-spacing: var(--ls-hero);
+  color: var(--fg-1);
+  margin: 0 0 28px;
+  text-wrap: balance;
+}
+.home-hero p {
+  font-family: var(--font-ui);
+  font-weight: 400;
+  font-size: var(--fs-hero-sub);
+  line-height: var(--lh-hero-sub);
+  color: var(--fg-1);
+  margin: 0;
+}
+
+/* ── Section label + divider ──────────────────── */
+.section-label {
+  font-family: var(--font-mono);
+  font-size: var(--fs-section-label);
+  letter-spacing: var(--ls-section-label);
+  text-transform: uppercase;
+  color: var(--fg-1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin: var(--home-label-margin-top) 0 var(--home-label-margin-bottom);
+}
+.section-divider {
+  height: 1px;
+  background: var(--fg-5);
+  width: calc(100% - var(--page-gutter) * 2);
+  max-width: var(--page-max);
+  margin: var(--home-divider-margin-y) auto;
+}
+.section-divider + .section-label { margin-top: 0; }
+
+/* ── Card section + row ───────────────────────── */
+.cs-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: var(--home-section-pad-y);
+  padding-bottom: var(--home-section-pad-y);
+}
+.cs-cards {
+  display: flex;
+  flex-direction: row;
+  gap: var(--cs-card-gap);
+  justify-content: center;
+  align-items: flex-start;
+  margin: 0 auto;
+  padding: 0 var(--page-gutter);
+  max-width: var(--page-max);
+  width: 100%;
+}
+
+/* ── Card base ────────────────────────────────── */
+.cs-card {
+  position: relative;
+  width: var(--cs-card-w);
+  flex-shrink: 0;
+  height: var(--cs-card-h);
+  border-radius: var(--radius-2xl);
+  padding: var(--cs-card-pad);
+  display: flex;
+  flex-direction: column;
+  gap: var(--cs-card-gap);
+  background: var(--cs-card-bg);
+  color: var(--cs-card-ink);
+  cursor: pointer;
+  text-decoration: none;
+  overflow: hidden;
+  transition:
+    background var(--cs-dur-color) var(--cs-ease-color),
+    color var(--cs-dur-color) var(--cs-ease-color),
+    box-shadow var(--cs-dur-color) var(--cs-ease-color),
+    transform var(--cs-dur-spring) var(--cs-ease-spring);
+  z-index: 1;
+  /* Hidden until the reveal observer adds .cs-card--entered (after the
+     "CASE STUDIES" label), which fires the per-slot enter animation. */
+  opacity: 0;
+}
+
+/* Gradient overlay fades in on hover (can't tween solid→gradient directly). */
+.cs-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background-image: none;
+  opacity: 0;
+  pointer-events: none;
+  z-index: -1;
+  transition: opacity var(--cs-dur-color) var(--cs-ease-color);
+}
+.cs-card:hover::before { opacity: 1; }
+.cs-card > * { position: relative; z-index: 1; }
+.cs-card:hover { z-index: 5; }
+
+/* Slot stagger — slot1 high, slot3 lowest, slot2/4 mid */
+.cs-card--slot1 { transform: translateY(-40px); }
+.cs-card--slot2 { transform: translateY(48px); }
+.cs-card--slot3 { transform: translateY(-104px); z-index: 2; }
+.cs-card--slot4 { transform: translateY(16px); z-index: 3; }
+.cs-card--slot1:hover { transform: translateY(-48px); }
+.cs-card--slot2:hover { transform: translateY(40px); }
+.cs-card--slot3:hover { transform: translateY(-112px); z-index: 4; }
+.cs-card--slot4:hover { transform: translateY(8px); z-index: 4; }
+
+/* ── Magnetic cursor effect (Cuberto-style, desktop only) ──────────
+   While the cursor is over a card, JS writes an inline transform that
+   composes the slot-stagger baseline with a small magnetic delta. The
+   transform transition is dropped while .is-magnetic-active so tracking
+   feels instant; on leave the class is removed and the base .cs-card
+   spring eases the card back to its slot. Gated to ≥1441px fine-pointer
+   in JS, so it never runs on tablet/touch. */
+.cs-card.is-magnetic-active {
+  transition:
+    background var(--cs-dur-color) var(--cs-ease-color),
+    color var(--cs-dur-color) var(--cs-ease-color),
+    box-shadow var(--cs-dur-color) var(--cs-ease-color),
+    transform 0ms linear;
+  will-change: transform;
+}
+
+/* Inner content shifts at 40% of the card's magnetic delta for depth.
+   Vars are written by JS; absent → fallback 0px keeps content at rest. */
+.cs-card__icon-wrap,
+.cs-card__content {
+  transform: translate(calc(var(--mag-x, 0px) * 0.4), calc(var(--mag-y, 0px) * 0.4));
+  transition: transform var(--cs-dur-spring) var(--cs-ease-spring);
+}
+.cs-card.is-magnetic-active .cs-card__icon-wrap,
+.cs-card.is-magnetic-active .cs-card__content {
+  transition: transform 0ms linear;
+  will-change: transform;
+}
+
+/* Hover-incapable devices: no magnetic transform or parallax. */
+@media (hover: none) {
+  .cs-card.is-magnetic-active { transform: none !important; }
+  .cs-card__icon-wrap,
+  .cs-card__content { transform: none !important; transition: none !important; }
+}
+
+/* ── Icon ─────────────────────────────────────── */
+.cs-card__icon-wrap {
+  width: var(--cs-icon-size);
+  height: var(--cs-icon-size);
+  flex-shrink: 0;
+}
+.cs-card__icon {
+  display: block;
+  width: var(--cs-icon-size);
+  height: var(--cs-icon-size);
+  background: var(--cs-card-ink);
+  -webkit-mask-image: var(--cs-icon);
+  mask-image: var(--cs-icon);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  transition: background var(--cs-dur-color) var(--cs-ease-color);
+}
+
+/* ── Content ──────────────────────────────────── */
+.cs-card__content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 0;
+}
+.cs-card__title-group {
+  display: flex;
+  flex-direction: column;
+}
+.cs-card__title {
+  font-family: var(--font-display-serif);
+  font-weight: 500;
+  font-size: var(--fs-h3);
+  line-height: 1;
+  letter-spacing: var(--ls-tight);
+  color: var(--cs-card-ink);
+  margin: 0;
+  transition: color var(--cs-dur-color) var(--cs-ease-color);
+}
+.cs-card__year {
+  font-family: var(--font-ui);
+  font-size: var(--fs-caption);
+  line-height: 20px;
+  color: var(--cs-card-meta);
+  margin-top: 4px;
+  transition: color var(--cs-dur-color) var(--cs-ease-color);
+}
+.cs-card__rule {
+  width: 100%;
+  height: 1px;
+  background: var(--cs-card-meta);
+  margin: 12px 0;
+  transition: background var(--cs-dur-color) var(--cs-ease-color);
+}
+.cs-card__desc {
+  font-family: var(--font-ui);
+  font-size: var(--fs-body);
+  line-height: 28px;
+  color: var(--cs-card-ink);
+  margin: 0;
+  transition: color var(--cs-dur-color) var(--cs-ease-color);
+}
+.cs-card__readtime {
+  font-family: var(--font-ui);
+  font-size: var(--fs-caption);
+  line-height: 20px;
+  color: var(--cs-card-meta);
+  transition: color var(--cs-dur-color) var(--cs-ease-color);
+}
+
+/* ── Entrance (staggered) ─────────────────────────
+   The reveal observer adds .cs-card--entered. Cards come one-by-one in
+   reading order, sequenced AFTER the "CASE STUDIES" label (reveal step 4)
+   using the shared --reveal-step so the whole intro reads as one cascade. */
+@keyframes cardEnterSlot1 { from { opacity: 0; transform: translateY(-16px); } to { opacity: 1; transform: translateY(-40px); } }
+@keyframes cardEnterSlot2 { from { opacity: 0; transform: translateY(72px);  } to { opacity: 1; transform: translateY(48px); } }
+@keyframes cardEnterSlot3 { from { opacity: 0; transform: translateY(-80px); } to { opacity: 1; transform: translateY(-104px); } }
+@keyframes cardEnterSlot4 { from { opacity: 0; transform: translateY(40px);  } to { opacity: 1; transform: translateY(16px); } }
+
+/* `backwards` (not `both`): hold the `from` state during the stagger delay,
+   but DON'T forwards-fill — so the resting transform comes from the regular
+   .cs-card--slotN rule, which the magnetic spring can transition back to.
+   The entered opacity is held by the rule below. */
+.cs-card--entered { opacity: 1; }
+.cs-card--entered.cs-card--slot1 { animation: cardEnterSlot1 var(--cs-dur-spring) var(--cs-ease-spring) calc(var(--reveal-step) * 5) backwards; }
+.cs-card--entered.cs-card--slot2 { animation: cardEnterSlot2 var(--cs-dur-spring) var(--cs-ease-spring) calc(var(--reveal-step) * 6) backwards; }
+.cs-card--entered.cs-card--slot3 { animation: cardEnterSlot3 var(--cs-dur-spring) var(--cs-ease-spring) calc(var(--reveal-step) * 7) backwards; }
+.cs-card--entered.cs-card--slot4 { animation: cardEnterSlot4 var(--cs-dur-spring) var(--cs-ease-spring) calc(var(--reveal-step) * 8) backwards; }
+
+/* ── Hover themes ─────────────────────────────── */
+/* TWE — green→periwinkle */
+.cs-card--treasury::before {
+  background-image: linear-gradient(180deg, var(--cs-treasury-from) 0%, var(--cs-treasury-to) 100%);
+}
+.cs-card--treasury:hover { box-shadow: 0 48px 218px 0 var(--cs-treasury-to); }
+.cs-card--treasury:hover .cs-card__title    { color: var(--cs-treasury-ink); }
+.cs-card--treasury:hover .cs-card__year     { color: var(--cs-treasury-meta); }
+.cs-card--treasury:hover .cs-card__desc     { color: var(--cs-treasury-ink); }
+.cs-card--treasury:hover .cs-card__readtime { color: var(--cs-treasury-meta); }
+.cs-card--treasury:hover .cs-card__rule     { background: var(--cs-treasury-meta); }
+.cs-card--treasury:hover .cs-card__icon     { background: var(--cs-treasury-ink); }
+
+/* Relate — amber→pink */
+.cs-card--relate::before {
+  background-image: linear-gradient(180deg, var(--cs-relate-from) 0%, var(--cs-relate-to) 100%);
+}
+.cs-card--relate:hover { box-shadow: 0 48px 218px 0 var(--cs-relate-from); }
+.cs-card--relate:hover .cs-card__title    { color: var(--cs-relate-ink); }
+.cs-card--relate:hover .cs-card__year     { color: var(--cs-relate-meta); }
+.cs-card--relate:hover .cs-card__desc     { color: var(--cs-relate-ink); }
+.cs-card--relate:hover .cs-card__readtime { color: var(--cs-relate-meta); }
+.cs-card--relate:hover .cs-card__rule     { background: var(--cs-relate-meta); }
+.cs-card--relate:hover .cs-card__icon     { background: var(--cs-relate-ink); }
+
+/* HASTE — lilac→pink */
+.cs-card--haste::before {
+  background-image: linear-gradient(180deg, var(--cs-haste-from) 0%, var(--cs-haste-to) 100%);
+}
+.cs-card--haste:hover { box-shadow: 0 48px 218px 0 var(--cs-haste-to); }
+.cs-card--haste:hover .cs-card__title    { color: var(--cs-haste-ink); }
+.cs-card--haste:hover .cs-card__year     { color: var(--cs-haste-meta); }
+.cs-card--haste:hover .cs-card__desc     { color: var(--cs-haste-ink); }
+.cs-card--haste:hover .cs-card__readtime { color: var(--cs-haste-meta); }
+.cs-card--haste:hover .cs-card__rule     { background: var(--cs-haste-meta); }
+.cs-card--haste:hover .cs-card__icon     { background: var(--cs-haste-ink); }
+
+/* Trier — sand→purple */
+.cs-card--trier::before {
+  background-image: linear-gradient(180deg, var(--cs-trier-from) 0%, var(--cs-trier-to) 100%);
+}
+.cs-card--trier:hover { box-shadow: 0 48px 218px 0 var(--cs-trier-to); }
+.cs-card--trier:hover .cs-card__title    { color: var(--cs-trier-ink); }
+.cs-card--trier:hover .cs-card__year     { color: var(--cs-trier-meta); }
+.cs-card--trier:hover .cs-card__desc     { color: var(--cs-trier-ink); }
+.cs-card--trier:hover .cs-card__readtime { color: var(--cs-trier-meta); }
+.cs-card--trier:hover .cs-card__rule     { background: var(--cs-trier-meta); }
+.cs-card--trier:hover .cs-card__icon     { background: var(--cs-trier-ink); }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+/* Tablet (≤1279px) — 2-col grid, stagger neutralised */
+@media (min-width: 769px) and (max-width: 1279px) {
+  .cs-cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--cs-card-gap);
+    width: 100%;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 32px;
+    height: auto;
+    align-items: start;
+    justify-content: center;
+  }
+  .cs-card {
+    width: 100%;
+    max-width: 100%;
+    height: var(--cs-card-h);
+    min-height: 0;
+  }
+  .cs-card,
+  .cs-card--entered.cs-card--slot1,
+  .cs-card--entered.cs-card--slot2,
+  .cs-card--entered.cs-card--slot3,
+  .cs-card--entered.cs-card--slot4,
+  .cs-card.cs-card--slot1,
+  .cs-card.cs-card--slot2,
+  .cs-card.cs-card--slot3,
+  .cs-card.cs-card--slot4 {
+    animation: none;
+    transform: none;
+    opacity: 1;
+  }
+  .cs-card.cs-card--slot1:hover,
+  .cs-card.cs-card--slot2:hover,
+  .cs-card.cs-card--slot3:hover,
+  .cs-card.cs-card--slot4:hover { transform: none; }
+  /* Right-column cards drop to echo the desktop diagonal rhythm */
+  .cs-card:nth-child(2),
+  .cs-card:nth-child(4) { margin-top: 48px; }
+}
+
+/* Smaller hero on tablet */
+@media (max-width: 1024px) {
+  .home-hero h1 { font-size: 36px; }
+}
+
+/* Mobile (≤768px) — 2-col grid, coloured state is the permanent default */
+@media (max-width: 768px) {
+  .home-hero { padding-top: 150px; }
+
+  .cs-section {
+    padding-top: 24px;
+    padding-bottom: 24px;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .cs-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-auto-flow: row;
+    grid-template-rows: auto auto;
+    gap: 16px;
+    padding: 0;
+    width: 100%;
+    max-width: 100%;
+    align-items: stretch;
+  }
+  .cs-card {
+    width: auto;
+    max-width: 100%;
+    height: 100%;
+    min-height: 340px;
+    padding: 16px;
+    flex-direction: column;
+  }
+  .cs-card--slot1 { min-height: 380px; }
+
+  .cs-card,
+  .cs-card--entered.cs-card--slot1,
+  .cs-card--entered.cs-card--slot2,
+  .cs-card--entered.cs-card--slot3,
+  .cs-card--entered.cs-card--slot4,
+  .cs-card.cs-card--slot1,
+  .cs-card.cs-card--slot2,
+  .cs-card.cs-card--slot3,
+  .cs-card.cs-card--slot4 {
+    animation: none;
+    transform: none;
+    opacity: 1;
+  }
+  .cs-card.cs-card--slot1:hover,
+  .cs-card.cs-card--slot2:hover,
+  .cs-card.cs-card--slot3:hover,
+  .cs-card.cs-card--slot4:hover {
+    transform: none;
+    box-shadow: none;
+  }
+
+  .cs-card--treasury {
+    background: linear-gradient(180deg, var(--cs-treasury-from) 0%, var(--cs-treasury-to) 100%);
+  }
+  .cs-card--treasury .cs-card__title    { color: var(--cs-treasury-ink); }
+  .cs-card--treasury .cs-card__year     { color: var(--cs-treasury-meta); }
+  .cs-card--treasury .cs-card__desc     { color: var(--cs-treasury-ink); }
+  .cs-card--treasury .cs-card__readtime { color: var(--cs-treasury-meta); }
+  .cs-card--treasury .cs-card__rule     { background: var(--cs-treasury-meta); }
+  .cs-card--treasury .cs-card__icon     { background: var(--cs-treasury-ink); }
+
+  .cs-card--relate {
+    background: linear-gradient(180deg, var(--cs-relate-from) 0%, var(--cs-relate-to) 100%);
+  }
+  .cs-card--relate .cs-card__title    { color: var(--cs-relate-ink); }
+  .cs-card--relate .cs-card__year     { color: var(--cs-relate-meta); }
+  .cs-card--relate .cs-card__desc     { color: var(--cs-relate-ink); }
+  .cs-card--relate .cs-card__readtime { color: var(--cs-relate-meta); }
+  .cs-card--relate .cs-card__rule     { background: var(--cs-relate-meta); }
+  .cs-card--relate .cs-card__icon     { background: var(--cs-relate-ink); }
+
+  .cs-card--haste {
+    background: linear-gradient(180deg, var(--cs-haste-from) 0%, var(--cs-haste-to) 100%);
+  }
+  .cs-card--haste .cs-card__title    { color: var(--cs-haste-ink); }
+  .cs-card--haste .cs-card__year     { color: var(--cs-haste-meta); }
+  .cs-card--haste .cs-card__desc     { color: var(--cs-haste-ink); }
+  .cs-card--haste .cs-card__readtime { color: var(--cs-haste-meta); }
+  .cs-card--haste .cs-card__rule     { background: var(--cs-haste-meta); }
+  .cs-card--haste .cs-card__icon     { background: var(--cs-haste-ink); }
+
+  .cs-card--trier {
+    background: linear-gradient(180deg, var(--cs-trier-from) 0%, var(--cs-trier-to) 100%);
+  }
+  .cs-card--trier .cs-card__title    { color: var(--cs-trier-ink); }
+  .cs-card--trier .cs-card__year     { color: var(--cs-trier-meta); }
+  .cs-card--trier .cs-card__desc     { color: var(--cs-trier-ink); }
+  .cs-card--trier .cs-card__readtime { color: var(--cs-trier-meta); }
+  .cs-card--trier .cs-card__rule     { background: var(--cs-trier-meta); }
+  .cs-card--trier .cs-card__icon     { background: var(--cs-trier-ink); }
+
+  .cs-card__desc { font-size: 13px; line-height: 22px; }
+  .section-divider { margin: 40px auto; }
+  .section-label { margin-bottom: 8px; }
+}
