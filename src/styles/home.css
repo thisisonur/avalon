@@ -249,6 +249,9 @@
 @keyframes cardEnterSlot2 { from { opacity: 0; transform: translateY(72px);  } to { opacity: 1; transform: translateY(48px); } }
 @keyframes cardEnterSlot3 { from { opacity: 0; transform: translateY(-80px); } to { opacity: 1; transform: translateY(-104px); } }
 @keyframes cardEnterSlot4 { from { opacity: 0; transform: translateY(40px);  } to { opacity: 1; transform: translateY(16px); } }
+/* Mobile grid entrance — a plain fade + slight rise that ends in place, so it
+   doesn't disturb the grid the way the slot keyframes' offsets would. */
+@keyframes cardEnterMobile { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
 
 /* `backwards` (not `both`): hold the `from` state during the stagger delay,
    but DON'T forwards-fill — so the resting transform comes from the regular
@@ -391,16 +394,25 @@
   }
   .cs-card--slot1 { min-height: 380px; }
 
-  .cs-card,
-  .cs-card--entered.cs-card--slot1,
-  .cs-card--entered.cs-card--slot2,
-  .cs-card--entered.cs-card--slot3,
-  .cs-card--entered.cs-card--slot4,
+  /* Grid-safe entrance. The desktop per-slot keyframes translate cards
+     vertically for the diagonal layout, which would knock them out of the
+     mobile grid — so before they enter, cards sit in place (no slot offset)
+     but stay hidden (opacity 0 from the base rule). Once the reveal observer
+     adds .cs-card--entered, they fade + rise into place using the same
+     JS-set animation-delay as desktop, so they arrive right after the
+     "CASE STUDIES" title instead of popping in with the page. */
   .cs-card.cs-card--slot1,
   .cs-card.cs-card--slot2,
   .cs-card.cs-card--slot3,
   .cs-card.cs-card--slot4 {
     animation: none;
+    transform: none;
+  }
+  .cs-card--entered.cs-card--slot1,
+  .cs-card--entered.cs-card--slot2,
+  .cs-card--entered.cs-card--slot3,
+  .cs-card--entered.cs-card--slot4 {
+    animation: cardEnterMobile var(--cs-dur-spring) var(--cs-ease-spring) backwards;
     transform: none;
     opacity: 1;
   }

@@ -191,7 +191,8 @@
   font-weight: 500;
   cursor: pointer;
   opacity: 0;
-  transform: translateY(12px);
+  /* Rests off-screen below its slot; slides up on enter, back down on leave. */
+  transform: translateY(var(--next-btn-enter-y));
   pointer-events: none;
   transition: opacity 360ms var(--ease), transform 360ms var(--ease), background 240ms var(--ease);
   box-shadow: 0 8px 28px -8px rgba(0, 0, 0, 0.18);
@@ -578,6 +579,19 @@
     max-width: 100%;
   }
   .img-placeholder { aspect-ratio: 3 / 4; }
+  /* Centre the title + subtitle on phones, matching the home hero. The block
+     is centred with auto side-margins so the constrained max-width measures
+     sit in the middle rather than flush-left. Desktop/tablet unchanged. */
+  .work-title {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .work-subtitle {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+  }
 }
 @media (max-width: 720px) {
   .work-title { font-size: 36px; }

@@ -176,6 +176,10 @@
   --work-footer-clearance: 120px;        /* space below footer so the fixed
                                             "next case study" button can't
                                             overlap it at max scroll */
+  --next-btn-enter-y: 100px;             /* hidden-state offset: the next-case
+                                            button sits this far below its
+                                            resting spot (off-screen) and
+                                            slides up into view */
 
   /* ------------------------------------------------------------
      RADII / SHADOW / MOTION

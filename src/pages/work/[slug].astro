@@ -107,7 +107,12 @@ const showLaunchBtn = slug === 'treasury-wine-estates' || slug === 'relate';
     function onScroll() {
       const y = window.scrollY;
       if (sideNav) sideNav.classList.toggle('is-visible', y > 320);
-      if (nextBtn) nextBtn.classList.toggle('is-visible', y > 600);
+      if (nextBtn) {
+        // Reveal the button only once the reader is halfway down the page.
+        const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+        const progress = scrollable > 0 ? y / scrollable : 0;
+        nextBtn.classList.toggle('is-visible', progress >= 0.5);
+      }
       if (links.length) {
         let current = 0;
         sections.forEach((el, i) => {
