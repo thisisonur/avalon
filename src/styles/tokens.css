@@ -112,7 +112,7 @@
   /* ------------------------------------------------------------
      HOME PAGE — hero / section label type
      ------------------------------------------------------------ */
-  --fs-hero: 42px;
+  --fs-hero: 48px;
   --lh-hero: 1.06;
   --ls-hero: -0.015em;
   --fs-hero-sub: 15px;
@@ -132,7 +132,7 @@
   --home-section-pad-y: 80px;
   --home-divider-margin-y: 80px;
   --home-label-margin-top: 64px;
-  --home-label-margin-bottom: 56px;
+  --home-label-margin-bottom: 84px;
 
   /* ------------------------------------------------------------
      PAGE MEASURE — shared max-width + side gutter
@@ -173,6 +173,9 @@
   --work-max: 900px;                     /* case-study content measure */
   --work-pad-top: 200px;                 /* clearance under fixed header */
   --side-nav-left: 48px;                 /* fixed left section nav */
+  --work-footer-clearance: 120px;        /* space below footer so the fixed
+                                            "next case study" button can't
+                                            overlap it at max scroll */
 
   /* ------------------------------------------------------------
      RADII / SHADOW / MOTION
@@ -234,7 +237,7 @@
   /* Subtle per-card blob tints — a softened hint of each card's palette,
      applied to the blob on card hover. Mixed heavily toward white so the
      cursor reads as a gentle wash, never as strong as the card itself. */
-  --blob-tint-treasury: color-mix(in srgb, var(--cs-treasury-from) 55%, #ffffff);
+  --blob-tint-treasury: color-mix(in srgb, var(--cs-treasury-from) 78%, #ffffff);
   --blob-tint-haste:    color-mix(in srgb, var(--cs-haste-from) 55%, #ffffff);
   --blob-tint-relate:   color-mix(in srgb, var(--cs-relate-from) 38%, #ffffff);
   --blob-tint-trier:    color-mix(in srgb, var(--cs-trier-to) 40%, #ffffff);

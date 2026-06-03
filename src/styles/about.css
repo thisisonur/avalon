@@ -256,6 +256,13 @@
   .ab-hero__text { grid-column: 1 / -1; grid-row: 2; margin-top: 24px; padding-top: 0; }
   .ab-principles { grid-template-columns: 1fr; }
   .ab-tools { flex-wrap: wrap; }
-  .ab-offclock__photos { grid-template-columns: 1fr; row-gap: 16px; }
+  /* Use the full column on phones so the copy isn't boxed into 8/12 with
+     dead space beside it. Tablet/desktop keep the narrower measure. */
+  .ab-offclock__copy { grid-column: 1 / -1; }
+  /* Single column on phones. The caption stays tucked close to its photo
+     (default 20px), and the larger gap lands AFTER the caption via row-gap,
+     so each photo + caption reads as one group, clearly separated from the
+     next photo. */
+  .ab-offclock__photos { grid-template-columns: 1fr; row-gap: 48px; }
   .ab-rule { margin: 64px 0; }
 }

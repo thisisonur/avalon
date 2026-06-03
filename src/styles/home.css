@@ -32,6 +32,7 @@
   line-height: var(--lh-hero-sub);
   color: var(--fg-1);
   margin: 0;
+  max-width: calc((var(--page-max) - var(--page-gutter) * 2) * 6 / 12);
 }
 
 /* ── Section label + divider ──────────────────── */
@@ -262,7 +263,7 @@
 /* ── Hover themes ─────────────────────────────── */
 /* TWE — green→periwinkle */
 .cs-card--treasury::before {
-  background-image: linear-gradient(180deg, var(--cs-treasury-from) 0%, var(--cs-treasury-to) 100%);
+  background-image: linear-gradient(180deg, var(--cs-treasury-to) 0%, var(--cs-treasury-from) 100%);
 }
 .cs-card--treasury:hover { box-shadow: 0 48px 218px 0 var(--cs-treasury-to); }
 .cs-card--treasury:hover .cs-card__title    { color: var(--cs-treasury-ink); }
@@ -298,7 +299,7 @@
 
 /* Trier — sand→purple */
 .cs-card--trier::before {
-  background-image: linear-gradient(180deg, var(--cs-trier-from) 0%, var(--cs-trier-to) 100%);
+  background-image: linear-gradient(180deg, var(--cs-trier-to) 0%, var(--cs-trier-from) 100%);
 }
 .cs-card--trier:hover { box-shadow: 0 48px 218px 0 var(--cs-trier-to); }
 .cs-card--trier:hover .cs-card__title    { color: var(--cs-trier-ink); }
@@ -412,7 +413,7 @@
   }
 
   .cs-card--treasury {
-    background: linear-gradient(180deg, var(--cs-treasury-from) 0%, var(--cs-treasury-to) 100%);
+    background: linear-gradient(180deg, var(--cs-treasury-to) 0%, var(--cs-treasury-from) 100%);
   }
   .cs-card--treasury .cs-card__title    { color: var(--cs-treasury-ink); }
   .cs-card--treasury .cs-card__year     { color: var(--cs-treasury-meta); }
@@ -442,7 +443,7 @@
   .cs-card--haste .cs-card__icon     { background: var(--cs-haste-ink); }
 
   .cs-card--trier {
-    background: linear-gradient(180deg, var(--cs-trier-from) 0%, var(--cs-trier-to) 100%);
+    background: linear-gradient(180deg, var(--cs-trier-to) 0%, var(--cs-trier-from) 100%);
   }
   .cs-card--trier .cs-card__title    { color: var(--cs-trier-ink); }
   .cs-card--trier .cs-card__year     { color: var(--cs-trier-meta); }

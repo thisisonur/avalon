@@ -10,7 +10,7 @@ interface Props {
 const { title = 'Onur Erdem — Portfolio', caseName = '' } = Astro.props;
 
 const RESUME_URL =
-  'https://www.dropbox.com/scl/fi/n286yerj9j2y96van4463/OnurErdem_Resume.pdf?rlkey=uhrs462psr810vhyui31aakq2&e=1&st=brisvxqj&dl=0';
+  'https://www.dropbox.com/scl/fi/5behfcn2s131yip6mmm1q/OnurErdem_Resume.pdf?rlkey=8yq4udp34s3ooat6y16txqg1a&dl=0';
 const LINKEDIN_URL = 'https://www.linkedin.com/in/thisisonur/';
 const MAILTO = 'mailto:thisisonur@gmail.com';
 
@@ -471,6 +471,35 @@ const isWork = path.startsWith('/work');
         // are what actually sequence them.
         if (!reduce) sequenceHome();
 
+        // Reveal-sequencing fix. The authored data-delay cascade only makes
+        // sense for the initial screenful, where everything reveals at once and
+        // the staggered delays sequence it top-to-bottom. Once the page is
+        // scrolled, those same absolute delays cause inversions: an element
+        // authored with a high delay (e.g. the quick-context callout, delay 4 =
+        // 600ms) lags behind a later element authored with a low one (e.g. the
+        // first section heading, delay 0), so the callout appears AFTER the
+        // section below it. We split the reveals at the fold:
+        //   • In-fold elements  → re-sequenced in strict DOM order (entrance).
+        //   • Below-fold elements → delay cleared, so each reveals promptly as
+        //     it scrolls into view and natural scroll order keeps them ordered.
+        // Elements already carrying an inline delay (the home divider/label,
+        // sequenced just above) are left untouched.
+        const stepMs = parseFloat(
+          getComputedStyle(document.documentElement).getPropertyValue('--reveal-step')
+        ) || 150;
+        const vh = window.innerHeight || document.documentElement.clientHeight;
+        const ownDelay = Array.from(revealEls).filter((el) => !el.style.transitionDelay);
+        const foldEls = ownDelay.filter((el) => el.getBoundingClientRect().top < vh);
+        if (foldEls.length) {
+          const base = parseInt(foldEls[0].dataset.delay || '0', 10) || 0;
+          foldEls.forEach((el, i) => {
+            el.style.transitionDelay = ((base + i) * stepMs) + 'ms';
+          });
+        }
+        ownDelay
+          .filter((el) => el.getBoundingClientRect().top >= vh)
+          .forEach((el) => { el.style.transitionDelay = '0ms'; });
+
         const io = new IntersectionObserver((entries, obs) => {
           for (const entry of entries) {
             if (entry.isIntersecting) {
@@ -902,6 +931,11 @@ const isWork = path.startsWith('/work');
         .blob-cursor { display: none; }
       }
 
+      /* No pointer to follow on touch / mobile — drop the blob entirely. */
+      @media (max-width: 768px) {
+        .blob-cursor { display: none; }
+      }
+
       /* Scroll rail (top of viewport, 3px) */
       .scroll-rail {
         position: fixed; top: 0; left: 0; right: 0;
@@ -1063,6 +1097,14 @@ const isWork = path.startsWith('/work');
       }
       footer.site-footer a { color: var(--fg-2); transition: color var(--dur) var(--ease); }
       footer.site-footer a:hover { color: var(--fg-1); }
+
+      /* Case-study pages carry a fixed "next case study" button (bottom-right).
+         Add breathing room below the footer so that button can't overlap the
+         footer at max scroll. Scoped to work pages only — home/about have no
+         such button and shouldn't gain the extra trailing space. */
+      #page-shell:has(.work-page) ~ footer.site-footer {
+        margin-bottom: var(--work-footer-clearance);
+      }
 
       /* Mobile header */
       .mobile-header {
