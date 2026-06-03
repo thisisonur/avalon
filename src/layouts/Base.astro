@@ -154,208 +154,150 @@ const isWork = path.startsWith('/work');
       </div>
     </footer>
 
-    <script>
+    <script is:inline>
+      // Read a CSS <time> token as milliseconds, regardless of how it is
+      // serialised. The production CSS minifier rewrites e.g. 560ms -> .56s,
+      // so a plain parseFloat would read 0.56 and treat it as 0.56ms. This
+      // normalises: values ending in "ms" are used as-is; any other time
+      // unit (s) is multiplied by 1000.
+      function cssTimeMs(value, fallback) {
+        const v = (value || "").trim();
+        const n = parseFloat(v);
+        if (isNaN(n)) return fallback;
+        return /ms\s*$/.test(v) ? n : n * 1000;
+      }
+
       function updateRail() {
-        const thumb = document.querySelector<HTMLElement>('.scroll-rail__thumb');
+        const thumb = document.querySelector(".scroll-rail__thumb");
         if (!thumb) return;
         const max = document.documentElement.scrollHeight - window.innerHeight;
         const pct = max > 0 ? Math.min(1, window.scrollY / max) : 0;
-        thumb.style.width = pct * 100 + '%';
+        thumb.style.width = pct * 100 + "%";
       }
-
-      // ── Desktop header: width morph between narrow (home/about) and wide
-      //    (case study), plus logo→title crossfade on scroll. The header is
-      //    transition:persist'd, so the same node survives navigation and we
-      //    can tween its width from the old variant to the new one. ──────────
-      let headerTween: number | null = null;
-      let logoSwapHandler: (() => void) | null = null;
-      // Width of the header on the page we are leaving, captured before the DOM
-      // swaps. The tween starts from this so it animates even when the router
-      // hands us the incoming page's (already-resized) header node.
-      let outgoingHeaderWidth: number | null = null;
-      // Resting width the header settled at on the previous page. Updated at the
-      // end of every syncHeader, it survives navigation in module scope and does
-      // not depend on transition:persist, the prepare phase, or view-transition
-      // support — so the morph has a reliable starting width in any browser.
-      let lastHeaderWidth: number | null = null;
-      // Tears down the previous page's magnetic-cards rAF loop + listeners so
-      // they don't accumulate or run against detached nodes after navigation.
-      let magneticCleanup: (() => void) | null = null;
-      // Tears down the previous page's blob-cursor rAF loop + listener.
-      let blobCleanup: (() => void) | null = null;
-      // Target uniform scale for the blob cursor: swells while the pointer is
-      // over a case-study card, eases back to 1 otherwise. The blob rAF loop
-      // reads this and lerps toward it for a smooth grow/shrink.
+      let headerTween = null;
+      let logoSwapHandler = null;
+      let outgoingHeaderWidth = null;
+      let lastHeaderWidth = null;
+      let magneticCleanup = null;
+      let blobCleanup = null;
       let blobScaleTarget = 1;
       const BLOB_GROW = 11;
       const BLOB_SHRINK = 0.35;
-      // Text / navigation links across the site that shrink the blob on hover.
-      // Excludes the case-study cards, which own the grow behaviour.
-      const BLOB_LINK_SELECTOR =
-        '.header .mb, .pill--back .back-link, .header .logo-mark, ' +
-        '.side-nav a, .site-footer a, .mobile-menu a, .mobile-bar__logo';
-
-      function esc(s: string) {
-        return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      const BLOB_LINK_SELECTOR = ".header .mb, .pill--back .back-link, .header .logo-mark, .side-nav a, .site-footer a, .mobile-menu a, .mobile-bar__logo";
+      function esc(s) {
+        return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
       }
-
       function footerLinks() {
-        const a = document.querySelectorAll<HTMLAnchorElement>('.site-footer .links a');
+        const a = document.querySelectorAll(".site-footer .links a");
         return {
-          resume: a[0]?.getAttribute('href') || '#',
-          linkedin: a[1]?.getAttribute('href') || '#',
-          mailto: a[2]?.getAttribute('href') || '#',
+          resume: a[0]?.getAttribute("href") || "#",
+          linkedin: a[1]?.getAttribute("href") || "#",
+          mailto: a[2]?.getAttribute("href") || "#"
         };
       }
-
-      function buildHeader(el: HTMLElement, isWork: boolean, name: string) {
+      function buildHeader(el, isWork, name) {
         const { resume, linkedin, mailto } = footerLinks();
         if (isWork) {
-          el.className = 'header header--wide';
-          el.innerHTML =
-            '<div class="pill pill--back">' +
-              '<a class="back-link" href="/">' +
-                '<svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M9 4L5 8L9 12M5 8H13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
-                'Index' +
-              '</a>' +
-            '</div>' +
-            '<div class="pill pill--main">' +
-              '<a class="logo-mark" href="/" title="Home">' +
-                '<span class="logo-swap">' +
-                  '<span class="logo-swap__layer logo-swap__wordmark logo-swap__layer--in"><span class="wm-first">Onur</span><span class="wm-second">Erdem</span></span>' +
-                  '<span class="logo-swap__layer logo-swap__title logo-swap__layer--out">' + esc(name) + '</span>' +
-                '</span>' +
-              '</a>' +
-              '<span class="menu">' +
-                '<a href="' + resume + '" target="_blank" rel="noopener" class="mb">Download Resume</a>' +
-                '<a href="' + linkedin + '" target="_blank" rel="noopener" class="mb">LinkedIn</a>' +
-                '<a href="' + mailto + '" class="mb">Get in Touch</a>' +
-              '</span>' +
-            '</div>';
+          el.className = "header header--wide";
+          el.innerHTML = '<div class="pill pill--back"><a class="back-link" href="/"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M9 4L5 8L9 12M5 8H13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Index</a></div><div class="pill pill--main"><a class="logo-mark" href="/" title="Home"><span class="logo-swap"><span class="logo-swap__layer logo-swap__wordmark logo-swap__layer--in"><span class="wm-first">Onur</span><span class="wm-second">Erdem</span></span><span class="logo-swap__layer logo-swap__title logo-swap__layer--out">' + esc(name) + '</span></span></a><span class="menu"><a href="' + resume + '" target="_blank" rel="noopener" class="mb">Download Resume</a><a href="' + linkedin + '" target="_blank" rel="noopener" class="mb">LinkedIn</a><a href="' + mailto + '" class="mb">Get in Touch</a></span></div>';
         } else {
           const p = location.pathname;
-          const homeSel = p === '/' ? ' is-selected' : '';
-          const aboutSel = p.startsWith('/about') ? ' is-selected' : '';
-          el.className = 'header';
-          el.innerHTML =
-            '<div class="pill">' +
-              '<a class="logo-mark" href="/"><span class="wm-first">Onur</span><span class="wm-second">Erdem</span></a>' +
-              '<span class="menu">' +
-                '<a href="/" class="mb' + homeSel + '">Work</a>' +
-                '<a href="/about" class="mb' + aboutSel + '">About</a>' +
-              '</span>' +
-              '<span class="sep"></span>' +
-              '<span class="menu">' +
-                '<a href="' + resume + '" target="_blank" rel="noopener" class="mb mb-extra">Download Resume</a>' +
-                '<a href="' + linkedin + '" target="_blank" rel="noopener" class="mb mb-extra">LinkedIn</a>' +
-                '<a href="' + mailto + '" class="mb">Get in Touch</a>' +
-              '</span>' +
-            '</div>';
+          const homeSel = p === "/" ? " is-selected" : "";
+          const aboutSel = p.startsWith("/about") ? " is-selected" : "";
+          el.className = "header";
+          el.innerHTML = '<div class="pill"><a class="logo-mark" href="/"><span class="wm-first">Onur</span><span class="wm-second">Erdem</span></a><span class="menu"><a href="/" class="mb' + homeSel + '">Work</a><a href="/about" class="mb' + aboutSel + '">About</a></span><span class="sep"></span><span class="menu"><a href="' + resume + '" target="_blank" rel="noopener" class="mb mb-extra">Download Resume</a><a href="' + linkedin + '" target="_blank" rel="noopener" class="mb mb-extra">LinkedIn</a><a href="' + mailto + '" class="mb">Get in Touch</a></span></div>';
         }
       }
-
-      function bindLogoSwap(isWork: boolean) {
-        if (logoSwapHandler) { window.removeEventListener('scroll', logoSwapHandler); logoSwapHandler = null; }
+      function bindLogoSwap(isWork) {
+        if (logoSwapHandler) {
+          window.removeEventListener("scroll", logoSwapHandler);
+          logoSwapHandler = null;
+        }
         if (!isWork) return;
-        const wm = document.querySelector<HTMLElement>('.header .logo-swap__wordmark');
-        const ti = document.querySelector<HTMLElement>('.header .logo-swap__title');
+        const wm = document.querySelector(".header .logo-swap__wordmark");
+        const ti = document.querySelector(".header .logo-swap__title");
         if (!wm || !ti) return;
         const apply = () => {
           const show = window.scrollY > 220;
-          wm.classList.toggle('logo-swap__layer--in', !show);
-          wm.classList.toggle('logo-swap__layer--out', show);
-          ti.classList.toggle('logo-swap__layer--in', show);
-          ti.classList.toggle('logo-swap__layer--out', !show);
+          wm.classList.toggle("logo-swap__layer--in", !show);
+          wm.classList.toggle("logo-swap__layer--out", show);
+          ti.classList.toggle("logo-swap__layer--in", show);
+          ti.classList.toggle("logo-swap__layer--out", !show);
         };
         apply();
         logoSwapHandler = apply;
-        window.addEventListener('scroll', logoSwapHandler, { passive: true });
+        window.addEventListener("scroll", logoSwapHandler, { passive: true });
       }
-
-      function syncHeader(): number {
-        const el = document.querySelector<HTMLElement>('.header');
+      function syncHeader() {
+        const el = document.querySelector(".header");
         if (!el) return 0;
-        const isWork = location.pathname.startsWith('/work');
-        const workPage = document.querySelector<HTMLElement>('.work-page');
-        const name = workPage?.dataset.name || '';
-
-        if (headerTween) { cancelAnimationFrame(headerTween); headerTween = null; }
-
-        // Desktop only — mobile uses the separate .mobile-header.
+        const isWork = location.pathname.startsWith("/work");
+        const workPage = document.querySelector(".work-page");
+        const name = workPage?.dataset.name || "";
+        if (headerTween) {
+          cancelAnimationFrame(headerTween);
+          headerTween = null;
+        }
         if (window.innerWidth <= 768) {
           buildHeader(el, isWork, name);
-          el.style.width = '';
-          el.style.maxWidth = '';
+          el.style.width = "";
+          el.style.maxWidth = "";
           bindLogoSwap(isWork);
           return 0;
         }
-
-        // FROM: the width of the header we are leaving. Prefer the value
-        // captured just before the swap; then the width the header settled at
-        // on the previous page (survives navigation, needs no persist or VT
-        // support); finally the live measurement.
-        const fromWidth =
-          outgoingHeaderWidth ?? lastHeaderWidth ?? Math.round(el.getBoundingClientRect().width);
+        const fromWidth = outgoingHeaderWidth ?? lastHeaderWidth ?? Math.round(el.getBoundingClientRect().width);
         outgoingHeaderWidth = null;
-
         buildHeader(el, isWork, name);
-
-        // TO: the new variant's resting width.
-        let toWidth: number;
+        let toWidth;
         if (isWork) {
           toWidth = Math.min(window.innerWidth - 128, 1400);
         } else {
-          el.style.width = 'max-content';
-          el.style.maxWidth = 'none';
+          el.style.width = "max-content";
+          el.style.maxWidth = "none";
           void el.offsetWidth;
           toWidth = Math.round(el.getBoundingClientRect().width);
         }
-
-        // Remember where this page rests so the next navigation can morph from it.
         lastHeaderWidth = toWidth;
-
-        // The narrow variant's pill is content-sized and would ignore the
-        // wrapper's width tween (so only the invisible wrapper would animate).
-        // Make it fill the wrapper during the morph and distribute its contents
-        // edge-to-edge — so the logo and links slide toward the sides as it
-        // grows and converge as it shrinks, mirroring the wide variant. Release
-        // it back to its natural (snug) width when the tween ends.
-        const narrowPill = isWork ? null : el.querySelector<HTMLElement>('.pill');
+        const narrowPill = isWork ? null : el.querySelector(".pill");
         const releasePill = () => {
-          if (narrowPill) { narrowPill.style.width = ''; narrowPill.style.justifyContent = ''; }
+          if (narrowPill) {
+            narrowPill.style.width = "";
+            narrowPill.style.justifyContent = "";
+          }
         };
-
-        // Lock FROM width and force a reflow so the browser commits it.
-        el.style.width = fromWidth + 'px';
-        el.style.maxWidth = 'none';
-        if (narrowPill) { narrowPill.style.width = '100%'; narrowPill.style.justifyContent = 'space-between'; }
+        el.style.width = fromWidth + "px";
+        el.style.maxWidth = "none";
+        if (narrowPill) {
+          narrowPill.style.width = "100%";
+          narrowPill.style.justifyContent = "space-between";
+        }
         void el.offsetWidth;
-
         bindLogoSwap(isWork);
-
         if (!fromWidth || fromWidth === toWidth) {
-          el.style.width = '';
-          el.style.maxWidth = '';
+          el.style.width = "";
+          el.style.maxWidth = "";
           releasePill();
           return 0;
         }
-
-        const DURATION =
-          parseFloat(
-            getComputedStyle(document.documentElement).getPropertyValue('--header-morph-dur')
-          ) || 450;
+        const DURATION = cssTimeMs(
+          getComputedStyle(document.documentElement).getPropertyValue("--header-morph-dur"),
+          450
+        );
         const startTime = performance.now();
-        const easeInOut = (t: number) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2);
-        const tick = (now: number) => {
+        const easeInOut = (t) => t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+        const tick = (now) => {
           const t = Math.min((now - startTime) / DURATION, 1);
-          el.style.width = fromWidth + (toWidth - fromWidth) * easeInOut(t) + 'px';
+          el.style.width = fromWidth + (toWidth - fromWidth) * easeInOut(t) + "px";
           if (t < 1) {
             headerTween = requestAnimationFrame(tick);
           } else {
-            el.style.width = toWidth + 'px';
+            el.style.width = toWidth + "px";
             requestAnimationFrame(() => {
-              const h = document.querySelector<HTMLElement>('.header');
-              if (h) { h.style.width = ''; h.style.maxWidth = ''; }
+              const h = document.querySelector(".header");
+              if (h) {
+                h.style.width = "";
+                h.style.maxWidth = "";
+              }
               releasePill();
             });
             headerTween = null;
@@ -364,252 +306,177 @@ const isWork = path.startsWith('/work');
         headerTween = requestAnimationFrame(tick);
         return DURATION;
       }
-
-      // ── Staged page transition: fade content out → morph the header width →
-      //    fade the next page's content in. ──────────────────────────────────
       const FADE = 200;
-
-      function fadeOutShell(): Promise<void> {
-        const shell = document.getElementById('page-shell');
+      function fadeOutShell() {
+        const shell = document.getElementById("page-shell");
         if (!shell) return Promise.resolve();
-        shell.style.transition = 'opacity ' + FADE + 'ms var(--ease)';
-        shell.style.opacity = '0';
+        shell.style.transition = "opacity " + FADE + "ms var(--ease)";
+        shell.style.opacity = "0";
         return new Promise((r) => window.setTimeout(r, FADE));
       }
-
-      // Stagger the per-element reveal (title → subtitle → image → content).
-      // Split an element's text into per-word spans for the split-text reveal.
-      // Walks every text node (so nested markup like the about bio's <p>s is
-      // preserved), wrapping each word in a .sr-w span with an incrementing
-      // --i for the stagger. Whitespace stays as plain text nodes so the words
-      // wrap normally. Idempotent (guarded by data-sr-init); reveals the
-      // container once split so the raw text never flashes.
-      function splitWords(root: HTMLElement, reduce: boolean) {
+      function splitWords(root, reduce) {
         if (root.dataset.srInit) return;
-        root.dataset.srInit = '1';
-        if (reduce) { root.style.opacity = '1'; root.classList.add('sr-in'); return; }
-
+        root.dataset.srInit = "1";
+        if (reduce) {
+          root.style.opacity = "1";
+          root.classList.add("sr-in");
+          return;
+        }
         const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
-        const textNodes: Text[] = [];
+        const textNodes = [];
         while (walker.nextNode()) {
-          const n = walker.currentNode as Text;
+          const n = walker.currentNode;
           if (n.textContent && n.textContent.trim()) textNodes.push(n);
         }
         let i = 0;
         textNodes.forEach((node) => {
           const frag = document.createDocumentFragment();
-          for (const part of (node.textContent ?? '').split(/(\s+)/)) {
-            if (part === '') continue;
-            if (/^\s+$/.test(part)) { frag.appendChild(document.createTextNode(part)); continue; }
-            const w = document.createElement('span');
-            w.className = 'sr-w';
-            w.style.setProperty('--i', String(i++));
+          for (const part of (node.textContent ?? "").split(/(\s+)/)) {
+            if (part === "") continue;
+            if (/^\s+$/.test(part)) {
+              frag.appendChild(document.createTextNode(part));
+              continue;
+            }
+            const w = document.createElement("span");
+            w.className = "sr-w";
+            w.style.setProperty("--i", String(i++));
             w.textContent = part;
             frag.appendChild(w);
           }
           node.replaceWith(frag);
         });
-        root.style.opacity = '1';
+        root.style.opacity = "1";
       }
-
-      // Chain the home hero so each piece starts when the previous one has
-      // finished: title words → subtitle words → divider + CASE STUDIES label
-      // → the four cards, one after another. Delays are computed from the live
-      // word counts and the split-text timing tokens so the chain stays correct
-      // regardless of copy length. No-op on every page that has no .home-hero.
       function sequenceHome() {
-        const hero = document.querySelector<HTMLElement>('.home-hero');
+        const hero = document.querySelector(".home-hero");
         if (!hero) return;
-        const title = hero.querySelector<HTMLElement>('h1.split-text');
-        const sub = hero.querySelector<HTMLElement>('p.split-text');
+        const title = hero.querySelector("h1.split-text");
+        const sub = hero.querySelector("p.split-text");
         if (!title || !sub) return;
-
         const root = getComputedStyle(document.documentElement);
-        const step = parseFloat(root.getPropertyValue('--sr-step')) || 22;
-        const dur = parseFloat(root.getPropertyValue('--sr-dur')) || 720;
-        const gap = parseFloat(root.getPropertyValue('--reveal-step')) || 260;
-
-        const titleWords = title.querySelectorAll('.sr-w').length;
-        const subWords = sub.querySelectorAll('.sr-w').length;
-
-        // Each block hands off to the next once its last word is partway
-        // through its travel (SETTLE), so blocks overlap and the intro reads
-        // as one fluid motion rather than discrete, fully-resolved steps.
+        const step = cssTimeMs(root.getPropertyValue("--sr-step"), 22);
+        const dur = cssTimeMs(root.getPropertyValue("--sr-dur"), 720);
+        const gap = cssTimeMs(root.getPropertyValue("--reveal-step"), 260);
+        const titleWords = title.querySelectorAll(".sr-w").length;
+        const subWords = sub.querySelectorAll(".sr-w").length;
         const SETTLE = 0.5;
-        const blockEnd = (words: number) => Math.max(0, words - 1) * step + dur * SETTLE;
-
+        const blockEnd = (words) => Math.max(0, words - 1) * step + dur * SETTLE;
         const titleEnd = blockEnd(titleWords);
-        sub.style.setProperty('--sr-base', titleEnd + 'ms');
+        sub.style.setProperty("--sr-base", titleEnd + "ms");
         const subEnd = titleEnd + blockEnd(subWords);
-
-        const divider = document.querySelector<HTMLElement>('.section-divider');
-        const label = document.querySelector<HTMLElement>('.section-label');
-        if (divider) divider.style.transitionDelay = subEnd + 'ms';
-        if (label) label.style.transitionDelay = subEnd + 'ms';
-
+        const divider = document.querySelector(".section-divider");
+        const label = document.querySelector(".section-label");
+        if (divider) divider.style.transitionDelay = subEnd + "ms";
+        if (label) label.style.transitionDelay = subEnd + "ms";
         const cardsStart = subEnd + gap;
-        document.querySelectorAll<HTMLElement>('.cs-card').forEach((card, i) => {
-          card.style.animationDelay = (cardsStart + i * gap) + 'ms';
+        document.querySelectorAll(".cs-card").forEach((card, i) => {
+          card.style.animationDelay = cardsStart + i * gap + "ms";
         });
       }
-
-      // The cascade timing lives in CSS (.reveal data-delay steps; split-text
-      // words stagger by --i). One observer drives all three entrance types.
       function playReveals() {
-        const revealEls = document.querySelectorAll<HTMLElement>('.reveal:not(.is-in)');
-        const cardEls = document.querySelectorAll<HTMLElement>('.cs-card:not(.cs-card--entered)');
-        const splitEls = document.querySelectorAll<HTMLElement>('.split-text:not(.sr-in)');
+        const revealEls = document.querySelectorAll(".reveal:not(.is-in)");
+        const cardEls = document.querySelectorAll(".cs-card:not(.cs-card--entered)");
+        const splitEls = document.querySelectorAll(".split-text:not(.sr-in)");
         if (!revealEls.length && !cardEls.length && !splitEls.length) return;
-
-        // Split words up front so they sit hidden before the container shows.
-        const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
         splitEls.forEach((el) => splitWords(el, reduce));
-
-        // Home hero plays as a strict chain: the title's words finish, then the
-        // subtitle's, then the divider + label, then the cards one by one. The
-        // IntersectionObserver adds every class at once; these computed delays
-        // are what actually sequence them.
         if (!reduce) sequenceHome();
-
-        // Reveal-sequencing fix. The authored data-delay cascade only makes
-        // sense for the initial screenful, where everything reveals at once and
-        // the staggered delays sequence it top-to-bottom. Once the page is
-        // scrolled, those same absolute delays cause inversions: an element
-        // authored with a high delay (e.g. the quick-context callout, delay 4 =
-        // 600ms) lags behind a later element authored with a low one (e.g. the
-        // first section heading, delay 0), so the callout appears AFTER the
-        // section below it. We split the reveals at the fold:
-        //   • In-fold elements  → re-sequenced in strict DOM order (entrance).
-        //   • Below-fold elements → delay cleared, so each reveals promptly as
-        //     it scrolls into view and natural scroll order keeps them ordered.
-        // Elements already carrying an inline delay (the home divider/label,
-        // sequenced just above) are left untouched.
-        const stepMs = parseFloat(
-          getComputedStyle(document.documentElement).getPropertyValue('--reveal-step')
-        ) || 150;
+        const stepMs = cssTimeMs(
+          getComputedStyle(document.documentElement).getPropertyValue("--reveal-step"),
+          150
+        );
         const vh = window.innerHeight || document.documentElement.clientHeight;
         const ownDelay = Array.from(revealEls).filter((el) => !el.style.transitionDelay);
         const foldEls = ownDelay.filter((el) => el.getBoundingClientRect().top < vh);
         if (foldEls.length) {
-          const base = parseInt(foldEls[0].dataset.delay || '0', 10) || 0;
+          const base = parseInt(foldEls[0].dataset.delay || "0", 10) || 0;
           foldEls.forEach((el, i) => {
-            el.style.transitionDelay = ((base + i) * stepMs) + 'ms';
+            el.style.transitionDelay = (base + i) * stepMs + "ms";
           });
         }
-        ownDelay
-          .filter((el) => el.getBoundingClientRect().top >= vh)
-          .forEach((el) => { el.style.transitionDelay = '0ms'; });
-
+        ownDelay.filter((el) => el.getBoundingClientRect().top >= vh).forEach((el) => {
+          el.style.transitionDelay = "0ms";
+        });
         const io = new IntersectionObserver((entries, obs) => {
           for (const entry of entries) {
             if (entry.isIntersecting) {
-              const t = entry.target as HTMLElement;
-              // Cards run a per-slot keyframe; split-text staggers its words;
-              // everything else cross-fades up.
-              if (t.classList.contains('cs-card')) t.classList.add('cs-card--entered');
-              else if (t.classList.contains('split-text')) t.classList.add('sr-in');
-              else t.classList.add('is-in');
+              const t = entry.target;
+              if (t.classList.contains("cs-card")) t.classList.add("cs-card--entered");
+              else if (t.classList.contains("split-text")) t.classList.add("sr-in");
+              else t.classList.add("is-in");
               obs.unobserve(t);
             }
           }
-        }, { rootMargin: '0px 0px -10% 0px', threshold: 0.1 });
+        }, { rootMargin: "0px 0px -10% 0px", threshold: 0.1 });
         revealEls.forEach((el) => io.observe(el));
         cardEls.forEach((el) => io.observe(el));
         splitEls.forEach((el) => io.observe(el));
       }
-
       function transitionIn() {
         const headerDur = syncHeader();
-        const shell = document.getElementById('page-shell');
+        const shell = document.getElementById("page-shell");
         if (!shell) return;
-
-        // Only sequence a reveal if the shell was hidden by a preceding swap
-        // (i.e. this is a client navigation, not an initial hard load).
-        const wasHidden = shell.style.opacity === '0';
+        const wasHidden = shell.style.opacity === "0";
         if (!wasHidden) {
-          shell.style.transition = '';
-          shell.style.opacity = '';
+          shell.style.transition = "";
+          shell.style.opacity = "";
           playReveals();
           return;
         }
-
-        const isWork = location.pathname.startsWith('/work');
-
-        // Hold the content hidden until the header has finished morphing,
-        // then bring the next page in.
+        const isWork = location.pathname.startsWith("/work");
         window.setTimeout(() => {
           if (isWork) {
-            // Show the shell instantly and let the page's elements cascade in
-            // one after another (title, then subtitle, then image, then body).
-            shell.style.transition = 'none';
-            shell.style.opacity = '1';
+            shell.style.transition = "none";
+            shell.style.opacity = "1";
             void shell.offsetWidth;
-            shell.style.transition = '';
+            shell.style.transition = "";
           } else {
-            // Home / about: a single gentle fade of the whole shell.
-            shell.style.transition = 'opacity ' + FADE + 'ms var(--ease)';
+            shell.style.transition = "opacity " + FADE + "ms var(--ease)";
             void shell.offsetWidth;
-            shell.style.opacity = '1';
+            shell.style.opacity = "1";
             window.setTimeout(() => {
-              shell.style.transition = '';
-              shell.style.opacity = '';
+              shell.style.transition = "";
+              shell.style.opacity = "";
             }, FADE + 40);
           }
           playReveals();
         }, headerDur);
       }
-
-      // ── Magnetic cursor effect on the home case-study cards ───────────
-      // Cuberto / Codrops "MagneticButtons" style: each card reaches toward
-      // the cursor once it enters a trigger radius LARGER than the card, then
-      // sticks to it, translating by 30% of the cursor-to-centre offset. A
-      // per-frame lerp smooths both the pull and the release (no CSS spring).
-      // Inner content rides along at 40% (CSS, via --mag-x/--mag-y). Desktop
-      // only (≥1441px, fine pointer, hover); disabled on touch.
       function initMagnetic() {
-        if (magneticCleanup) { magneticCleanup(); magneticCleanup = null; }
-
-        const isTouch =
-          (typeof navigator !== 'undefined' && navigator.maxTouchPoints > 0) ||
-          (window.matchMedia && (
-            window.matchMedia('(hover: none)').matches ||
-            window.matchMedia('(any-pointer: coarse)').matches
-          ));
-        document.documentElement.classList.toggle('is-touch-device', !!isTouch);
+        if (magneticCleanup) {
+          magneticCleanup();
+          magneticCleanup = null;
+        }
+        const isTouch = typeof navigator !== "undefined" && navigator.maxTouchPoints > 0 || window.matchMedia && (window.matchMedia("(hover: none)").matches || window.matchMedia("(any-pointer: coarse)").matches);
+        document.documentElement.classList.toggle("is-touch-device", !!isTouch);
         if (isTouch) return;
-
-        const els = Array.from(document.querySelectorAll<HTMLElement>('.cs-card'));
+        const els = Array.from(document.querySelectorAll(".cs-card"));
         if (!els.length) return;
-
-        const SLOT_BASE_Y = [-40, 48, -104, 16]; // must match CSS slot offsets
-        const FOLLOW = 0.15;    // fraction of cursor offset the card travels
-        const TRIGGER = 0.6;    // trigger radius as a fraction of card width
-        const AMT = 0.15;       // lerp smoothing per frame (higher = snappier)
-        const lerp = (a: number, b: number, n: number) => (1 - n) * a + n * b;
-
+        const SLOT_BASE_Y = [-40, 48, -104, 16];
+        const FOLLOW = 0.15;
+        const TRIGGER = 0.6;
+        const AMT = 0.15;
+        const lerp = (a, b, n) => (1 - n) * a + n * b;
         const cards = els.map((el, i) => ({
           el,
           baseY: SLOT_BASE_Y[i] ?? 0,
-          tx: 0, ty: 0,
-          moving: false,
+          tx: 0,
+          ty: 0,
+          moving: false
         }));
-
-        const mq = window.matchMedia
-          ? window.matchMedia('(min-width: 1441px) and (hover: hover) and (pointer: fine)')
-          : null;
+        const mq = window.matchMedia ? window.matchMedia("(min-width: 1441px) and (hover: hover) and (pointer: fine)") : null;
         const allowed = () => !!mq && mq.matches;
-
         let mx = -99999, my = -99999;
-        const onMove = (e: MouseEvent) => { mx = e.clientX; my = e.clientY; };
-        window.addEventListener('mousemove', onMove, { passive: true });
-
+        const onMove = (e) => {
+          mx = e.clientX;
+          my = e.clientY;
+        };
+        window.addEventListener("mousemove", onMove, { passive: true });
         let raf = 0;
         const render = () => {
           const on = allowed();
           for (const c of cards) {
             const r = c.el.getBoundingClientRect();
-            // Resting centre = current centre minus the magnetic delta we added
-            // (the slot baseline cancels out, leaving a scroll-stable anchor).
             const cx = r.left + r.width / 2 - c.tx;
             const cy = r.top + r.height / 2 - c.ty;
             const within = on && Math.hypot(mx - cx, my - cy) < r.width * TRIGGER;
@@ -617,77 +484,66 @@ const isWork = path.startsWith('/work');
             const targetY = within ? (my - cy) * FOLLOW : 0;
             c.tx = lerp(c.tx, targetX, AMT);
             c.ty = lerp(c.ty, targetY, AMT);
-
             const active = within || Math.abs(c.tx) > 0.05 || Math.abs(c.ty) > 0.05;
             if (active) {
-              if (!c.moving) { c.moving = true; c.el.classList.add('is-magnetic-active'); }
-              // !important so the live transform beats the entrance keyframe's
-              // filled end-state (translateY back to the slot baseline).
-              c.el.style.setProperty('transform', `translate3d(${c.tx}px, ${c.baseY + c.ty}px, 0)`, 'important');
-              c.el.style.setProperty('--mag-x', `${c.tx}px`);
-              c.el.style.setProperty('--mag-y', `${c.ty}px`);
+              if (!c.moving) {
+                c.moving = true;
+                c.el.classList.add("is-magnetic-active");
+              }
+              c.el.style.setProperty("transform", `translate3d(${c.tx}px, ${c.baseY + c.ty}px, 0)`, "important");
+              c.el.style.setProperty("--mag-x", `${c.tx}px`);
+              c.el.style.setProperty("--mag-y", `${c.ty}px`);
             } else if (c.moving) {
               c.moving = false;
-              c.tx = 0; c.ty = 0;
-              c.el.classList.remove('is-magnetic-active');
-              c.el.style.removeProperty('transform');
-              c.el.style.removeProperty('--mag-x');
-              c.el.style.removeProperty('--mag-y');
+              c.tx = 0;
+              c.ty = 0;
+              c.el.classList.remove("is-magnetic-active");
+              c.el.style.removeProperty("transform");
+              c.el.style.removeProperty("--mag-x");
+              c.el.style.removeProperty("--mag-y");
             }
           }
           raf = requestAnimationFrame(render);
         };
         raf = requestAnimationFrame(render);
-
         magneticCleanup = () => {
           cancelAnimationFrame(raf);
-          window.removeEventListener('mousemove', onMove);
+          window.removeEventListener("mousemove", onMove);
           for (const c of cards) {
-            c.el.classList.remove('is-magnetic-active');
-            c.el.style.removeProperty('transform');
-            c.el.style.removeProperty('--mag-x');
-            c.el.style.removeProperty('--mag-y');
+            c.el.classList.remove("is-magnetic-active");
+            c.el.style.removeProperty("transform");
+            c.el.style.removeProperty("--mag-x");
+            c.el.style.removeProperty("--mag-y");
           }
         };
       }
-
-      // ── Blob cursor: an ambient gooey trail behind all content ───────
-      // Three white circles each lerp toward the pointer at a different rate
-      // (lead blob snappy, the larger two trailing), so they stretch and
-      // merge through the SVG goo filter as the cursor moves.
       function initBlobCursor() {
-        if (blobCleanup) { blobCleanup(); blobCleanup = null; }
-        if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-        const layer = document.querySelector<HTMLElement>('.blob-cursor');
+        if (blobCleanup) {
+          blobCleanup();
+          blobCleanup = null;
+        }
+        if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+        const layer = document.querySelector(".blob-cursor");
         if (!layer) return;
-        const blobs = Array.from(layer.querySelectorAll<HTMLElement>('.blob'));
+        const blobs = Array.from(layer.querySelectorAll(".blob"));
         if (!blobs.length) return;
-
-        // Follow rates as time constants (per second), frame-rate independent.
-        // The lead blob chases hard; ALL trailing blobs share one slower rate
-        // so they stack on top of each other into a single trailing lobe
-        // rather than spreading into separate visible circles. The goo filter
-        // then melts the lead + the stacked trail into one flowing droplet.
         const RATE = [34, 16, 16, 16, 16];
-        const STRETCH = 0.012;    // velocity (px/s) → elongation
-        const MAX_STRETCH = 0.72; // cap so it stays a droplet, not a needle
-        const lerp = (a: number, b: number, n: number) => (1 - n) * a + n * b;
-        // Per-second decay → per-frame alpha for this dt: 1 - e^(-rate·dt).
-        const decay = (rate: number, dt: number) => 1 - Math.exp(-rate * dt);
-
+        const STRETCH = 0.012;
+        const MAX_STRETCH = 0.72;
+        const lerp = (a, b, n) => (1 - n) * a + n * b;
+        const decay = (rate, dt) => 1 - Math.exp(-rate * dt);
         let mx = window.innerWidth / 2, my = window.innerHeight / 2;
-        // vx/vy: smoothed velocity (px/s) for stretch; s: smoothed stretch;
-        // a: last travel angle (held when nearly still to avoid jitter).
         const pos = blobs.map(() => ({ x: mx, y: my, vx: 0, vy: 0, s: 0, a: 0 }));
-        const onMove = (e: MouseEvent) => { mx = e.clientX; my = e.clientY; };
-        window.addEventListener('mousemove', onMove, { passive: true });
-
+        const onMove = (e) => {
+          mx = e.clientX;
+          my = e.clientY;
+        };
+        window.addEventListener("mousemove", onMove, { passive: true });
         let raf = 0;
-        let g = 1;             // current uniform scale, eased toward target
+        let g = 1;
         let last = performance.now();
-        const render = (now: number) => {
-          // Clamp dt so a backgrounded tab doesn't snap everything on return.
-          const dt = Math.min((now - last) / 1000, 0.05);
+        const render = (now) => {
+          const dt = Math.min((now - last) / 1e3, 0.05);
           last = now;
           g = lerp(g, blobScaleTarget, decay(7.5, dt));
           blobs.forEach((b, i) => {
@@ -695,147 +551,104 @@ const isWork = path.startsWith('/work');
             const n = decay(RATE[i] ?? 5, dt);
             const nx = lerp(p.x, mx, n);
             const ny = lerp(p.y, my, n);
-
-            // Velocity in px/s (smoothed) drives the squash-and-stretch.
             const ivx = dt > 0 ? (nx - p.x) / dt : 0;
             const ivy = dt > 0 ? (ny - p.y) / dt : 0;
             p.vx = lerp(p.vx, ivx, 0.25);
             p.vy = lerp(p.vy, ivy, 0.25);
-            p.x = nx; p.y = ny;
-
+            p.x = nx;
+            p.y = ny;
             const speed = Math.hypot(p.vx, p.vy);
             if (speed > 30) p.a = Math.atan2(p.vy, p.vx) * 180 / Math.PI;
-            // Elongate along travel, squash across it (area ≈ constant), then
-            // multiply by the shared grow factor (swells over cards).
             p.s = lerp(p.s, Math.min(speed * STRETCH / 60, MAX_STRETCH), decay(14, dt));
-            const sx = (1 + p.s) * g, sy = (1 / (1 + p.s)) * g;
-
-            b.style.transform =
-              `translate3d(${p.x}px, ${p.y}px, 0) rotate(${p.a}deg) scale(${sx}, ${sy}) translate3d(-50%, -50%, 0)`;
+            const sx = (1 + p.s) * g, sy = 1 / (1 + p.s) * g;
+            b.style.transform = `translate3d(${p.x}px, ${p.y}px, 0) rotate(${p.a}deg) scale(${sx}, ${sy}) translate3d(-50%, -50%, 0)`;
           });
           raf = requestAnimationFrame(render);
         };
         raf = requestAnimationFrame(render);
-
         blobCleanup = () => {
           cancelAnimationFrame(raf);
-          window.removeEventListener('mousemove', onMove);
+          window.removeEventListener("mousemove", onMove);
         };
       }
-
-      // Text links that get the slide-up hover reveal: main menu, case-study
-      // side nav, and the footer link row. Deliberately excludes the metadata
-      // table launch link and the pill-shaped back button.
-      const TEXT_REVEAL_SELECTOR = '.header .mb, .side-nav a, .site-footer .links a';
-
-      // Wrap each target link's visible text into the two-copy reveal markup.
-      // Idempotent (guarded by data-tr-init) so it can run on every page-load
-      // and pick up freshly built header / per-page nodes without duplicating.
+      const TEXT_REVEAL_SELECTOR = ".header .mb, .side-nav a, .site-footer .links a";
       function initTextReveal() {
-        document.querySelectorAll<HTMLElement>(TEXT_REVEAL_SELECTOR).forEach((link) => {
+        document.querySelectorAll(TEXT_REVEAL_SELECTOR).forEach((link) => {
           if (link.dataset.trInit) return;
-          link.dataset.trInit = '1';
+          link.dataset.trInit = "1";
           Array.from(link.childNodes).forEach((node) => {
             if (node.nodeType !== Node.TEXT_NODE) return;
-            const text = node.textContent ?? '';
+            const text = node.textContent ?? "";
             if (!text.trim()) return;
-            const box = document.createElement('span');
-            box.className = 'tr';
-            const top = document.createElement('span');
-            top.className = 'tr__l';
+            const box = document.createElement("span");
+            box.className = "tr";
+            const top = document.createElement("span");
+            top.className = "tr__l";
             top.textContent = text;
-            const clone = document.createElement('span');
-            clone.className = 'tr__l tr__l--clone';
-            clone.setAttribute('aria-hidden', 'true');
+            const clone = document.createElement("span");
+            clone.className = "tr__l tr__l--clone";
+            clone.setAttribute("aria-hidden", "true");
             clone.textContent = text;
             box.append(top, clone);
             node.replaceWith(box);
           });
         });
       }
-
       function initChrome() {
-        document.body.style.overflow = '';
+        document.body.style.overflow = "";
         updateRail();
         transitionIn();
         initMagnetic();
         initTextReveal();
-
-        // Swell the blob cursor while hovering a case-study card and tint it
-        // with that card's (softened) palette. Listeners ride on the
-        // per-navigation card nodes; reset scale + colour first so a swap
-        // mid-hover doesn't leave the blob stuck large or tinted.
-        const blobLayer = document.querySelector<HTMLElement>('.blob-cursor');
-        blobLayer?.style.removeProperty('--blob-color');
-        // The blob lives on the home page only. Off-page it shrinks to nothing
-        // (scale → 0) and fades out (.is-off); on home it eases back to full
-        // size. Driving the scale here means a blob mid-grow over a card
-        // animates down smoothly instead of cutting on navigation.
-        const onHome = location.pathname === '/' || location.pathname === '';
+        const blobLayer = document.querySelector(".blob-cursor");
+        blobLayer?.style.removeProperty("--blob-color");
+        const onHome = location.pathname === "/" || location.pathname === "";
         blobScaleTarget = onHome ? 1 : 0;
-        blobLayer?.classList.toggle('is-off', !onHome);
-        document.querySelectorAll<HTMLElement>('.cs-card').forEach((card) => {
+        blobLayer?.classList.toggle("is-off", !onHome);
+        document.querySelectorAll(".cs-card").forEach((card) => {
           const theme = card.dataset.theme;
-          card.addEventListener('mouseenter', () => {
+          card.addEventListener("mouseenter", () => {
             blobScaleTarget = BLOB_GROW;
-            if (blobLayer && theme) blobLayer.style.setProperty('--blob-color', `var(--blob-tint-${theme})`);
+            if (blobLayer && theme) blobLayer.style.setProperty("--blob-color", `var(--blob-tint-${theme})`);
           });
-          card.addEventListener('mouseleave', () => {
+          card.addEventListener("mouseleave", () => {
             blobScaleTarget = 1;
-            blobLayer?.style.removeProperty('--blob-color');
+            blobLayer?.style.removeProperty("--blob-color");
           });
         });
-
-        const header = document.querySelector<HTMLElement>('.mobile-header');
-        const burger = header?.querySelector<HTMLButtonElement>('.mobile-burger');
-        burger?.addEventListener('click', () => {
-          const open = header!.classList.toggle('is-open');
-          burger.setAttribute('aria-expanded', String(open));
-          burger.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
-          document.body.style.overflow = open ? 'hidden' : '';
+        const header = document.querySelector(".mobile-header");
+        const burger = header?.querySelector(".mobile-burger");
+        burger?.addEventListener("click", () => {
+          const open = header.classList.toggle("is-open");
+          burger.setAttribute("aria-expanded", String(open));
+          burger.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+          document.body.style.overflow = open ? "hidden" : "";
         });
       }
-
-      // Bind window-level listeners once; they survive view transitions.
-      if (!(window as any).__chromeBound) {
-        (window as any).__chromeBound = true;
-        window.addEventListener('scroll', updateRail, { passive: true });
-
-        // Start the blob cursor once. The layer is transition:persist'd, so the
-        // same node + its rAF loop survive navigation — the blob keeps following
-        // the cursor uninterrupted through page transitions.
+      if (!window.__chromeBound) {
+        window.__chromeBound = true;
+        window.addEventListener("scroll", updateRail, { passive: true });
         initBlobCursor();
-
-        // Shrink the blob over text/navigation links anywhere on the site.
-        // Delegated (mouseover/out bubble) so it covers links that get rebuilt
-        // (the header) or are per-page (footer, side-nav) without rebinding.
-        document.addEventListener('mouseover', (e) => {
-          const t = e.target as HTMLElement;
-          if (!t || !t.closest || t.closest('.cs-card')) return;
+        document.addEventListener("mouseover", (e) => {
+          const t = e.target;
+          if (!t || !t.closest || t.closest(".cs-card")) return;
           if (t.closest(BLOB_LINK_SELECTOR)) blobScaleTarget = BLOB_SHRINK;
         });
-        document.addEventListener('mouseout', (e) => {
-          const t = e.target as HTMLElement;
+        document.addEventListener("mouseout", (e) => {
+          const t = e.target;
           if (!t || !t.closest || !t.closest(BLOB_LINK_SELECTOR)) return;
-          const to = e.relatedTarget as HTMLElement | null;
-          if (to && to.closest && to.closest(BLOB_LINK_SELECTOR)) return; // link → link
+          const to = e.relatedTarget;
+          if (to && to.closest && to.closest(BLOB_LINK_SELECTOR)) return;
           blobScaleTarget = 1;
         });
-
-        // Step 1 — hold the navigation open while the current content fades out.
-        document.addEventListener('astro:before-preparation', (e) => {
-          const ev = e as any;
-          // Leaving home (card or about click): start the blob's shrink + fade
-          // immediately so it animates out from the moment of the click rather
-          // than cutting once the swap lands.
-          if (location.pathname === '/' || location.pathname === '') {
+        document.addEventListener("astro:before-preparation", (e) => {
+          const ev = e;
+          if (location.pathname === "/" || location.pathname === "") {
             blobScaleTarget = 0;
-            document.querySelector('.blob-cursor')?.classList.add('is-off');
+            document.querySelector(".blob-cursor")?.classList.add("is-off");
           }
-          // Record the header width on the outgoing page so the post-swap tween
-          // can animate from it even if the persisted node is replaced.
           if (window.innerWidth > 768) {
-            const h = document.querySelector<HTMLElement>('.header');
+            const h = document.querySelector(".header");
             outgoingHeaderWidth = h ? Math.round(h.getBoundingClientRect().width) : null;
           } else {
             outgoingHeaderWidth = null;
@@ -845,19 +658,15 @@ const isWork = path.startsWith('/work');
             await Promise.all([originalLoader(), fadeOutShell()]);
           };
         });
-
-        // After the DOM swaps, keep the incoming content hidden so transitionIn
-        // can reveal it once the header morph completes.
-        document.addEventListener('astro:after-swap', () => {
-          const shell = document.getElementById('page-shell');
+        document.addEventListener("astro:after-swap", () => {
+          const shell = document.getElementById("page-shell");
           if (shell) {
-            shell.style.transition = 'none';
-            shell.style.opacity = '0';
+            shell.style.transition = "none";
+            shell.style.opacity = "0";
           }
         });
       }
-
-      document.addEventListener('astro:page-load', initChrome);
+      document.addEventListener("astro:page-load", initChrome);
     </script>
 
     <style is:global>
