@@ -427,6 +427,27 @@ const isWork = path.startsWith('/work');
         ownDelay.filter((el) => el.getBoundingClientRect().top >= vh).forEach((el) => {
           el.style.transitionDelay = "0ms";
         });
+        // The quick-context summary is a mid-page split-text. If it lands in the
+        // initial fold (tall viewports), hold its word reveal until after the
+        // fold reveals above it (hero, metadata table) have played, so it never
+        // appears before the metadata. Below the fold it keeps base 0 and
+        // reveals promptly when scrolled to.
+        const qcBody = document.querySelector(".quick-context__body.split-text");
+        if (qcBody) {
+          if (qcBody.getBoundingClientRect().top < vh && foldEls.length) {
+            const base = parseInt(foldEls[0].dataset.delay || "0", 10) || 0;
+            const revealDur = cssTimeMs(
+              getComputedStyle(document.documentElement).getPropertyValue("--reveal-dur"),
+              760
+            );
+            qcBody.style.setProperty(
+              "--sr-base",
+              ((base + foldEls.length) * stepMs + revealDur * 0.4) + "ms"
+            );
+          } else {
+            qcBody.style.removeProperty("--sr-base");
+          }
+        }
         // Reveal a single card: mark it entered, then cascade its inner
         // content (icon → title → meta) once the background animation starts
         // (or right away where there's no entrance animation / reduced motion).
@@ -1307,6 +1328,11 @@ const isWork = path.startsWith('/work');
         }
         footer.site-footer .copy { grid-column: 1 / -1; }
         footer.site-footer .links { grid-column: 1 / -1; justify-content: flex-start; flex-wrap: wrap; gap: 12px; }
+        /* The mobile next-case button is small (bottom:16px, ~52px tall), so it
+           needs far less clearance than the desktop one — trim the dead space. */
+        #page-shell:has(.work-page) ~ footer.site-footer {
+          margin-bottom: var(--work-footer-clearance-mobile);
+        }
       }
       @media (max-width: 720px) {
         .menu .mb-extra { display: none; }

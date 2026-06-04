@@ -192,6 +192,8 @@
   --work-footer-clearance: 120px;        /* space below footer so the fixed
                                             "next case study" button can't
                                             overlap it at max scroll */
+  --work-footer-clearance-mobile: 80px;  /* smaller button (bottom:16px, ~52px
+                                            tall) on phones needs far less */
   --next-btn-enter-y: 100px;             /* hidden-state offset: the next-case
                                             button sits this far below its
                                             resting spot (off-screen) and
