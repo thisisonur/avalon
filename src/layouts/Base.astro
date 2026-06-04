@@ -58,6 +58,11 @@ const isWork = path.startsWith('/work');
       <div></div><div></div><div></div><div></div><div></div><div></div>
     </div>
 
+    <div class="cursor-pill" aria-hidden="true">
+      View case study
+      <svg viewBox="0 0 16 16" fill="none"><path d="M5 11L11 5M11 5H6M11 5V10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+    </div>
+
     {isWork ? (
       <nav class="header header--wide" transition:persist="site-header">
         <div class="pill pill--back">
@@ -201,6 +206,7 @@ const isWork = path.startsWith('/work');
       let lastHeaderWidth = null;
       let magneticCleanup = null;
       let blobCleanup = null;
+      let cursorPillCleanup = null;
       let blobScaleTarget = 1;
       const BLOB_GROW = 11;
       const BLOB_SHRINK = 0.35;
@@ -421,29 +427,39 @@ const isWork = path.startsWith('/work');
         ownDelay.filter((el) => el.getBoundingClientRect().top >= vh).forEach((el) => {
           el.style.transitionDelay = "0ms";
         });
+        // Reveal a single card: mark it entered, then cascade its inner
+        // content (icon → title → meta) once the background animation starts
+        // (or right away where there's no entrance animation / reduced motion).
+        const enterCard = (t) => {
+          t.classList.add("cs-card--entered");
+          if (reduce || getComputedStyle(t).animationName === "none") {
+            requestAnimationFrame(() => t.classList.add("cs-card--revealed"));
+          } else {
+            const onStart = (e) => {
+              if (e.target !== t) return;
+              t.removeEventListener("animationstart", onStart);
+              t.classList.add("cs-card--revealed");
+            };
+            t.addEventListener("animationstart", onStart);
+          }
+        };
         const io = new IntersectionObserver((entries, obs) => {
           for (const entry of entries) {
-            if (entry.isIntersecting) {
-              const t = entry.target;
-              if (t.classList.contains("cs-card")) {
-                t.classList.add("cs-card--entered");
-                // Once the card's background has started animating in, cascade
-                // its contents (icon → title → meta). Where the card has no
-                // entrance animation (tablet) or motion is reduced, reveal the
-                // contents right away.
-                if (reduce || getComputedStyle(t).animationName === "none") {
-                  requestAnimationFrame(() => t.classList.add("cs-card--revealed"));
-                } else {
-                  const onStart = (e) => {
-                    if (e.target !== t) return;
-                    t.removeEventListener("animationstart", onStart);
-                    t.classList.add("cs-card--revealed");
-                  };
-                  t.addEventListener("animationstart", onStart);
-                }
-              }
-              else if (t.classList.contains("split-text")) t.classList.add("sr-in");
-              else t.classList.add("is-in");
+            if (!entry.isIntersecting) continue;
+            const t = entry.target;
+            if (t.classList.contains("cs-card")) {
+              // As soon as ANY card enters view, reveal them all together (each
+              // with its own stagger). On mobile this means the second grid row
+              // (Relate / Trier) no longer waits to be scrolled to.
+              document.querySelectorAll(".cs-card:not(.cs-card--entered)").forEach((c) => {
+                enterCard(c);
+                obs.unobserve(c);
+              });
+            } else if (t.classList.contains("split-text")) {
+              t.classList.add("sr-in");
+              obs.unobserve(t);
+            } else {
+              t.classList.add("is-in");
               obs.unobserve(t);
             }
           }
@@ -544,7 +560,7 @@ const isWork = path.startsWith('/work');
         if (isTouch) return;
         const els = Array.from(document.querySelectorAll(".cs-card"));
         if (!els.length) return;
-        const SLOT_BASE_Y = [-40, 48, -104, 16];
+        const SLOT_BASE_Y = [-64, -24, -104, 0];
         const FOLLOW = 0.15;
         const TRIGGER = 0.6;
         const AMT = 0.15;
@@ -607,6 +623,56 @@ const isWork = path.startsWith('/work');
             c.el.style.removeProperty("--mag-x");
             c.el.style.removeProperty("--mag-y");
           }
+        };
+      }
+      // "View case study" cursor pill — appears on case-study card hover, tinted
+      // to that card's brand, and tracks the pointer 1:1. Mouse/desktop only.
+      function initCursorPill() {
+        if (cursorPillCleanup) {
+          cursorPillCleanup();
+          cursorPillCleanup = null;
+        }
+        const isTouch = typeof navigator !== "undefined" && navigator.maxTouchPoints > 0 || window.matchMedia && (window.matchMedia("(hover: none)").matches || window.matchMedia("(any-pointer: coarse)").matches);
+        if (isTouch) return;
+        const pill = document.querySelector(".cursor-pill");
+        const cards = Array.from(document.querySelectorAll(".cs-card"));
+        if (!pill || !cards.length) return;
+        let active = false;
+        const place = (e) => {
+          pill.style.left = e.clientX + "px";
+          pill.style.top = e.clientY + "px";
+        };
+        const onMove = (e) => {
+          if (active) place(e);
+        };
+        const bound = [];
+        cards.forEach((card) => {
+          card.classList.add("is-pill-cursor");
+          const theme = card.dataset.theme;
+          const onEnter = (e) => {
+            active = true;
+            pill.className = "cursor-pill" + (theme ? " cursor-pill--" + theme : "");
+            place(e);
+            // Next frame so the position commits before the scale/opacity tween.
+            requestAnimationFrame(() => pill.classList.add("is-visible"));
+          };
+          const onLeave = () => {
+            active = false;
+            pill.classList.remove("is-visible");
+          };
+          card.addEventListener("mouseenter", onEnter);
+          card.addEventListener("mouseleave", onLeave);
+          bound.push([card, onEnter, onLeave]);
+        });
+        window.addEventListener("mousemove", onMove, { passive: true });
+        cursorPillCleanup = () => {
+          window.removeEventListener("mousemove", onMove);
+          bound.forEach(([card, en, lv]) => {
+            card.removeEventListener("mouseenter", en);
+            card.removeEventListener("mouseleave", lv);
+            card.classList.remove("is-pill-cursor");
+          });
+          pill.classList.remove("is-visible");
         };
       }
       function initBlobCursor() {
@@ -691,6 +757,7 @@ const isWork = path.startsWith('/work');
         updateRail();
         transitionIn();
         initMagnetic();
+        initCursorPill();
         initTextReveal();
         const blobLayer = document.querySelector(".blob-cursor");
         blobLayer?.style.removeProperty("--blob-color");
@@ -893,6 +960,49 @@ const isWork = path.startsWith('/work');
         -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
         -webkit-mask: linear-gradient(to bottom, #000 0%, transparent 20%);
                 mask: linear-gradient(to bottom, #000 0%, transparent 20%);
+      }
+
+      /* "View case study" cursor pill — fixed at the pointer (centred via the
+         transform), shown only while hovering a case-study card. Position is
+         set in JS on every mousemove and is NOT transitioned, so it tracks the
+         cursor 1:1; only the appear/tint animate. Desktop (mouse) only. */
+      .cursor-pill {
+        position: fixed;
+        top: 0; left: 0;
+        z-index: 200;
+        pointer-events: none;
+        padding: 8px 16px;
+        border-radius: var(--radius-pill);
+        background: var(--fg-1);
+        color: var(--bg-1);
+        font-family: var(--font-ui);
+        font-size: 12px;
+        letter-spacing: 0.01em;
+        font-weight: 500;
+        display: inline-flex; align-items: center; gap: 6px;
+        white-space: nowrap;
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.6);
+        transition: opacity 220ms var(--ease), transform 280ms var(--ease),
+                    background 320ms var(--ease), color 320ms var(--ease);
+        will-change: left, top, transform, opacity;
+      }
+      .cursor-pill.is-visible {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+      }
+      .cursor-pill svg { width: 11px; height: 11px; }
+      /* While the pill is in play (desktop only — class added in JS), hide the
+         system cursor over the card so only the pill reads. */
+      .cs-card.is-pill-cursor,
+      .cs-card.is-pill-cursor * { cursor: none; }
+      .cursor-pill--treasury { background: var(--cs-treasury-pill-bg); color: var(--cs-treasury-pill-ink); }
+      .cursor-pill--relate   { background: var(--cs-relate-pill-bg);   color: var(--cs-relate-pill-ink); }
+      .cursor-pill--haste    { background: var(--cs-haste-pill-bg);    color: var(--cs-haste-pill-ink); }
+      .cursor-pill--trier    { background: var(--cs-trier-pill-bg);    color: var(--cs-trier-pill-ink); }
+      /* Touch / no-mouse devices never see it. */
+      @media (hover: none), (any-pointer: coarse) {
+        .cursor-pill { display: none !important; }
       }
 
       /* Header (capsule pill, top-centered) */

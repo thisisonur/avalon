@@ -121,14 +121,14 @@
 .cs-card:hover { z-index: 5; }
 
 /* Slot stagger — slot1 high, slot3 lowest, slot2/4 mid */
-.cs-card--slot1 { transform: translateY(-40px); }
-.cs-card--slot2 { transform: translateY(48px); }
+.cs-card--slot1 { transform: translateY(-64px); }
+.cs-card--slot2 { transform: translateY(-24px); }
 .cs-card--slot3 { transform: translateY(-104px); z-index: 2; }
-.cs-card--slot4 { transform: translateY(16px); z-index: 3; }
-.cs-card--slot1:hover { transform: translateY(-48px); }
-.cs-card--slot2:hover { transform: translateY(40px); }
+.cs-card--slot4 { transform: translateY(0px); z-index: 3; }
+.cs-card--slot1:hover { transform: translateY(-72px); }
+.cs-card--slot2:hover { transform: translateY(-32px); }
 .cs-card--slot3:hover { transform: translateY(-112px); z-index: 4; }
-.cs-card--slot4:hover { transform: translateY(8px); z-index: 4; }
+.cs-card--slot4:hover { transform: translateY(-8px); z-index: 4; }
 
 /* ── Magnetic cursor effect (Cuberto-style, desktop only) ──────────
    While the cursor is over a card, JS writes an inline transform that
@@ -245,10 +245,10 @@
    The reveal observer adds .cs-card--entered. Cards come one-by-one in
    reading order, sequenced AFTER the "CASE STUDIES" label (reveal step 4)
    using the shared --reveal-step so the whole intro reads as one cascade. */
-@keyframes cardEnterSlot1 { from { opacity: 0; transform: translateY(-16px); } to { opacity: 1; transform: translateY(-40px); } }
-@keyframes cardEnterSlot2 { from { opacity: 0; transform: translateY(72px);  } to { opacity: 1; transform: translateY(48px); } }
+@keyframes cardEnterSlot1 { from { opacity: 0; transform: translateY(-40px); } to { opacity: 1; transform: translateY(-64px); } }
+@keyframes cardEnterSlot2 { from { opacity: 0; transform: translateY(0px);  } to { opacity: 1; transform: translateY(-24px); } }
 @keyframes cardEnterSlot3 { from { opacity: 0; transform: translateY(-80px); } to { opacity: 1; transform: translateY(-104px); } }
-@keyframes cardEnterSlot4 { from { opacity: 0; transform: translateY(40px);  } to { opacity: 1; transform: translateY(16px); } }
+@keyframes cardEnterSlot4 { from { opacity: 0; transform: translateY(24px);  } to { opacity: 1; transform: translateY(0px); } }
 /* Mobile grid entrance — a plain fade + slight rise that ends in place, so it
    doesn't disturb the grid the way the slot keyframes' offsets would. */
 @keyframes cardEnterMobile { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }

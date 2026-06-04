@@ -103,6 +103,13 @@
   --cs-trier-ink:  rgb(28, 28, 159);
   --cs-trier-meta: rgb(86, 106, 184);
 
+  /* "View case study" cursor-pill — a saturated per-brand chip that follows
+     the pointer while a card is hovered (desktop only). */
+  --cs-treasury-pill-bg:  #5ED96C;  --cs-treasury-pill-ink: #0B4812;
+  --cs-relate-pill-bg:    #FF782E;  --cs-relate-pill-ink:   #FFEFDE;
+  --cs-haste-pill-bg:     #CD22FF;  --cs-haste-pill-ink:    #FFE2E9;
+  --cs-trier-pill-bg:     #2820B4;  --cs-trier-pill-ink:    #DCDEFF;
+
   /* Case-study card motion */
   --cs-dur-color: 320ms;
   --cs-dur-spring: 500ms;
