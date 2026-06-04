@@ -328,7 +328,7 @@ const isWork = path.startsWith('/work');
         headerTween = requestAnimationFrame(tick);
         return DURATION;
       }
-      const FADE = 200;
+      const FADE = 140;
       function fadeOutShell() {
         const shell = document.getElementById("page-shell");
         if (!shell) return Promise.resolve();
@@ -462,7 +462,7 @@ const isWork = path.startsWith('/work');
           return;
         }
         const isWork = location.pathname.startsWith("/work");
-        window.setTimeout(() => {
+        const run = () => {
           if (isWork) {
             shell.style.transition = "none";
             shell.style.opacity = "1";
@@ -478,7 +478,12 @@ const isWork = path.startsWith('/work');
             }, FADE + 40);
           }
           playReveals();
-        }, headerDur);
+        };
+        // When there's no header-width morph to wait for (mobile), reveal in the
+        // same frame as the swap — deferring through a timeout would paint one
+        // extra fully-blank frame, which reads as a flicker between pages.
+        if (headerDur > 0) window.setTimeout(run, headerDur);
+        else run();
       }
       function initMagnetic() {
         if (magneticCleanup) {
