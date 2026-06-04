@@ -54,7 +54,9 @@ const isWork = path.startsWith('/work');
     </div>
 
     <div class="scroll-rail"><div class="scroll-rail__thumb"></div></div>
-    <div class="sticky-grad"></div>
+    <div class="top-blur" aria-hidden="true">
+      <div></div><div></div><div></div><div></div><div></div><div></div>
+    </div>
 
     {isWork ? (
       <nav class="header header--wide" transition:persist="site-header">
@@ -850,10 +852,47 @@ const isWork = path.startsWith('/work');
       }
 
       /* Sticky paper-fade at top */
-      .sticky-grad {
-        position: fixed; top: 3px; left: 0; right: 0; height: 168px;
-        background: linear-gradient(180deg, rgba(238,243,243,0.9) 0%, rgba(238,243,243,0.55) 30%, rgba(238,243,243,0) 100%);
+      /* Progressive blur scrim at the top — sits behind the menu (z 50 < 80)
+         and above the content, frosting whatever scrolls up underneath so it
+         never clashes with the floating menu. Six stacked backdrop-filter
+         layers, weakest first; each is masked to fade out further down, so the
+         topmost (strongest) blur dominates at the very top edge and the effect
+         eases to zero by the bottom of the band. Replaces the old flat colour
+         gradient. */
+      .top-blur {
+        position: fixed; top: 0; left: 0; right: 0; height: 168px;
         z-index: 50; pointer-events: none;
+      }
+      .top-blur > div { position: absolute; inset: 0; }
+      .top-blur > div:nth-child(1) {
+        -webkit-backdrop-filter: blur(0.5px); backdrop-filter: blur(0.5px);
+        -webkit-mask: linear-gradient(to bottom, #000 0%, #000 86%, transparent 100%);
+                mask: linear-gradient(to bottom, #000 0%, #000 86%, transparent 100%);
+      }
+      .top-blur > div:nth-child(2) {
+        -webkit-backdrop-filter: blur(1px); backdrop-filter: blur(1px);
+        -webkit-mask: linear-gradient(to bottom, #000 0%, #000 68%, transparent 86%);
+                mask: linear-gradient(to bottom, #000 0%, #000 68%, transparent 86%);
+      }
+      .top-blur > div:nth-child(3) {
+        -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px);
+        -webkit-mask: linear-gradient(to bottom, #000 0%, #000 50%, transparent 68%);
+                mask: linear-gradient(to bottom, #000 0%, #000 50%, transparent 68%);
+      }
+      .top-blur > div:nth-child(4) {
+        -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
+        -webkit-mask: linear-gradient(to bottom, #000 0%, #000 34%, transparent 52%);
+                mask: linear-gradient(to bottom, #000 0%, #000 34%, transparent 52%);
+      }
+      .top-blur > div:nth-child(5) {
+        -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+        -webkit-mask: linear-gradient(to bottom, #000 0%, #000 18%, transparent 36%);
+                mask: linear-gradient(to bottom, #000 0%, #000 18%, transparent 36%);
+      }
+      .top-blur > div:nth-child(6) {
+        -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+        -webkit-mask: linear-gradient(to bottom, #000 0%, transparent 20%);
+                mask: linear-gradient(to bottom, #000 0%, transparent 20%);
       }
 
       /* Header (capsule pill, top-centered) */
