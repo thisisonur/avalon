@@ -263,6 +263,48 @@
 .cs-card--entered.cs-card--slot3 { animation: cardEnterSlot3 var(--cs-dur-spring) var(--cs-ease-spring) calc(var(--reveal-step) * 7) backwards; }
 .cs-card--entered.cs-card--slot4 { animation: cardEnterSlot4 var(--cs-dur-spring) var(--cs-ease-spring) calc(var(--reveal-step) * 8) backwards; }
 
+/* ── In-card content reveal ───────────────────────
+   Once a card's background has entered (JS adds .cs-card--revealed at the
+   card animation's start, or immediately where the card has no entrance
+   animation), its contents fade + rise in: icon → title → year/rule → desc
+   → read-time. Driven by ANIMATION (not transition) so it never clobbers the
+   colour/background hover transitions or the magnetic transform on these
+   elements. Held hidden until revealed; `both` fill keeps them in place
+   before and after. */
+@keyframes cardInnerReveal { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+.cs-card__icon,
+.cs-card__title,
+.cs-card__year,
+.cs-card__rule,
+.cs-card__desc,
+.cs-card__readtime { opacity: 0; }
+
+.cs-card--revealed .cs-card__icon,
+.cs-card--revealed .cs-card__title,
+.cs-card--revealed .cs-card__year,
+.cs-card--revealed .cs-card__rule,
+.cs-card--revealed .cs-card__desc,
+.cs-card--revealed .cs-card__readtime {
+  animation: cardInnerReveal var(--cs-card-inner-dur) var(--ease) var(--cs-inner-d, 0ms) both;
+}
+.cs-card--revealed .cs-card__icon     { --cs-inner-d: var(--cs-card-inner-base); }
+.cs-card--revealed .cs-card__title    { --cs-inner-d: calc(var(--cs-card-inner-base) + var(--cs-card-inner-step) * 1); }
+.cs-card--revealed .cs-card__year     { --cs-inner-d: calc(var(--cs-card-inner-base) + var(--cs-card-inner-step) * 2); }
+.cs-card--revealed .cs-card__rule     { --cs-inner-d: calc(var(--cs-card-inner-base) + var(--cs-card-inner-step) * 2); }
+.cs-card--revealed .cs-card__desc     { --cs-inner-d: calc(var(--cs-card-inner-base) + var(--cs-card-inner-step) * 3); }
+.cs-card--revealed .cs-card__readtime { --cs-inner-d: calc(var(--cs-card-inner-base) + var(--cs-card-inner-step) * 4); }
+
+/* Reduced motion: show card contents immediately, no stagger. */
+@media (prefers-reduced-motion: reduce) {
+  .cs-card__icon,
+  .cs-card__title,
+  .cs-card__year,
+  .cs-card__rule,
+  .cs-card__desc,
+  .cs-card__readtime { opacity: 1; animation: none; }
+}
+
 /* ── Hover themes ─────────────────────────────── */
 /* TWE — green→periwinkle */
 .cs-card--treasury::before {

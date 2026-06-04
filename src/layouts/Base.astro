@@ -104,10 +104,29 @@ const isWork = path.startsWith('/work');
 
     <div class="mobile-header">
       <div class="mobile-bar">
-        <div class="mobile-bar__main">
-          <a class="mobile-bar__logo" href="/">
-            <span class="wm-first">Onur </span><span class="wm-second">Erdem</span>
+        {isWork && (
+          <a class="mobile-bar__back" href="/" aria-label="Back to index">
+            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M9 4L5 8L9 12M5 8H13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            Index
           </a>
+        )}
+        <div class="mobile-bar__main">
+          {isWork ? (
+            <a class="mobile-bar__logo mobile-bar__logo--swap" href="/" aria-label="Home">
+              <span class="logo-swap">
+                <span class="logo-swap__layer logo-swap__wordmark logo-swap__layer--in">
+                  <span class="wm-first">Onur </span><span class="wm-second">Erdem</span>
+                </span>
+                <span class="logo-swap__layer logo-swap__title logo-swap__layer--out">{caseName}</span>
+              </span>
+            </a>
+          ) : (
+            <a class="mobile-bar__logo" href="/">
+              <span class="wm-first">Onur </span><span class="wm-second">Erdem</span>
+            </a>
+          )}
           <button class="mobile-burger" aria-label="Open menu" aria-expanded="false">
             <svg class="icon-burger" width="18" height="12" viewBox="0 0 18 12" fill="none" aria-hidden="true">
               <rect y="0" width="18" height="1.5" rx="0.75" fill="currentColor" />
@@ -214,8 +233,11 @@ const isWork = path.startsWith('/work');
           logoSwapHandler = null;
         }
         if (!isWork) return;
-        const wm = document.querySelector(".header .logo-swap__wordmark");
-        const ti = document.querySelector(".header .logo-swap__title");
+        // Drive whichever header is actually visible: the mobile bar holds its
+        // own logo-swap on small viewports, the desktop header on larger ones.
+        const scope = window.innerWidth <= 768 ? ".mobile-bar" : ".header";
+        const wm = document.querySelector(scope + " .logo-swap__wordmark");
+        const ti = document.querySelector(scope + " .logo-swap__title");
         if (!wm || !ti) return;
         const apply = () => {
           const show = window.scrollY > 220;
@@ -401,7 +423,23 @@ const isWork = path.startsWith('/work');
           for (const entry of entries) {
             if (entry.isIntersecting) {
               const t = entry.target;
-              if (t.classList.contains("cs-card")) t.classList.add("cs-card--entered");
+              if (t.classList.contains("cs-card")) {
+                t.classList.add("cs-card--entered");
+                // Once the card's background has started animating in, cascade
+                // its contents (icon → title → meta). Where the card has no
+                // entrance animation (tablet) or motion is reduced, reveal the
+                // contents right away.
+                if (reduce || getComputedStyle(t).animationName === "none") {
+                  requestAnimationFrame(() => t.classList.add("cs-card--revealed"));
+                } else {
+                  const onStart = (e) => {
+                    if (e.target !== t) return;
+                    t.removeEventListener("animationstart", onStart);
+                    t.classList.add("cs-card--revealed");
+                  };
+                  t.addEventListener("animationstart", onStart);
+                }
+              }
               else if (t.classList.contains("split-text")) t.classList.add("sr-in");
               else t.classList.add("is-in");
               obs.unobserve(t);
@@ -939,6 +977,35 @@ const isWork = path.startsWith('/work');
       }
       .mobile-bar__logo .wm-first  { font-weight: 700; }
       .mobile-bar__logo .wm-second { font-weight: 400; }
+
+      /* Case-study pages: a separate "Index" back pill, distinct from the
+         main bar, plus a wordmark↔case-name crossfade in the logo slot. */
+      .mobile-bar__back {
+        font-size: 13px;
+        color: var(--fg-2);
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 10px 16px 10px 14px;
+        background: var(--bg-2);
+        border-radius: var(--radius-pill);
+        font-family: var(--font-ui);
+        font-weight: 500;
+        white-space: nowrap;
+        text-decoration: none;
+        cursor: pointer;
+        align-self: stretch;
+        transition: color var(--dur) var(--ease);
+      }
+      .mobile-bar__back:hover { color: var(--fg-1); }
+      .mobile-bar__back svg { width: 12px; height: 12px; }
+      /* The logo slot holds the two crossfading layers; let it take the row's
+         free width and clip the longer case name rather than overflow. */
+      .mobile-bar__logo--swap { flex: 1; min-width: 0; }
+      .mobile-bar__logo--swap .logo-swap {
+        position: relative; display: block;
+        width: 100%; min-width: 0; height: 20px;
+        overflow: hidden;
+      }
+      .mobile-bar__logo--swap .logo-swap__layer { justify-content: flex-start; }
 
       .mobile-burger {
         display: inline-flex; align-items: center; justify-content: center;

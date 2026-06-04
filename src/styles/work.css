@@ -320,19 +320,21 @@
 .quick-context-wrap { margin: 0 0 80px; }
 .quick-context {
   position: relative;
-  padding: 28px 32px;
-  background: var(--img-fallback);
-  border-radius: var(--radius-xl);
   color: var(--fg-1);
 }
+/* Summary lede: no box — a large heading-font statement, left-aligned across
+   all breakpoints. Bold/regular from the copy are preserved as weight. */
 .work-section .quick-context__body,
 .quick-context__body {
-  font-family: var(--font-ui);
-  font-size: var(--fs-body);
-  line-height: 1.7;
+  font-family: var(--font-display-serif);
+  font-weight: 400;
+  font-size: var(--fs-quick-context);
+  line-height: 1.28;
+  letter-spacing: var(--ls-tight);
   color: var(--fg-1);
   margin: 0;
-  max-width: 64ch;
+  max-width: none;
+  text-align: left;
 }
 .quick-context__body strong { font-weight: 700; color: var(--fg-1); }
 

@@ -108,6 +108,12 @@
   --cs-dur-spring: 500ms;
   --cs-ease-color: cubic-bezier(0.25, 0, 0, 1);
   --cs-ease-spring: cubic-bezier(0.23, 1, 0.32, 1);
+  /* In-card content reveal — after a card's background animates in, its
+     contents fade + rise in quick succession: icon, then title, then the
+     rest. base = lead before the first item; step = gap between items. */
+  --cs-card-inner-dur: 240ms;
+  --cs-card-inner-base: 110ms;
+  --cs-card-inner-step: 50ms;
 
   /* ------------------------------------------------------------
      HOME PAGE — hero / section label type
@@ -166,6 +172,9 @@
   --fs-work-title: 56px;                 /* case-study H1 */
   --lh-work-title: 1.05;
   --fs-work-subtitle: 17px;              /* body-styled subtitle */
+  --fs-quick-context: clamp(32px, 4.5vw, 40px); /* summary lede — heading-scale:
+                                            at least section-title size on mobile,
+                                            up to ~H1-adjacent on desktop */
   --fs-work-h3: 19px;                    /* in-section sub-heading */
   --fs-decision-title: 22px;             /* decision-card title + quick-context lead serif */
   --fs-pull-quote: 24px;                 /* pull-quote text */

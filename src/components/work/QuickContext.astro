@@ -8,5 +8,5 @@ const { label, body } = Astro.props;
 
 <aside class="quick-context" aria-label={label}>
   {label ? <div class="quick-context__label">{label}</div> : null}
-  <p class="quick-context__body" set:html={body}></p>
+  <p class="quick-context__body split-text" set:html={body}></p>
 </aside>
