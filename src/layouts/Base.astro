@@ -450,6 +450,53 @@ const isWork = path.startsWith('/work');
         cardEls.forEach((el) => io.observe(el));
         splitEls.forEach((el) => io.observe(el));
       }
+      // Mobile has no header-width morph to wait on, so the entrance would
+      // otherwise fire in the same frame as the DOM swap — before the new page
+      // has painted and before its hero image has decoded. That makes the first
+      // title stutter and the first image POP in at full opacity instead of
+      // fading. This waits for the next paint and for the above-the-fold images
+      // (real <img>s and CSS background heroes) to be ready, capped so a slow
+      // image can never stall the transition.
+      function whenFirstPaintReady(cb) {
+        let done = false;
+        const go = () => {
+          if (done) return;
+          done = true;
+          cb();
+        };
+        const cap = window.setTimeout(go, 240);
+        requestAnimationFrame(() => {
+          const shell = document.getElementById("page-shell");
+          if (!shell) return go();
+          const tasks = [];
+          Array.from(shell.querySelectorAll("img")).slice(0, 4).forEach((img) => {
+            if (img.complete) {
+              if (img.decode) tasks.push(img.decode().catch(() => {}));
+            } else {
+              tasks.push(new Promise((r) => {
+                img.addEventListener("load", () => r(), { once: true });
+                img.addEventListener("error", () => r(), { once: true });
+              }));
+            }
+          });
+          Array.from(shell.querySelectorAll(".ab-hero__photo-img")).forEach((el) => {
+            const m = /url\(["']?([^"')]+)["']?\)/.exec(getComputedStyle(el).backgroundImage || "");
+            if (m && m[1]) {
+              tasks.push(new Promise((r) => {
+                const im = new Image();
+                im.onload = () => r();
+                im.onerror = () => r();
+                im.src = m[1];
+              }));
+            }
+          });
+          if (!tasks.length) return go();
+          Promise.all(tasks).then(() => {
+            window.clearTimeout(cap);
+            go();
+          });
+        });
+      }
       function transitionIn() {
         const headerDur = syncHeader();
         const shell = document.getElementById("page-shell");
@@ -479,11 +526,11 @@ const isWork = path.startsWith('/work');
           }
           playReveals();
         };
-        // When there's no header-width morph to wait for (mobile), reveal in the
-        // same frame as the swap — deferring through a timeout would paint one
-        // extra fully-blank frame, which reads as a flicker between pages.
+        // Desktop waits for the header-width morph; mobile waits for the new
+        // page to paint and its first images to decode (see whenFirstPaintReady)
+        // so the first title/image fades in cleanly instead of popping.
         if (headerDur > 0) window.setTimeout(run, headerDur);
-        else run();
+        else whenFirstPaintReady(run);
       }
       function initMagnetic() {
         if (magneticCleanup) {
