@@ -982,6 +982,19 @@ const isWork = path.startsWith('/work');
         -webkit-mask: linear-gradient(to bottom, #000 0%, transparent 20%);
                 mask: linear-gradient(to bottom, #000 0%, transparent 20%);
       }
+      /* Touch devices (phones/tablets): stacked backdrop-filters force a
+         re-blur of the band every scroll frame, which mobile Safari can't keep
+         up with — fast scrolling drops frames. Swap the live blur for a cheap
+         gradient scrim there; desktop keeps the progressive blur. */
+      @media (hover: none), (any-pointer: coarse) {
+        .top-blur {
+          background: linear-gradient(180deg,
+            rgba(238, 243, 243, 0.9) 0%,
+            rgba(238, 243, 243, 0.55) 30%,
+            rgba(238, 243, 243, 0) 100%);
+        }
+        .top-blur > div { display: none; }
+      }
 
       /* "View case study" cursor pill — fixed at the pointer (centred via the
          transform), shown only while hovering a case-study card. Position is

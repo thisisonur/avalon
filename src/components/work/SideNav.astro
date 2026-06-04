@@ -10,6 +10,11 @@ const { sections } = Astro.props;
 ---
 
 <nav class="side-nav">
+  <button class="side-nav__top" type="button" aria-label="Back to top">
+    <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path d="M8 13V3.5M8 3.5L3.5 8M8 3.5L12.5 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+  </button>
   {sections.map((s) => (
     <a href={`#${s.id}`} data-target={s.id}>
       <span class="dot"></span>

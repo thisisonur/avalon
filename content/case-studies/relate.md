@@ -68,18 +68,21 @@ The team spanned five timezones. Hide and Seek led the engagement with a design 
 - UX designer (Malaysia, contractor) — UX deliverables under the design lead's supervision
 - Product dev team (Taiwan, contracted by Relate) — built the product
 - Marketing site dev team (Australia) — built relate.us
+- Business analyst (UK, Relate) — requirements and business context
+- Marketing manager (US, Relate) — content, copy, and marketing direction
+- CFO and CEO (Sydney, Relate) — executive stakeholders and final approvals
 
 ### The work across four surfaces
 
 (decision card) Brand identity rebrand
-A brand workshop run by the Hide and Seek design lead surfaced statements, keywords, and intent. From that material I derived two archetypes: Creator at 70% (originality, deliberate construction, business-level trustworthiness) and Magician at 30% (transformation, possibility, the catalytic moment). I presented three identity directions grounded in the archetype split with typography, color, and brand applications. The team selected the direction anchored in an abstract handshake mark with a blue-to-pink gradient.
+A brand workshop surfaced statements, keywords, and intent. From that material I derived two archetypes: Creator at 70% (originality, deliberate construction, business-level trustworthiness) and Magician at 30% (transformation, possibility, the catalytic moment). I presented three identity directions grounded in the archetype split with typography, color, and brand applications. The team selected the direction anchored in an abstract handshake mark with a blue-to-pink gradient.
 (figure caption) Brand identity, from idea to mark to system.
 
 (decision card) Design system layered on HASTE
 The product DS was layered on HASTE, the tokenized design system I had built earlier at Hide and Seek. HASTE provided the headless foundation: base components and foundation tokens. On top, I added Relate's brand-token layer (colors, font families, sizing, spacing, elevation, border radius), fully tokenized. The new Relate-specific components, including the Sandi chat surface, were not fully tokenized — a deliberate trade-off given the timeline.
 
 (decision card) Product redesign and Sandi's surface
-The new product reads calm. Soft ivory rather than sterile white. Hints of gradient appear across the UI to carry the Magician layer of the brand. Relate's AI agent has a name: Sandi. I designed a dedicated mark for Sandi (gradient-touched, with an infinity symbol at the core) and built the chat surface that handles a complete state machine: idle, processing, error, usage limit, AI model selection. 
+The new product reads calm. Soft ivory rather than sterile white. Hints of gradient appear across the UI to carry the Magician layer of the brand. Relate's AI agent has a name: Sandi. I designed a dedicated mark for Sandi and built the chat surface that handles a complete state machine: idle, processing, error, usage limit, AI model selection. 
 (figure caption) Product redesign
 
 (decision card) Marketing site (relate.us)
@@ -88,7 +91,7 @@ The marketing site had to capture multiple B2B audiences: HR leads, sales teams,
 
 ### What I'd revisit
 
-Working across five time zones shaped how the work moved. Decisions ran across days rather than within single conversations, which suited a team this distributed, and the rhythm became its own thing to design for. That kind of constraint asks the system to do more documentation work, since async teams rely on what's written down more than on what's said in the room. Something I'd carry into how I scope documentation on future distributed engagements.
+Working across five time zones shaped how the work moved. Decisions naturally unfolded across days rather than within single conversations, which suited a team this distributed, and the rhythm became its own thing to design for. That kind of constraint asks the system to do more documentation work, since async teams rely on what's written down more than on what's said in the room. Something I'd carry into how I scope documentation on future distributed engagements.
 
 (pull quote) We put most of the personality into the brand system and kept the product deliberately restrained. People came to Relate to understand conversations, not admire the interface.
 
@@ -97,7 +100,7 @@ Working across five time zones shaped how the work moved. Decisions ran across d
 (outcome headline) Relate launched and is in active use. The client is now in funding rounds to scale the product.
 (outcome body) The brand, the product, the design system, and the marketing site all shipped from the same source: a brand workshop, two archetypes, and a coherent set of decisions that traced from intent to interface across every surface a user encounters.
 
-### Designing for trust in AI products
+### Less is more
 
 Working on Relate changed how I think about trust-focused products. Throughout the project, we repeatedly found that adding more visual expression didn’t make the product feel stronger. The stronger direction was usually the quieter one.
 

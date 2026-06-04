@@ -68,6 +68,23 @@
 .side-nav a:hover { color: var(--fg-1); }
 .side-nav .dot { display: none; }
 .side-nav a.is-active { color: var(--fg-1); }
+/* Back-to-top button — sits above the section links, its icon flush-left with
+   the menu text (no box padding; small negative margin offsets the arrow's
+   intrinsic viewBox inset so the arrowhead lines up with the labels). */
+.side-nav__top {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  margin: 0 0 6px -3px;
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--fg-3);
+  transition: color 240ms var(--ease);
+}
+.side-nav__top:hover { color: var(--fg-1); }
+.side-nav__top svg { width: 15px; height: 15px; display: block; }
 @media (max-width: 1280px) {
   .side-nav { display: none; }
 }

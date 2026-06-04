@@ -104,6 +104,11 @@ const showLaunchBtn = slug === 'treasury-wine-estates' || slug === 'relate';
       });
     });
 
+    const topBtn = sideNav?.querySelector<HTMLButtonElement>('.side-nav__top');
+    topBtn?.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
     function onScroll() {
       const y = window.scrollY;
       if (sideNav) sideNav.classList.toggle('is-visible', y > 320);

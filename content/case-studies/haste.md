@@ -39,7 +39,7 @@ Source of truth in code: src/data/caseStudies.js (slug: haste)
 - Reading time: ~4 min
 
 ## Quick Context
-**A tokenized design system and a documented methodology, built as an R&D initiative to give the agency a shared starting point for every client engagement.** Used as the foundation for client work during my time at Hide and Seek Digital, including projects for the Australian Federal Police and Relate. Presented externally at a Storyblok webinar attended by around a hundred people.
+**A tokenized design system and a documented methodology, built as an R&D initiative to give Hide and Seek Digital a shared starting point for every client engagement.** Used as the foundation for client work during my time at Hide and Seek Digital, including projects for the Australian Federal Police and Relate. Presented externally at a Storyblok webinar attended by around a hundred people.
 
 ## Sections
 
@@ -86,7 +86,6 @@ Designing the system was the smaller half of the work. Getting it adopted was th
 
 Some designers picked up Tokens Studio quickly. Others struggled with it. That difference had a bigger impact on adoption than any architectural decision I made. The more friction people felt in the tooling, the faster they fell back to old habits. The training program was structured around both: hands-on tooling practice, and documentation written to be read under pressure.
 
-Even after the training program, people used HASTE differently. Some followed the workflow closely. Others adapted it to fit how they already worked. That never really stopped. The system evolved, the team evolved, and adoption remained something that needed attention rather than something that could be checked off as complete.
 
 (pull quote) Designing the system was the smaller half of the work. Getting it adopted was the harder half.
 
@@ -96,7 +95,7 @@ HASTE shipped as a fork-per-brand system, the same architecture that had worked 
 
 The architecture worked, but it had an adoption cost I didn't fully anticipate. Every new client engagement required the team to internalize the full fork-and-retokenize flow, which made onboarding slower than it needed to be. The training program absorbed that cost, but the cost was real.
 
-If I were starting HASTE today, I'd architect it around theming from day one. Not because theming is universally better, but because the operational model is conceptually simpler: the foundation stays put and brand layers swap on top. That simplicity translates directly to faster team adoption, which is the part of system work that determines whether the rest of it succeeds.
+If I were starting HASTE today, I'd architect it around theming from day one. Not because theming is universally better, but because the operational model is conceptually simpler: the foundation stays put and brand layers swap on top. That simplicity translates directly to faster team adoption, but only if the team accepts and commits to the tooling the theming model depends on. The architecture's advantage lives entirely in the tooling; without that buy-in, you've added a layer of abstraction without gaining the operational benefit. Tooling acceptance is the condition the whole argument rests on.
 
 (figure caption) Fork-per-brand vs. theming — two operational shapes for a tokenized foundation, each with its own adoption cost.
 

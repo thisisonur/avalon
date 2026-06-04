@@ -239,7 +239,10 @@ export const CASE_STUDIES = [
             'Hide and Seek dev lead \u2014 partnered on architecture and pipeline decisions',
             'UX designer (Malaysia, contractor) \u2014 UX deliverables under the design lead\u2019s supervision',
             'Product dev team (Taiwan, contracted by Relate) \u2014 built the product',
-            'Marketing site dev team (Australia) \u2014 built relate.us'
+            'Marketing site dev team (Australia) \u2014 built relate.us',
+            'Business analyst (UK, Relate) \u2014 requirements and business context',
+            'Marketing manager (US, Relate) \u2014 content, copy, and marketing direction',
+            'CFO and CEO (Sydney, Relate) \u2014 executive stakeholders and final approvals'
           ]}
         ]
       },
@@ -252,7 +255,7 @@ export const CASE_STUDIES = [
             {
               icon: 'brandMark',
               title: 'Brand identity rebrand',
-              body: 'A brand workshop run by the Hide and Seek design lead surfaced statements, keywords, and intent. From that material I derived two archetypes: Creator at 70% (originality, deliberate construction, business-level trustworthiness) and Magician at 30% (transformation, possibility, the catalytic moment). I presented three identity directions grounded in the archetype split with typography, color, and brand applications. The team selected the direction anchored in an abstract handshake mark with a blue-to-pink gradient.',
+              body: 'A brand workshop surfaced statements, keywords, and intent. From that material I derived two archetypes: Creator at 70% (originality, deliberate construction, business-level trustworthiness) and Magician at 30% (transformation, possibility, the catalytic moment). I presented three identity directions grounded in the archetype split with typography, color, and brand applications. The team selected the direction anchored in an abstract handshake mark with a blue-to-pink gradient.',
               src: '/assets/case-studies/relate-fig-1.png',
               srcMobile: '/assets/case-studies/relate-fig-1-mobile.png',
               imageCaption: 'Brand identity, from idea to mark to system.'
@@ -265,7 +268,7 @@ export const CASE_STUDIES = [
             {
               icon: 'chatBubble',
               title: 'Product redesign and Sandi\u2019s surface',
-              body: 'The new product reads calm. Soft ivory rather than sterile white. Hints of gradient appear across the UI to carry the Magician layer of the brand. Relate\u2019s AI agent has a name: Sandi. I designed a dedicated mark for Sandi (gradient-touched, with an infinity symbol at the core) and built the chat surface that handles a complete state machine: idle, processing, error, usage limit, AI model selection.',
+              body: 'The new product reads calm. Soft ivory rather than sterile white. Hints of gradient appear across the UI to carry the Magician layer of the brand. Relate\u2019s AI agent has a name: Sandi. I designed a dedicated mark for Sandi and built the chat surface that handles a complete state machine: idle, processing, error, usage limit, AI model selection.',
               src: '/assets/case-studies/relate-fig-3.png',
               srcMobile: '/assets/case-studies/relate-fig-3-mobile.png',
               imageCaption: 'Product redesign'
@@ -286,7 +289,7 @@ export const CASE_STUDIES = [
         label: 'What I\u2019d revisit',
         title: 'What I\u2019d revisit',
         body: [
-          { type: 'p', text: 'Working across five time zones shaped how the work moved. Decisions ran across days rather than within single conversations, which suited a team this distributed, and the rhythm became its own thing to design for. That kind of constraint asks the system to do more documentation work, since async teams rely on what\u2019s written down more than on what\u2019s said in the room. Something I\u2019d carry into how I scope documentation on future distributed engagements.' },
+          { type: 'p', text: 'Working across five time zones shaped how the work moved. Decisions naturally unfolded across days rather than within single conversations, which suited a team this distributed, and the rhythm became its own thing to design for. That kind of constraint asks the system to do more documentation work, since async teams rely on what\u2019s written down more than on what\u2019s said in the room. Something I\u2019d carry into how I scope documentation on future distributed engagements.' },
           { type: 'pullQuote', text: 'We put most of the personality into the brand system and kept the product deliberately restrained. People came to Relate to understand conversations, not admire the interface.' }
         ]
       },
@@ -305,8 +308,8 @@ export const CASE_STUDIES = [
       },
       {
         id: 'reflection',
-        label: 'Designing for trust in AI products',
-        title: 'Designing for trust in AI products',
+        label: 'Less is more',
+        title: 'Less is more',
         body: [
           { type: 'p', text: 'Working on Relate changed how I think about trust-focused products. Throughout the project, we repeatedly found that adding more visual expression didn\u2019t make the product feel stronger. The stronger direction was usually the quieter one.' },
           { type: 'p', text: 'Clear hierarchy, restrained motion, and content that stayed focused on the conversation itself consistently felt more credible than more visually expressive alternatives. We put most of the personality into the brand and let the product focus on helping people interpret what was being said in meetings.' }
@@ -350,7 +353,7 @@ export const CASE_STUDIES = [
       { label: 'Reading time', value: '~4 min' }
     ],
     quickContext: {
-      body: '<strong>A tokenized design system and a documented methodology, built as an R&amp;D initiative to give the agency a shared starting point for every client engagement.</strong> Used as the foundation for client work during my time at Hide and Seek Digital, including projects for the Australian Federal Police and Relate. Presented externally at a Storyblok webinar attended by around a hundred people.'
+      body: '<strong>A tokenized design system and a documented methodology, built as an R&amp;D initiative to give Hide and Seek Digital a shared starting point for every client engagement.</strong> Used as the foundation for client work during my time at Hide and Seek Digital, including projects for the Australian Federal Police and Relate. Presented externally at a Storyblok webinar attended by around a hundred people.'
     },
     sections: [
       {
@@ -409,7 +412,6 @@ export const CASE_STUDIES = [
         body: [
           { type: 'p', text: 'Designing the system was the smaller half of the work. Getting it adopted was the harder half, and HASTE taught me that adoption is a tooling problem and a communication problem at the same time.' },
           { type: 'p', text: 'Some designers picked up Tokens Studio quickly. Others struggled with it. That difference had a bigger impact on adoption than any architectural decision I made. The more friction people felt in the tooling, the faster they fell back to old habits. The training program was structured around both: hands-on tooling practice, and documentation written to be read under pressure.' },
-          { type: 'p', text: 'Even after the training program, people used HASTE differently. Some followed the workflow closely. Others adapted it to fit how they already worked. That never really stopped. The system evolved, the team evolved, and adoption remained something that needed attention rather than something that could be checked off as complete.' },
           { type: 'pullQuote', text: 'Designing the system was the smaller half of the work. Getting it adopted was the harder half.' }
         ]
       },
@@ -420,7 +422,7 @@ export const CASE_STUDIES = [
         body: [
           { type: 'p', text: 'HASTE shipped as a fork-per-brand system, the same architecture that had worked on the agency\u2019s earlier multi-brand projects. Each new client engagement forked the headless foundation and customized the primitive and semantic layers for that client.' },
           { type: 'p', text: 'The architecture worked, but it had an adoption cost I didn\u2019t fully anticipate. Every new client engagement required the team to internalize the full fork-and-retokenize flow, which made onboarding slower than it needed to be. The training program absorbed that cost, but the cost was real.' },
-          { type: 'p', text: 'If I were starting HASTE today, I\u2019d architect it around theming from day one. Not because theming is universally better, but because the operational model is conceptually simpler: the foundation stays put and brand layers swap on top. That simplicity translates directly to faster team adoption, which is the part of system work that determines whether the rest of it succeeds.' },
+          { type: 'p', text: 'If I were starting HASTE today, I\u2019d architect it around theming from day one. Not because theming is universally better, but because the operational model is conceptually simpler: the foundation stays put and brand layers swap on top. That simplicity translates directly to faster team adoption, but only if the team accepts and commits to the tooling the theming model depends on. The architecture\u2019s advantage lives entirely in the tooling; without that buy-in, you\u2019ve added a layer of abstraction without gaining the operational benefit. Tooling acceptance is the condition the whole argument rests on.' },
           { type: 'figure', src: '/assets/case-studies/haste-fig-4.png', srcMobile: '/assets/case-studies/haste-fig-4-mobile.png', caption: 'Fork-per-brand vs. theming — two operational shapes for a tokenized foundation, each with its own adoption cost.' }
         ]
       },
