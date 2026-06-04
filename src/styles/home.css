@@ -400,6 +400,21 @@
   .cs-card:nth-child(4) { margin-top: 48px; }
 }
 
+/* iPad (and similar touch tablets) in LANDSCAPE — squeeze all four cards into
+   one row. Scoped tightly: landscape + this width band + a coarse pointer, so
+   portrait tablets stay 2-up and mouse-driven desktop/phone are untouched.
+   Inherits the 2-col block's grid/card/anim resets; only the column count,
+   measure, and diagonal-echo offset change. */
+@media (min-width: 1024px) and (max-width: 1279px) and (orientation: landscape) and (any-pointer: coarse) {
+  .cs-cards {
+    grid-template-columns: repeat(4, 1fr);
+    max-width: 1200px;
+    padding: 0 32px;
+  }
+  .cs-card:nth-child(2),
+  .cs-card:nth-child(4) { margin-top: 0; }
+}
+
 /* Smaller hero on tablet */
 @media (max-width: 1024px) {
   .home-hero h1 { font-size: 36px; }
