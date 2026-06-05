@@ -34,7 +34,7 @@ export const CASE_STUDIES = [
       { label: 'Role', value: 'Design System Designer' },
       { label: 'Year', value: '2023' },
       { label: 'Client', valueHtml: '<a href="https://www.tweglobal.com/" target="_blank" rel="noopener">Treasury Wine Estates</a>' },
-      { label: 'Brands', value: 'Treasury Wine Estates Global, Matua, Coastal Reserve, Lindeman\u2019s, Pepperjack, St Hubert\u2019s The Stag, Squealing Pig, Blossom Hill, Devil\u2019s Lair, Yellowglen' },
+      { label: 'Brands', value: 'Treasury Wine Estates Global, Matua, Coastal Reserve, Lindeman\u2019s, Pepperjack, St Hubert\u2019s, The Stag, Squealing Pig, Blossom Hill, Devil\u2019s Lair, Yellowglen' },
       { label: 'Scope', value: '10 brand sites + 1 global parent, 6-month delivery' },
       { label: 'Reading time', value: '~5 min' }
     ],
@@ -48,7 +48,7 @@ export const CASE_STUDIES = [
         label: 'The central question',
         title: 'The central question',
         body: [
-          { type: 'p', text: 'Treasury Wine Estates needed eleven websites, ten brand sites and one global parent, built within six months on a shared foundation. The brief sounded like a typical multi-brand DS project, but the real problem was harder than it looked. How do you build one system that lets eleven brands stay genuinely themselves, when their visual identities have almost nothing in common?' },
+          { type: 'p', text: 'The brief sounded like a typical multi-brand DS project, but the real problem was harder than it looked. How do you build one system that lets eleven brands stay themselves genuinely, when their visual identities have almost nothing in common?' },
           { type: 'p', text: 'This wasn\u2019t eleven variations on a theme. The brands ranged from bright and geometric to dark and classical. Some leaned ocean-serif elegant; others were quirky, illustrated, and maximalist. One was monochrome with handwriting fonts; another was pastel with restrained sans-serifs. They weren\u2019t different colorways. They were different design languages.' },
           { type: 'p', text: 'The system had to absorb that range without flattening it. That tension shaped every decision in the project.' },
           { type: 'figure', src: '/assets/case-studies/twe-fig-1.png', srcMobile: '/assets/case-studies/twe-fig-1-mobile.png', caption: 'Brand identity range across the eleven Treasury Wine Estates sites — from geometric to classical, monochrome to maximalist.' }
@@ -59,18 +59,20 @@ export const CASE_STUDIES = [
         label: 'My role and the architecture',
         title: 'My role and the architecture',
         body: [
-          { type: 'p', text: 'The headless, atomic foundation was set by the team lead before my work began. We aligned on the structural approach in early workshops, and from there I owned the brand-token architecture across all eleven sites, the layer where each brand\u2019s identity was encoded into the system.' },
+          { type: 'p', text: 'From early workshops, I took ownership of the brand-token architecture across all eleven sites, the layer where each brand\u2019s identity was encoded into the system.' },
           { type: 'h3', text: 'What I owned' },
           { type: 'ul', items: [
+            'Discovery workshops with the client to define and lock the system structure',
             'Brand-token architecture across all eleven sites',
-            'All components and layouts built in Figma',
-            'Interaction design on a subset of brand sites, giving me a direct feedback loop on how the brand-token layer performed in real design work'
+            'Components and layouts built in Figma',
+            'Interaction design on a subset of brand sites to test how the token layer held up in practice'
           ]},
           { type: 'h3', text: 'What the team contributed' },
           { type: 'ul', items: [
-            'Team lead \u2014 set the headless, atomic foundation',
+            'Design lead \u2014 led the design process and supervised the building of the design system',
             'Interaction designers \u2014 carried brand-specific surface treatments (photography, parallax, custom imagery) where the system\u2019s structural skeleton couldn\u2019t',
-            'Engineering \u2014 built and maintained the pipeline'
+            'Dev lead \u2014 built and maintained the pipeline, guiding the frontend developers',
+            'Business analyst \u2014 maintained the project objectives and managed the ticketing'
           ]},
           { type: 'p', text: 'The pipeline ran tokens through Tokens Studio and Figma, exported to JSON, transformed through Style Dictionary, validated in Chromatic, and shipped through Storybook into a Storybook CMS that was delivered to all eleven brand marketing teams.' }
         ]
@@ -95,12 +97,7 @@ export const CASE_STUDIES = [
             {
               icon: 'letterform',
               title: 'Typography, when ornate display fonts break the system',
-              body: 'Several brands provided distinctive display fonts that defined their identity but couldn\u2019t carry the full type system. I extended each brand\u2019s type system with secondary and tertiary fonts \u2014 Google Fonts equivalents that resonated with the brand\u2019s character but worked safely across components. The signature font was preserved for headings; the system-safe alternatives carried body, captions, and UI labels.'
-            },
-            {
-              icon: 'rhythm',
-              title: 'Vertical rhythm as a brand-customizable layer',
-              body: 'For brands whose display fonts broke spacing assumptions, I added line-height tokens at the brand-semantic level \u2014 not as per-component patches but as proper semantic overrides. Vertical rhythm became a brand-customizable layer, recognizing that typography identity lives in spacing relationships as much as in the font itself.'
+              body: 'Several brands provided distinctive display fonts that defined their identity but couldn\u2019t carry the full type system. I extended each brand\u2019s type system with secondary and tertiary fonts, using Google Fonts equivalents that resonated with the brand\u2019s character but worked safely across components. The signature font was preserved for headings; the system-safe alternatives carried body, captions, and UI labels. Where those display fonts also broke spacing assumptions, I added line-height tokens at the brand-semantic level, not as per-component patches but as proper semantic overrides. Typography identity lives in spacing relationships as much as in the font itself, so vertical rhythm became a brand-customizable layer too.'
             }
           ]}
         ]
@@ -110,8 +107,8 @@ export const CASE_STUDIES = [
         label: 'Governance',
         title: 'Governance: what the system should and shouldn\u2019t absorb',
         body: [
-          { type: 'p', text: 'A multi-brand system survives or fails based on what the team chooses to put inside it. The project started with explicit scoping. Before kickoff, I built a detailed inventory of every component, variation, state, pattern, and layout the system would support, and got client approval. That document became the basis for every later conversation about what was and wasn\u2019t in the system.' },
-          { type: 'p', text: 'As work progressed, new ideas surfaced naturally. Most fit within the system. Some could be solved cleanly by extending or creatively reusing what was already there. Others were structurally different enough that absorbing them would have introduced ambiguity into components that needed to stay clear; those were built as bespoke work for the brand that needed them, kept outside the shared system. The boundary was visible and intentional. The system stayed clean, the brand got what it needed, and the architecture didn\u2019t carry the cost of single-use exceptions.' }
+          { type: 'p', text: 'A multi-brand system survives or fails based on what the team chooses to put inside it. Before kickoff, I built a detailed inventory of every component, variation, state, pattern, and layout the system would support, and got client approval. That document became the basis for every later conversation about what was and wasn\u2019t in the system.' },
+          { type: 'p', text: 'As work progressed, new ideas surfaced naturally. Most fit within the system. Some could be solved cleanly by extending or creatively reusing what was already there. Others were structurally different enough that absorbing them would have introduced ambiguity into components that needed to stay clear; those were built as bespoke work for the brand that needed them, kept outside the shared system. The system stayed clean, the brand got what it needed, and the architecture didn\u2019t carry the cost of single-use exceptions.' }
         ]
       },
       {
@@ -120,7 +117,7 @@ export const CASE_STUDIES = [
         title: 'When scope expanded during the work',
         body: [
           { type: 'p', text: 'The scope expanded during the project. New page types, layout variations, and component needs surfaced as the work progressed, particularly for the Global site, which grew in complexity beyond what the original scope anticipated. The architecture was built to absorb that kind of growth.' },
-          { type: 'p', text: 'I added the new components within the existing system, using the same primitives and architectural conventions. No primitive-level changes were needed. A small number of new semantic tokens were added. Once the components existed, they were available to any brand, and some were later adopted by brand sites that hadn\u2019t originally needed them. The architecture absorbed the additions without breaking, and the new work strengthened the shared foundation rather than fragmenting it.' },
+          { type: 'p', text: 'I added the new components using the same primitives and architectural conventions, with only a small number of new semantic tokens. Once built, they were available to any brand, and several were later adopted by sites that hadn\u2019t originally needed them. The architecture absorbed the additions cleanly and the foundation came out stronger for it.' },
           { type: 'figure', src: '/assets/case-studies/twe-fig-3.png', srcMobile: '/assets/case-studies/twe-fig-3-mobile.png', caption: 'Global site — late-stage layout and component additions that grew out of the same primitive layer.' }
         ]
       },
@@ -129,9 +126,8 @@ export const CASE_STUDIES = [
         label: 'The trade-off',
         title: 'The trade-off the system couldn\u2019t solve on its own',
         body: [
-          { type: 'p', text: 'The system shipped on time, on scope, and architecturally sound. It also had a real limit, one worth naming honestly.' },
-          { type: 'p', text: 'Customization at the token level (color, type, spacing, line-height) enabled rich surface-level brand differentiation. What it couldn\u2019t enable on its own was form-level expression. Every brand site shared the same underlying component shapes and layout vocabularies, so the structural skeleton across brands was similar.' },
-          { type: 'p', text: 'In practice, the gap was filled by close collaboration with the interaction designers on the project. Distinctive photography, expressive background imagery, and bespoke surface treatments like parallax effects were layered on top of the system to carry each brand\u2019s look and feel where the structure couldn\u2019t. The DS handled the structural and accessible foundation; the surface treatments brought the personality forward. The result was that brands felt genuinely different even though the underlying layouts were related.' },
+          { type: 'p', text: 'The system shipped on time, on scope, and architecturally sound. Token-level customization gave each brand a distinct surface, but it couldn\u2019t change the underlying shapes. Every brand site shared the same component structures and layout vocabulary, so the skeleton across the eleven sites was structurally similar.' },
+          { type: 'p', text: 'The interaction designers closed that gap. Distinctive photography, expressive background imagery, and bespoke surface treatments like parallax effects were layered on top to carry each brand\u2019s personality where the structure couldn\u2019t. The system handled the foundation; the surface work brought the character forward. Brands ended up feeling genuinely different even though the underlying layouts were related.' },
           { type: 'pullQuote', text: 'Tokens got us far, but they couldn’t solve everything. The moment brands wanted distinct component shapes, the limits of the architecture became obvious.' },
           { type: 'figure', src: '/assets/case-studies/twe-fig-4.png', srcMobile: '/assets/case-studies/twe-fig-4-mobile.png', caption: 'Surface treatments — photography, parallax, and brand imagery layered on top of the shared structural skeleton.' }
         ]
@@ -141,8 +137,8 @@ export const CASE_STUDIES = [
         label: 'Architectural choice',
         title: 'Architectural choice: forking, not theming',
         body: [
-          { type: 'p', text: 'Rather than building a runtime theming architecture, with one source of truth and brand layers that switch dynamically, we shipped a fork-per-brand approach. The headless system was duplicated for each brand, and the primitive and semantic layers were modified within each fork.' },
-          { type: 'p', text: 'This was the right shape for the project. Eleven brand sites, six-month delivery, no requirement for runtime brand-switching. A theming architecture is a different operational model: it requires shared tooling, shared maintenance, and longer maintenance horizons than this project was scoped for. The cost of forking is governance over time, since future system-level changes have to propagate across multiple libraries, and that cost was understood and accepted at the project level.' }
+          { type: 'p', text: 'We shipped a fork-per-brand approach rather than a runtime theming architecture. The headless system was duplicated for each brand, with the primitive and semantic layers modified within each fork.' },
+          { type: 'p', text: 'Eleven sites, six-month delivery, no runtime brand-switching required. Forking was the right fit. A theming architecture would have been a different commitment: shared tooling across the team, shared maintenance, and longer operational horizons than the project was scoped for. The cost of forking is governance over time, since system-level changes have to propagate across multiple libraries. That trade-off was understood and accepted.' }
         ]
       },
       {
@@ -165,7 +161,7 @@ export const CASE_STUDIES = [
         title: 'What I\u2019d do differently on the next multi-brand system',
         body: [
           { type: 'p', text: 'Looking back, the architecture succeeded because it matched the project. Eleven sites, six months, and no requirement for runtime brand switching. A different context would have justified a different system. This one worked because it matched the operational reality rather than an idealized future state. I now scope the architecture to fit the operational reality from the start, including how teams will work with it, not just how it works in theory.' },
-          { type: 'p', text: 'The second is that brand identity at scale is a problem of how much of a brand the system can carry, not just how cleanly the system can be themed. Surface-level tokens are necessary but not sufficient. The next version of multi-brand DS work I\u2019d architect would expose form-level variants too, letting brands express identity through component shape. That\u2019s where multi-brand systems have the most room to grow, and it\u2019s the direction I want to take this kind of work next.' }
+          { type: 'p', text: 'The second is that brand identity at scale is a problem of how much of a brand the system can carry, not just how cleanly the system can be themed. Surface-level tokens are necessary but not sufficient. The next version of multi-brand DS work I\u2019d architect would expose form-level variants too, letting brands express identity through component shape. That\u2019s where I want to take this kind of work next.' }
         ]
       }
     ],
@@ -235,8 +231,8 @@ export const CASE_STUDIES = [
           ]},
           { type: 'h3', text: 'What the team contributed' },
           { type: 'ul', items: [
-            'Hide and Seek design lead \u2014 led the brand workshop, oversaw the engagement',
-            'Hide and Seek dev lead \u2014 partnered on architecture and pipeline decisions',
+            'Hide and Seek design lead \u2014 led the design deliverables and oversaw the engagement',
+            'Hide and Seek dev lead \u2014 built the architecture and pipeline, managed the dev teams in Taiwan and Australia',
             'UX designer (Malaysia, contractor) \u2014 UX deliverables under the design lead\u2019s supervision',
             'Product dev team (Taiwan, contracted by Relate) \u2014 built the product',
             'Marketing site dev team (Australia) \u2014 built relate.us',
@@ -289,7 +285,7 @@ export const CASE_STUDIES = [
         label: 'What I\u2019d revisit',
         title: 'What I\u2019d revisit',
         body: [
-          { type: 'p', text: 'Working across five time zones shaped how the work moved. Decisions naturally unfolded across days rather than within single conversations, which suited a team this distributed, and the rhythm became its own thing to design for. That kind of constraint asks the system to do more documentation work, since async teams rely on what\u2019s written down more than on what\u2019s said in the room. Something I\u2019d carry into how I scope documentation on future distributed engagements.' },
+          { type: 'p', text: 'Working across five time zones shaped how the work moved. Decisions unfolded asynchronously rather than within single conversations, which suited a team this distributed, and the rhythm became its own thing to design for. That kind of constraint asks the system to do more documentation work, since async teams rely on what\u2019s written down more than on what\u2019s said in the room. Something I\u2019d carry into how I scope documentation on future distributed engagements.' },
           { type: 'pullQuote', text: 'We put most of the personality into the brand system and kept the product deliberately restrained. People came to Relate to understand conversations, not admire the interface.' }
         ]
       },
@@ -311,7 +307,7 @@ export const CASE_STUDIES = [
         label: 'Less is more',
         title: 'Less is more',
         body: [
-          { type: 'p', text: 'Working on Relate changed how I think about trust-focused products. Throughout the project, we repeatedly found that adding more visual expression didn\u2019t make the product feel stronger. The stronger direction was usually the quieter one.' },
+          { type: 'p', text: 'Working on Relate changed how I think about interfaces in the AI era. Throughout the project, I repeatedly found that adding more visual expression didn\u2019t make the product feel stronger. The stronger direction was usually the quieter one.' },
           { type: 'p', text: 'Clear hierarchy, restrained motion, and content that stayed focused on the conversation itself consistently felt more credible than more visually expressive alternatives. We put most of the personality into the brand and let the product focus on helping people interpret what was being said in meetings.' }
         ]
       }
@@ -353,7 +349,7 @@ export const CASE_STUDIES = [
       { label: 'Reading time', value: '~4 min' }
     ],
     quickContext: {
-      body: '<strong>A tokenized design system and a documented methodology, built as an R&amp;D initiative to give Hide and Seek Digital a shared starting point for every client engagement.</strong> Used as the foundation for client work during my time at Hide and Seek Digital, including projects for the Australian Federal Police and Relate. Presented externally at a Storyblok webinar attended by around a hundred people.'
+      body: '<strong>A tokenized design system and a documented methodology, built as an R&amp;D initiative to give Hide and Seek Digital a shared starting point for every client engagement.</strong> Used as the foundation for client work at the agency, including projects for the Australian Federal Police and Relate. Presented externally at a Storyblok webinar attended by around a hundred people.'
     },
     sections: [
       {
@@ -411,7 +407,7 @@ export const CASE_STUDIES = [
         title: 'What I learned about adoption',
         body: [
           { type: 'p', text: 'Designing the system was the smaller half of the work. Getting it adopted was the harder half, and HASTE taught me that adoption is a tooling problem and a communication problem at the same time.' },
-          { type: 'p', text: 'Some designers picked up Tokens Studio quickly. Others struggled with it. That difference had a bigger impact on adoption than any architectural decision I made. The more friction people felt in the tooling, the faster they fell back to old habits. The training program was structured around both: hands-on tooling practice, and documentation written to be read under pressure.' },
+          { type: 'p', text: 'Tokens Studio has a learning curve, and under deadline pressure, people default to what they know. The training program was built around that: hands-on tooling practice and documentation written to be useful in the moment, not just as reference.' },
           { type: 'pullQuote', text: 'Designing the system was the smaller half of the work. Getting it adopted was the harder half.' }
         ]
       },
@@ -420,9 +416,8 @@ export const CASE_STUDIES = [
         label: 'Where the architecture had a cost',
         title: 'Where the architecture had a cost',
         body: [
-          { type: 'p', text: 'HASTE shipped as a fork-per-brand system, the same architecture that had worked on the agency\u2019s earlier multi-brand projects. Each new client engagement forked the headless foundation and customized the primitive and semantic layers for that client.' },
-          { type: 'p', text: 'The architecture worked, but it had an adoption cost I didn\u2019t fully anticipate. Every new client engagement required the team to internalize the full fork-and-retokenize flow, which made onboarding slower than it needed to be. The training program absorbed that cost, but the cost was real.' },
-          { type: 'p', text: 'If I were starting HASTE today, I\u2019d architect it around theming from day one. Not because theming is universally better, but because the operational model is conceptually simpler: the foundation stays put and brand layers swap on top. That simplicity translates directly to faster team adoption, but only if the team accepts and commits to the tooling the theming model depends on. The architecture\u2019s advantage lives entirely in the tooling; without that buy-in, you\u2019ve added a layer of abstraction without gaining the operational benefit. Tooling acceptance is the condition the whole argument rests on.' },
+          { type: 'p', text: 'HASTE shipped as a fork-per-brand system. Each new client engagement forked the headless foundation and customized the token layers for that client. The architecture worked, but every engagement required the team to internalize the fork-and-retokenize flow, which made onboarding slower than it needed to be.' },
+          { type: 'p', text: 'If I were starting HASTE today, I\u2019d architect it around theming. The operational model is simpler: the foundation stays put and brand layers swap on top. That simplicity helps adoption, but only if the team commits to the tooling it requires. Without that buy-in, the abstraction adds complexity without delivering the benefit.' },
           { type: 'figure', src: '/assets/case-studies/haste-fig-4.png', srcMobile: '/assets/case-studies/haste-fig-4-mobile.png', caption: 'Fork-per-brand vs. theming — two operational shapes for a tokenized foundation, each with its own adoption cost.' }
         ]
       },
@@ -445,9 +440,8 @@ export const CASE_STUDIES = [
         label: 'What HASTE taught me',
         title: 'What HASTE taught me about systems work',
         body: [
-          { type: 'p', text: 'Two lessons I carry forward from this project.' },
-          { type: 'p', text: 'The first is that documentation is part of the system, not a wrapper around it. The HASTE Handbook and the workflow diagrams weren\u2019t supplementary. They were the difference between a system that lives only in the architect\u2019s head and a system other people can pick up and use. And as AI agents increasingly work inside design systems, the quality of that documentation determines what they can do too. Thorough documentation is no longer just for humans; it\u2019s the interface the AI consumes as well. I now scope documentation as a deliverable from the start, not as a thing that gets written at the end.' },
-          { type: 'p', text: 'The second is that adoption is its own design problem. A great system that no one uses is worth less than a simpler system that the team can confidently work with. Architecting for adoption, choosing the operational model that matches the team\u2019s tooling fluency, pacing the training, and writing documentation people actually want to read, is as much of the work as architecting the system itself.' }
+          { type: 'p', text: 'Documentation is part of the system, not something you write around it. The HASTE Handbook and the workflow diagrams weren\u2019t supplementary materials. They were what made the system usable by someone who wasn\u2019t me. Without them, the architecture lives in one person\u2019s head and stops there. I now scope documentation as a deliverable alongside the system work.' },
+          { type: 'p', text: 'The other thing HASTE made clear is that adoption is its own design challenge. A system the team can\u2019t confidently use is just overhead. Getting there means choosing the right operational model, pacing the training, and writing documentation people actually want to open. That work isn\u2019t separate from building the system. It\u2019s part of it.' }
         ]
       }
     ],
@@ -516,20 +510,22 @@ export const CASE_STUDIES = [
         label: 'Role and team',
         title: 'Role and team',
         body: [
-          { type: 'p', text: 'I worked under the design director, who captained the project. We co-ran discovery workshops to understand current ER workflows, with her in charge and me supporting. From there, the design work was mine to drive.' },
+          { type: 'p', text: 'I worked under the design director, who captained the project and was responsible for the UX and UI outcomes. We co-ran discovery workshops to understand current ER workflows, with her in charge and me supporting. From there, the design work was mine to drive.' },
           { type: 'h3', text: 'What I owned' },
           { type: 'ul', items: [
             'Every screen on the patient mobile app',
             'Every screen on the clinician web app',
-            'The supporting design system (project-specific, non-tokenized)',
+            'The supporting design system',
             'Usability validation that fed back into the design'
           ]},
           { type: 'h3', text: 'What the team contributed' },
           { type: 'ul', items: [
-            'Design director \u2014 project captain, discovery workshop lead',
-            'Illustrator \u2014 visuals for the patient app\u2019s symptom screens',
-            'Developers from Imminently \u2014 built the products',
-            'Clinicians at Sir Charles Gairdner Hospital \u2014 interview subjects, usability testing participants'
+            'Design director (Hide and Seek Digital) \u2014 project captain, discovery workshop lead',
+            'Design lead (Hide and Seek Digital) \u2014 responsible for UX and UI outcomes',
+            'Business analyst (Imminently) \u2014 requirements and project objectives',
+            'Dev team (Imminently) \u2014 built the products',
+            'Clinicians at Sir Charles Gairdner Hospital \u2014 interview subjects, usability testing participants',
+            'Illustrator (Trier) \u2014 visuals for the patient app\u2019s symptom screens'
           ]},
           { type: 'p', text: 'I participated in five clinician interviews during discovery, asking questions and synthesizing in Dovetail. I ran the usability testing sessions myself, my first time leading that part of the work, with the design lead attending as a silent observer for support.' }
         ]
@@ -580,7 +576,7 @@ export const CASE_STUDIES = [
         label: 'Accessibility',
         title: 'Accessibility shaped every screen',
         body: [
-          { type: 'p', text: 'Older patients are the dominant ER demographic, which meant the accessibility constraints weren\u2019t a feature of the app, they were the architecture of every screen.' },
+          { type: 'p', text: 'Vulnerable patients are the dominant ER demographic, which meant the accessibility constraints weren\u2019t a feature of the app, they were the architecture of every screen.' },
           { type: 'p', text: 'Specific decisions:' },
           { type: 'ul', items: [
             'Tap targets at ~60 pixels, well above standard mobile minimums',
@@ -597,7 +593,7 @@ export const CASE_STUDIES = [
         title: 'The clinician web app',
         body: [
           { type: 'p', text: 'On the clinician-facing side, the web app was the operational backbone. Before Trier, nurses and doctors collected triage data manually and re-entered it across multiple systems. The web app consolidated all of that into a single screen where clinicians could see incoming patient data in real time, track observations, and prioritize triage without the duplicate-entry overhead.' },
-          { type: 'p', text: 'The design work was less visually rich than the patient app but no less critical. Clinical environments demand clarity over personality, and the web app was built to support fast scanning, dense information density, and zero ambiguity at decision points.' },
+          { type: 'p', text: 'Clinical environments demand clarity over personality, and the web app was built to support fast scanning, dense information density, and zero ambiguity at decision points.' },
           { type: 'figure', src: '/assets/case-studies/trier-fig-2.png', srcMobile: '/assets/case-studies/trier-fig-2-mobile.png', caption: 'Clinician web app — a single-screen triage view consolidating patient data, observations, and prioritization.' }
         ]
       },

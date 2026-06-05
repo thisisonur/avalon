@@ -63,8 +63,8 @@ The team spanned five timezones. Hide and Seek led the engagement with a design 
 - The marketing site (relate.us)
 
 (h3) What the team contributed
-- Hide and Seek design lead — led the brand workshop, oversaw the engagement
-- Hide and Seek dev lead — partnered on architecture and pipeline decisions
+- Hide and Seek design lead — led the design deliverables and oversaw the engagement
+- Hide and Seek dev lead — built the architecture and pipeline, managed the dev teams in Taiwan and Australia
 - UX designer (Malaysia, contractor) — UX deliverables under the design lead's supervision
 - Product dev team (Taiwan, contracted by Relate) — built the product
 - Marketing site dev team (Australia) — built relate.us
@@ -75,7 +75,7 @@ The team spanned five timezones. Hide and Seek led the engagement with a design 
 ### The work across four surfaces
 
 (decision card) Brand identity rebrand
-A brand workshop surfaced statements, keywords, and intent. From that material I derived two archetypes: Creator at 70% (originality, deliberate construction, business-level trustworthiness) and Magician at 30% (transformation, possibility, the catalytic moment). I presented three identity directions grounded in the archetype split with typography, color, and brand applications. The team selected the direction anchored in an abstract handshake mark with a blue-to-pink gradient.
+A brand workshop surfaced statements, keywords, and intent. From that material, I derived two archetypes: Creator at 70% (originality, deliberate construction, business-level trustworthiness) and Magician at 30% (transformation, possibility, the catalytic moment). I presented three identity directions grounded in the archetype split with typography, color, and brand applications. The team selected the direction anchored in an abstract handshake mark with a blue-to-pink gradient.
 (figure caption) Brand identity, from idea to mark to system.
 
 (decision card) Design system layered on HASTE
@@ -91,7 +91,7 @@ The marketing site had to capture multiple B2B audiences: HR leads, sales teams,
 
 ### What I'd revisit
 
-Working across five time zones shaped how the work moved. Decisions naturally unfolded across days rather than within single conversations, which suited a team this distributed, and the rhythm became its own thing to design for. That kind of constraint asks the system to do more documentation work, since async teams rely on what's written down more than on what's said in the room. Something I'd carry into how I scope documentation on future distributed engagements.
+Working across five time zones shaped how the work moved. Decisions unfolded asynchronously rather than within single conversations, which suited a team this distributed, and the rhythm became its own thing to design for. That kind of constraint asks the system to do more documentation work, since async teams rely on what's written down more than on what's said in the room. Something I'd carry into how I scope documentation on future distributed engagements.
 
 (pull quote) We put most of the personality into the brand system and kept the product deliberately restrained. People came to Relate to understand conversations, not admire the interface.
 
@@ -102,6 +102,6 @@ Working across five time zones shaped how the work moved. Decisions naturally un
 
 ### Less is more
 
-Working on Relate changed how I think about trust-focused products. Throughout the project, we repeatedly found that adding more visual expression didn’t make the product feel stronger. The stronger direction was usually the quieter one.
+Working on Relate changed how I think about interfaces in the AI era. Throughout the project, I repeatedly found that adding more visual expression didn’t make the product feel stronger. The stronger direction was usually the quieter one.
 
 Clear hierarchy, restrained motion, and content that stayed focused on the conversation itself consistently felt more credible than more visually expressive alternatives. We put most of the personality into the brand and let the product focus on helping people interpret what was being said in meetings.

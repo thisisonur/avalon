@@ -39,7 +39,7 @@ Source of truth in code: src/data/caseStudies.js (slug: haste)
 - Reading time: ~4 min
 
 ## Quick Context
-**A tokenized design system and a documented methodology, built as an R&D initiative to give Hide and Seek Digital a shared starting point for every client engagement.** Used as the foundation for client work during my time at Hide and Seek Digital, including projects for the Australian Federal Police and Relate. Presented externally at a Storyblok webinar attended by around a hundred people.
+**A tokenized design system and a documented methodology, built as an R&D initiative to give Hide and Seek Digital a shared starting point for every client engagement.** Used as the foundation for client work at the agency, including projects for the Australian Federal Police and Relate. Presented externally at a Storyblok webinar attended by around a hundred people.
 
 ## Sections
 
@@ -84,18 +84,16 @@ The methodology also traveled outside the agency. I co-presented HASTE with the 
 
 Designing the system was the smaller half of the work. Getting it adopted was the harder half, and HASTE taught me that adoption is a tooling problem and a communication problem at the same time.
 
-Some designers picked up Tokens Studio quickly. Others struggled with it. That difference had a bigger impact on adoption than any architectural decision I made. The more friction people felt in the tooling, the faster they fell back to old habits. The training program was structured around both: hands-on tooling practice, and documentation written to be read under pressure.
+Tokens Studio has a learning curve, and under deadline pressure, people default to what they know. The training program was built around that: hands-on tooling practice and documentation written to be useful in the moment, not just as reference.
 
 
 (pull quote) Designing the system was the smaller half of the work. Getting it adopted was the harder half.
 
 ### Where the architecture had a cost
 
-HASTE shipped as a fork-per-brand system, the same architecture that had worked on the agency's earlier multi-brand projects. Each new client engagement forked the headless foundation and customized the primitive and semantic layers for that client.
+HASTE shipped as a fork-per-brand system. Each new client engagement forked the headless foundation and customized the token layers for that client. The architecture worked, but every engagement required the team to internalize the fork-and-retokenize flow, which made onboarding slower than it needed to be.
 
-The architecture worked, but it had an adoption cost I didn't fully anticipate. Every new client engagement required the team to internalize the full fork-and-retokenize flow, which made onboarding slower than it needed to be. The training program absorbed that cost, but the cost was real.
-
-If I were starting HASTE today, I'd architect it around theming from day one. Not because theming is universally better, but because the operational model is conceptually simpler: the foundation stays put and brand layers swap on top. That simplicity translates directly to faster team adoption, but only if the team accepts and commits to the tooling the theming model depends on. The architecture's advantage lives entirely in the tooling; without that buy-in, you've added a layer of abstraction without gaining the operational benefit. Tooling acceptance is the condition the whole argument rests on.
+If I were starting HASTE today, I'd architect it around theming. The operational model is simpler: the foundation stays put and brand layers swap on top. That simplicity helps adoption, but only if the team commits to the tooling it requires. Without that buy-in, the abstraction adds complexity without delivering the benefit.
 
 (figure caption) Fork-per-brand vs. theming — two operational shapes for a tokenized foundation, each with its own adoption cost.
 
@@ -107,8 +105,6 @@ If I were starting HASTE today, I'd architect it around theming from day one. No
 
 ### What HASTE taught me about systems work
 
-Two lessons I carry forward from this project.
+Documentation is part of the system, not something you write around it. The HASTE Handbook and the workflow diagrams weren't supplementary materials. They were what made the system usable by someone who wasn't me. Without them, the architecture lives in one person's head and stops there. I now scope documentation as a deliverable alongside the system work.
 
-The first is that documentation is part of the system, not a wrapper around it. The HASTE Handbook and the workflow diagrams weren't supplementary. They were the difference between a system that lives only in the architect's head and a system other people can pick up and use. And as AI agents increasingly work inside design systems, the quality of that documentation determines what they can do too. Thorough documentation is no longer just for humans; it's the interface the AI consumes as well. I now scope documentation as a deliverable from the start, not as a thing that gets written at the end.
-
-The second is that adoption is its own design problem. A great system that no one uses is worth less than a simpler system that the team can confidently work with. Architecting for adoption, choosing the operational model that matches the team's tooling fluency, pacing the training, and writing documentation people actually want to read, is as much of the work as architecting the system itself.
+The other thing HASTE made clear is that adoption is its own design challenge. A system the team can't confidently use is just overhead. Getting there means choosing the right operational model, pacing the training, and writing documentation people actually want to open. That work isn't separate from building the system. It's part of it.

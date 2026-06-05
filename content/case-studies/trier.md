@@ -55,19 +55,21 @@ The project shipped two products that worked together:
 
 ### Role and team
 
-I worked under the design director, who captained the project. We co-ran discovery workshops to understand current ER workflows, with her in charge and me supporting. From there, the design work was mine to drive.
+I worked under the design director, who captained the project and was responsible for the UX and UI outcomes. We co-ran discovery workshops to understand current ER workflows, with her in charge and me supporting. From there, the design work was mine to drive.
 
 (h3) What I owned
 - Every screen on the patient mobile app
 - Every screen on the clinician web app
-- The supporting design system (project-specific, non-tokenized)
+- The supporting design system
 - Usability validation that fed back into the design
 
 (h3) What the team contributed
-- Design director — project captain, discovery workshop lead
-- Illustrator — visuals for the patient app's symptom screens
-- Developers from Imminently — built the products
+- Design director (Hide and Seek Digital) — project captain, discovery workshop lead
+- Design lead (Hide and Seek Digital) — responsible for UX and UI outcomes
+- Business analyst (Imminently) — requirements and project objectives
+- Dev team (Imminently) — built the products
 - Clinicians at Sir Charles Gairdner Hospital — interview subjects, usability testing participants
+- Illustrator (Trier) — visuals for the patient app's symptom screens
 
 I participated in five clinician interviews during discovery, asking questions and synthesizing in Dovetail. I ran the usability testing sessions myself, my first time leading that part of the work, with the design lead attending as a silent observer for support.
 
@@ -97,7 +99,7 @@ Patients could optionally enter their current medications: drug names with autoc
 
 ### Accessibility shaped every screen
 
-Older patients are the dominant ER demographic, which meant the accessibility constraints weren't a feature of the app, they were the architecture of every screen.
+Vulnerable patients are the dominant ER demographic, which meant the accessibility constraints weren't a feature of the app, they were the architecture of every screen.
 
 Specific decisions:
 - Tap targets at ~60 pixels, well above standard mobile minimums
@@ -112,7 +114,7 @@ The trade-off was honest: the app couldn't be visually compact or sleek in the c
 
 On the clinician-facing side, the web app was the operational backbone. Before Trier, nurses and doctors collected triage data manually and re-entered it across multiple systems. The web app consolidated all of that into a single screen where clinicians could see incoming patient data in real time, track observations, and prioritize triage without the duplicate-entry overhead.
 
-The design work was less visually rich than the patient app but no less critical. Clinical environments demand clarity over personality, and the web app was built to support fast scanning, dense information density, and zero ambiguity at decision points.
+Clinical environments demand clarity over personality, and the web app was built to support fast scanning, dense information density, and zero ambiguity at decision points.
 
 (figure caption) Clinician web app — a single-screen triage view consolidating patient data, observations, and prioritization.
 
