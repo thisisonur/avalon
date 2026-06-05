@@ -435,11 +435,12 @@
   margin-bottom: 24px;
 }
 .pull-quote__text {
+  /* Typography matched to the quick-context summary lede. */
   font-family: var(--font-display-serif);
-  font-weight: 500;
-  font-size: var(--fs-pull-quote);
-  line-height: 1.4;
-  letter-spacing: -0.005em;
+  font-weight: 400;
+  font-size: var(--fs-quick-context);
+  line-height: 1.28;
+  letter-spacing: var(--ls-tight);
   color: var(--fg-1);
   margin: 0;
   padding: 0;
@@ -448,7 +449,6 @@
 }
 @media (max-width: 720px) {
   .pull-quote { margin: 40px 0; }
-  .pull-quote__text { font-size: 21px; }
 }
 
 /* ── Inline figure ────────────────────────────────── */
