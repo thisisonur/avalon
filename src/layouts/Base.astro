@@ -18,7 +18,7 @@ const {
 const SITE_URL = 'https://onurerdem.com';
 
 const RESUME_URL =
-  'https://www.dropbox.com/scl/fi/5behfcn2s131yip6mmm1q/OnurErdem_Resume.pdf?rlkey=8yq4udp34s3ooat6y16txqg1a&dl=0';
+  'https://www.dropbox.com/scl/fi/i4z7kx4q8etqj1ancnjqe/OnurErdem_Resume.pdf?rlkey=xesodj3spi9qcg8jevbkfb6w5&dl=0';
 const LINKEDIN_URL = 'https://www.linkedin.com/in/thisisonur/';
 const MAILTO = 'mailto:thisisonur@gmail.com';
 
@@ -454,9 +454,10 @@ const ogImage = SITE_URL + '/og-image.png';
             el.style.transitionDelay = (base + i) * stepMs + "ms";
           });
         }
-        ownDelay.filter((el) => el.getBoundingClientRect().top >= vh).forEach((el) => {
-          el.style.transitionDelay = "0ms";
-        });
+        // Below-fold reveals keep their authored data-delay so grouped items
+        // (e.g. the About "How I Work" cards and "Off the clock" photos) still
+        // cascade in one-by-one when scrolled to, rather than appearing as a
+        // block. The remaining below-fold delays are all small, local staggers.
         // The quick-context summary is a mid-page split-text. If it lands in the
         // initial fold (tall viewports), hold its word reveal until after the
         // fold reveals above it (hero, metadata table) have played, so it never
