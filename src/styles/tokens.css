@@ -146,6 +146,11 @@
   --home-divider-margin-y: 80px;
   --home-label-margin-top: 64px;
   --home-label-margin-bottom: 84px;
+  /* Highlights gallery (under the case studies) */
+  --highlights-gap: 88px;            /* vertical space between gallery items */
+  --highlights-gap-mobile: 48px;
+  --highlights-caption-gap: 16px;    /* image → caption */
+  --highlights-label-gap-mobile: 40px; /* extra space under the HIGHLIGHTS title on phones */
 
   /* ------------------------------------------------------------
      PAGE MEASURE — shared max-width + side gutter

@@ -46,6 +46,41 @@ const caseStudies = [
       'A digital triage platform that cut ambulance ramping by 50% in the pilot hospital.',
   },
 ];
+
+// Highlights gallery — wide desktop image + taller mobile image per item.
+// Captions are placeholders for now.
+const highlights = [
+  {
+    slug: 'barwise',
+    name: 'BarWise',
+    caption: 'BarWise is a mobile learning platform designed to help aspiring lawyers prepare for the bar exam through structured study materials, flashcards, and practice content. I led the project end-to-end, creating the brand identity, product strategy, user flows, interactions, and complete mobile experience. (2020)',
+  },
+  {
+    slug: 'lt-reach',
+    name: 'LiveTiles Reach',
+    caption: 'LiveTiles Reach is an enterprise employee communication platform designed to help organizations share news, resources, and updates at scale. I led the redesign of key product experiences, including onboarding, dashboards, content consumption, and social interactions, making it easier for employees to discover information and connect with colleagues. (2022)',
+  },
+  {
+    slug: 'flypgs',
+    name: 'Pegasus Airlines',
+    caption: 'Pegasus Airlines is one of Turkey’s leading low-cost carriers. Over an eighteen-month engagement, I designed the airline’s official website, while also leading the design and art direction of the inflight menu system used across domestic and international routes. (2017)',
+  },
+  {
+    slug: 'hope-and-abel',
+    name: 'Hope & Abel',
+    caption: 'Hope & Abel is an AI-powered healthcare concept designed to support people living with chronic pain. The experience adapts to each user’s situation, recommending exercises, educational content, and wellbeing activities to help them build healthier habits and manage their condition more effectively. (2022)',
+  },
+  {
+    slug: 'chatmycoach',
+    name: 'Chat My Coach',
+    caption: 'Chat My Coach is a digital therapy and coaching platform that connects users with professionals through text, voice, and video sessions. I created the product from the ground up, including the brand identity, user experience, design system, and complete mobile application. (2018)',
+  },
+  {
+    slug: 'studio',
+    name: 'Studio+',
+    caption: 'Studio+ is an online learning platform focused on yoga, meditation, fitness, and personal wellbeing. I redesigned the entire mobile experience, simplifying navigation, improving content discovery, and creating a more intuitive way for users to find and engage with courses. (2019)',
+  },
+];
 ---
 
 <Base>
@@ -75,4 +110,29 @@ const caseStudies = [
       ))}
     </div>
   </div>
+
+  <div class="section-divider reveal"></div>
+  <div class="section-label reveal highlights-label">
+    <span>HIGHLIGHTS&nbsp;&nbsp;2017&nbsp;–&nbsp;2023</span>
+  </div>
+
+  <section class="highlights-section">
+    <div class="highlights">
+      {highlights.map((h) => (
+        <figure class="highlight reveal">
+          <picture class="highlight__media">
+            <source media="(max-width: 768px)" srcset={`/assets/highlights/${h.slug}-mobile.png`} />
+            <img
+              src={`/assets/highlights/${h.slug}.png`}
+              alt={h.name}
+              loading="lazy"
+              decoding="async"
+              class="highlight__img"
+            />
+          </picture>
+          <figcaption class="highlight__caption">{h.caption}</figcaption>
+        </figure>
+      ))}
+    </div>
+  </section>
 </Base>

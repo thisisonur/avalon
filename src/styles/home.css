@@ -530,4 +530,50 @@
   .cs-card__desc { font-size: 13px; line-height: 22px; }
   .section-divider { margin: 40px auto; }
   .section-label { margin-bottom: 8px; }
+  /* More breathing room under the HIGHLIGHTS title on phones. */
+  .section-label.highlights-label { margin-bottom: var(--highlights-label-gap-mobile); }
+}
+
+/* ── Highlights gallery (under the case studies) ──
+   Single-column stack: a wide image + caption per item. <picture> swaps a
+   taller mobile source at ≤768px. Desktop images are uniform 16:9; mobile
+   images vary in height, so the ratio is left natural there. */
+.highlights-section {
+  padding: 0 0 var(--home-section-pad-y);
+}
+.highlights {
+  display: flex;
+  flex-direction: column;
+  gap: var(--highlights-gap);
+  width: 100%;
+  max-width: var(--page-max);
+  margin: 0 auto;
+  padding: 0 var(--page-gutter);
+}
+.highlight { margin: 0; }
+.highlight__media { display: block; }
+.highlight__img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: var(--radius-2xl);
+  background: var(--img-fallback);
+}
+.highlight__caption {
+  margin: var(--highlights-caption-gap) 0 0;
+  font-family: var(--font-ui);
+  font-size: var(--fs-caption);
+  line-height: 1.5;
+  color: var(--fg-2);
+}
+
+@media (max-width: 768px) {
+  .highlights {
+    gap: var(--highlights-gap-mobile);
+    padding: 0 16px;
+  }
+  /* Mobile sources are taller with varying ratios — let them size naturally. */
+  .highlight__img { aspect-ratio: auto; }
 }
